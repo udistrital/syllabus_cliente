@@ -1,0 +1,19 @@
+.container-border {
+    margin: 3% 0% 0% 0%;
+    border: 1px solid var(--primary);
+    padding: 1%;
+    border-radius: 15px 15px 15px 15px;
+}
+
+.container-border h4 {
+    width: 17%;
+    background-color: var(--primary) !important;
+    color: #F1F5F8;
+    font-size: 15px;
+    margin-top: -28px;
+    margin-left: 7px;
+    padding: 0.5%;
+    position: relative;
+    border-radius: 15px 15px 15px 15px;
+    font-weight: normal;
+}

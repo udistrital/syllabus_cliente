@@ -1,0 +1,97 @@
+<div style="height: 100%; width: 100%; display: flex;
+flex-direction: column;
+justify-content: flex-start;
+align-items: center;
+padding-top: 50px;">
+    <mat-card style="width:calc(100% - 60px); ">
+        <mat-card-content>
+            <div class="container-border">
+                <h4>Tabla resumen busqueda</h4>
+                <div class="table-responsive">
+                    <table mat-table [dataSource]="dataSource">
+                        <!-- Proyecto -->
+                        <ng-container matColumnDef="proyecto">
+                            <th mat-header-cell *matHeaderCellDef> Proyecto </th>
+                            <td mat-cell *matCellDef="let element;let rowIndex = index"> {{element.proyecto}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="plan_estudios">
+                            <th mat-header-cell *matHeaderCellDef> Plan de estudios </th>
+                            <td mat-cell *matCellDef="let element"> {{element.plan_estudios}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="semestre">
+                            <th mat-header-cell *matHeaderCellDef> Semestre </th>
+                            <td mat-cell *matCellDef="let element"> {{element.semestre}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="espacio_academico">
+                            <th mat-header-cell *matHeaderCellDef> Espacio academico </th>
+                            <td mat-cell *matCellDef="let element"> {{element.espacio_academico}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="grupo">
+                            <th mat-header-cell *matHeaderCellDef> Grupo </th>
+                            <td mat-cell *matCellDef="let element"> {{element.grupo}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="acciones_buttons">
+                            <th mat-header-cell *matHeaderCellDef> <a routerLink="/crear_syllabus">
+                                    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="add"
+                                        style="color: white;"></mat-icon>
+                                </a>
+                            </th>
+                            <td mat-cell *matCellDef="let element" style="justify-content: center;">
+                                <button mat-icon-button>
+                                    <mat-icon aria-hidden="false" aria-label="Example home icon"
+                                        fontIcon="visibility"></mat-icon>
+                                </button>
+                                <button mat-icon-button>
+                                    <mat-icon aria-hidden="false" aria-label="Example home icon"
+                                        fontIcon="edit document"></mat-icon>
+                                </button>
+                                <button mat-icon-button>
+                                    <mat-icon aria-hidden="false" aria-label="Example home icon"
+                                        fontIcon="folder open">add</mat-icon>
+                                </button>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
+                        <!-- Headers -->
+                        <ng-container matColumnDef="resultadosConsulta">
+                            <th id="col-combinado" mat-header-cell *matHeaderCellDef [attr.colspan]="5">Resultados
+                                consulta</th>
+                        </ng-container>
+                        <ng-container matColumnDef="acciones">
+                            <th id="col-combinado" mat-header-cell *matHeaderCellDef [attr.colspan]="1">Acciones</th>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedHeaders" class="example-second-header-row"></tr>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
+
+                <div style="display: flex; justify-content: center; align-items: center;">
+                    <button mat-raised-button style="background-color: #03678F;color: white;"
+                        routerLink="/buscar_syllabus">Regresar</button>
+                </div>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+</div>

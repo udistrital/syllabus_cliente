@@ -1,0 +1,502 @@
+<div style="height: 100%; width: 100%; display: flex;
+flex-direction: column;
+justify-content: flex-start;
+align-items: center;
+padding-top: 50px;">
+    <mat-card style="width:calc(100% - 60px); " MatCardAppearance='raised'>
+        <mat-card-content>
+            <div class="container-border">
+                <h4>Nuevo Syllabus</h4>
+                <mat-card
+                    style="width:calc(100% - 60px); border: 1px #666666 solid; border-radius: 15px;background-color: #F5F5F5; margin: auto;">
+                    <mat-card-content>
+                        <p>
+                            <label for="">Proyecto
+                                Curricular:_____________________________________________________________ </label>
+                        </p>
+                        <p>
+                            <label for="">Plan de estudios:
+                                _____________________________________________________________ </label>
+                        </p>
+                        <p>
+                            <label for="">Semestre: _____________________________________________________________
+                            </label>
+                        </p>
+                    </mat-card-content>
+                </mat-card>
+
+                <mat-card>
+                    <mat-card-content>
+                        <mat-accordion [multi]="true">
+                            <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        Identificacion del espacio académico
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="container-border">
+                                    <h4> Identificacion del espacio académico </h4>
+
+                                    <mat-accordion [multi]="true">
+                                        <mat-expansion-panel [expanded]="true">
+                                            <mat-expansion-panel-header>
+                                                <mat-panel-title>
+                                                    Nombre del espacio académico
+                                                </mat-panel-title>
+                                            </mat-expansion-panel-header>
+                                            <table class="mat-table" style="margin-top: 10px;">
+                                                <tr class="mat-row">
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                        Código del espacio académico</td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                        <mat-form-field>
+                                                            <mat-label>Select</mat-label>
+                                                            <mat-select>
+                                                                <mat-option [value]="1">
+                                                                    options
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                        Número de creditos académicos</td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table class="mat-table" style="margin-top: 10px;">
+                                                <tr class="mat-row">
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                        Distribución horas de trabajo</td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: #F5F5F5; padding: 0px;text-align: center;vertical-align: middle;">
+                                                        HTD
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: #F5F5F5;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        HTC
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: #F5F5F5;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        HTA
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                </tr>
+                                                <tr class="mat-row">
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                        Tipo de espacio académico</td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: #F5F5F5; padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Asignatura
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle; background-color: white;">
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: #F5F5F5;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Catedra
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;background-color: white;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;background-color: white;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;background-color: white;">
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </mat-expansion-panel>
+                                        <mat-expansion-panel [expanded]="true">
+                                            <mat-expansion-panel-header>
+                                                <mat-panel-title>
+                                                    Naturaleza del espacio académico
+                                                </mat-panel-title>
+                                            </mat-expansion-panel-header>
+                                            <table class="mat-table" style="margin-top: 10px;">
+                                                <tr class="mat-row">
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                        Obligatorio básico</td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Obligatorio complementario
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Electivo intrínseco
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Electivo extrínseco
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </mat-expansion-panel>
+                                        <mat-expansion-panel [expanded]="true">
+                                            <mat-expansion-panel-header>
+                                                <mat-panel-title>
+                                                    Carácter del espacio académico
+                                                </mat-panel-title>
+                                            </mat-expansion-panel-header>
+                                            <table class="mat-table" style="margin-top: 10px;">
+                                                <tr class="mat-row">
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                        Teórico</td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Práctico
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Teórico / Practico
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Otros
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </mat-expansion-panel>
+                                        <mat-expansion-panel [expanded]="true">
+                                            <mat-expansion-panel-header>
+                                                <mat-panel-title>
+                                                    Modalidad de oferta del espacio académico
+                                                </mat-panel-title>
+                                            </mat-expansion-panel-header>
+
+                                            <table class="mat-table" style="margin-top: 10px;">
+                                                <tr class="mat-row">
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                        Presencial</td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Presencial con incorporación de TIC
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Virtual
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Otros
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </mat-expansion-panel>
+                                    </mat-accordion>
+
+                                    <mat-action-row style="height: 100%; width: 100%; display: flex;
+                                    flex-direction: column;
+                                    justify-content: flex-start;
+                                    align-items: center;">
+                                        <button mat-button style="background-color: #03678F;color: white;"
+                                            (click)="nextStep()">Continuar</button>
+                                    </mat-action-row>
+                                </div>
+
+                            </mat-expansion-panel>
+
+                            <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        Secuencia didactica
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="container-border">
+                                    <h4> Secuencia didactica </h4>
+                                    <div style="height: 100%; width: 100%; display: flex;
+                                    flex-direction: column;
+                                    justify-content: flex-start;
+                                    align-items: center;">
+                                        <mat-card
+                                            style="max-width: 75%;background-color: #FFFF66; border-radius: 15px; margin: 10px;"
+                                            MatCardAppearance='outlined'>
+                                            <mat-card-content>
+                                                <p style="margin: 0%;text-align: justify;text-align-last: center;">
+                                                    Usuario, por favor diligencie la siguiente información, para avanzar
+                                                    en las secciones debe dar clic en guardar y despues en el boton
+                                                    siguiente
+                                                </p>
+                                            </mat-card-content>
+
+                                        </mat-card>
+                                    </div>
+                                    <mat-stepper orientation="vertical">
+                                        <mat-step>
+                                            <ng-template matStepLabel>Sugerencias de saberes y conocimientos
+                                                previos</ng-template>
+                                            <ng-template matStepContent>
+                                                <mat-form-field style="width: 100%">
+                                                    <mat-label></mat-label>
+                                                    <textarea matInput></textarea>
+                                                  </mat-form-field>
+                                                <button mat-button matStepperNext>Siguiente</button>
+                                            </ng-template>
+                                        </mat-step>
+                                        <mat-step>
+                                            <ng-template matStepLabel>Justificación del espacio académico</ng-template>
+                                            <ng-template matStepContent>
+                                                <mat-form-field style="width: 100%">
+                                                    <mat-label></mat-label>
+                                                    <textarea matInput></textarea>
+                                                  </mat-form-field>
+                                                <button mat-button matStepperPrevious>Guardar</button>
+                                                <button mat-button matStepperPrevious>Anterior</button>
+                                                <button mat-button matStepperNext>Siguiente</button>
+                                            </ng-template>
+                                        </mat-step>
+                                        <mat-step>
+                                            <ng-template matStepLabel>Objetivos del espacio académico (general y
+                                                específicos)</ng-template>
+                                            <ng-template matStepContent>
+                                                <mat-form-field style="width: 100%">
+                                                    <mat-label></mat-label>
+                                                    <textarea matInput></textarea>
+                                                  </mat-form-field>
+                                                <button mat-button matStepperPrevious>Guardar</button>
+                                                <button mat-button matStepperPrevious>Anterior</button>
+                                                <button mat-button matStepperNext>Siguiente</button>
+                                            </ng-template>
+                                        </mat-step>
+                                        <mat-step>
+                                            <ng-template matStepLabel>Propositos de formación y de aprendizaje (PFA) del
+                                                espacio académico</ng-template>
+                                            <ng-template matStepContent>
+                                                <mat-form-field style="width: 100%">
+                                                    <mat-label></mat-label>
+                                                    <textarea matInput></textarea>
+                                                  </mat-form-field>
+                                                <button mat-button matStepperPrevious>Guardar</button>
+                                                <button mat-button matStepperPrevious>Anterior</button>
+                                                <button mat-button matStepperNext>Siguiente</button>
+                                            </ng-template>
+                                        </mat-step>
+                                        <mat-step>
+                                            <ng-template matStepLabel>Contenidos temáticos</ng-template>
+                                            <ng-template matStepContent>
+                                                <mat-form-field style="width: 100%">
+                                                    <mat-label></mat-label>
+                                                    <textarea matInput></textarea>
+                                                  </mat-form-field>
+                                                <button mat-button matStepperPrevious>Guardar</button>
+                                                <button mat-button matStepperPrevious>Anterior</button>
+                                                <button mat-button matStepperNext>Siguiente</button>
+                                            </ng-template>
+                                        </mat-step>
+                                        <mat-step>
+                                            <ng-template matStepLabel>Estrategias de enseñanza que favorecen el
+                                                aprendizaje</ng-template>
+                                            <ng-template matStepContent>
+                                                <mat-form-field style="width: 100%">
+                                                    <mat-label></mat-label>
+                                                    <textarea matInput></textarea>
+                                                  </mat-form-field>
+                                                <button mat-button matStepperPrevious>Guardar</button>
+                                                <button mat-button matStepperPrevious>Anterior</button>
+                                                <button mat-button matStepperNext>Siguiente</button>
+                                            </ng-template>
+                                        </mat-step>
+                                        <mat-step>
+                                            <ng-template matStepLabel>Evaluación</ng-template>
+                                            <ng-template matStepContent>
+                                                <mat-form-field style="width: 100%">
+                                                    <mat-label></mat-label>
+                                                    <textarea matInput></textarea>
+                                                  </mat-form-field>
+                                                <button mat-button matStepperPrevious>Guardar</button>
+                                                <button mat-button matStepperPrevious>Anterior</button>
+                                                <button mat-button matStepperNext>Siguiente</button>
+                                            </ng-template>
+                                        </mat-step>
+                                        <mat-step>
+                                            <ng-template matStepLabel>Medios y recursos educativos</ng-template>
+                                            <ng-template matStepContent>
+                                                <mat-form-field style="width: 100%">
+                                                    <mat-label></mat-label>
+                                                    <textarea matInput></textarea>
+                                                  </mat-form-field>
+                                                <button mat-button matStepperPrevious>Guardar</button>
+                                                <button mat-button matStepperPrevious>Anterior</button>
+                                                <button mat-button matStepperNext>Siguiente</button>
+                                            </ng-template>
+                                        </mat-step>
+                                        <mat-step>
+                                            <ng-template matStepLabel>Practicas académicas - salidas de
+                                                campo</ng-template>
+                                            <ng-template matStepContent>
+                                                <mat-form-field style="width: 100%">
+                                                    <mat-label></mat-label>
+                                                    <textarea matInput></textarea>
+                                                  </mat-form-field>
+                                                <button mat-button matStepperPrevious>Guardar</button>
+                                                <button mat-button matStepperPrevious>Anterior</button>
+                                                <button mat-button matStepperNext>Siguiente</button>
+                                            </ng-template>
+                                        </mat-step>
+                                        <mat-step>
+                                            <ng-template matStepLabel>Bibliografía</ng-template>
+                                            <mat-form-field style="width: 100%">
+                                                <mat-label></mat-label>
+                                                <textarea matInput></textarea>
+                                              </mat-form-field>
+                                            <button mat-button matStepperPrevious>Guardar</button>
+                                            <button mat-button matStepperPrevious>Anterior</button>
+                                        </mat-step>
+                                    </mat-stepper>
+                                    <mat-action-row style="height: 100%; width: 100%; display: flex;
+                                    flex-direction: column;
+                                    justify-content: flex-start;
+                                    align-items: center;">
+                                        <button mat-button style="background-color:var(--primary);color: white;"
+                                            (click)="nextStep()">Continuar</button>
+                                    </mat-action-row>
+                                </div>
+
+                            </mat-expansion-panel>
+
+                            <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        Seguimiento y actualización del Syllabus
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="container-border">
+                                    <h4> Seguimiento y actualización del Syllabus </h4>
+                                    <mat-action-row style="height: 100%; width: 100%; display: flex;
+                                    flex-direction: column;
+                                    justify-content: flex-start;
+                                    align-items: center;">
+                                        <button mat-button style="background-color:var(--primary);color:white;"
+                                            (click)="nextStep()">Continuar</button>
+                                    </mat-action-row>
+                                </div>
+
+                            </mat-expansion-panel>
+
+                            <mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)" [expanded]="true">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        Validez
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="container-border">
+                                    <h4> Validez </h4>
+                                    <table class="mat-table" style="border: 1px var(--primary) solid;">
+                                        <tr class="mat-row">
+                                            <td class="mat-cell"
+                                                style="background-color: var(--primary);color: white;text-align: center;">
+                                                Fecha Inicio</td>
+                                            <td class="mat-cell"
+                                                style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="fecha_inicio">
+                                                    <mat-datepicker-toggle matIconSuffix
+                                                        [for]="fecha_inicio"></mat-datepicker-toggle>
+                                                    <mat-datepicker #fecha_inicio></mat-datepicker>
+                                                </mat-form-field>
+                                            </td>
+                                            <td class="mat-cell"
+                                                style="background-color: var(--primary);color: white;text-align: center;">
+                                                Fecha Fin</td>
+                                            <td class="mat-cell"
+                                                style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="fecha_fin">
+                                                    <mat-datepicker-toggle matIconSuffix
+                                                        [for]="fecha_fin"></mat-datepicker-toggle>
+                                                    <mat-datepicker #fecha_fin></mat-datepicker>
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </mat-card-content>
+                </mat-card>
+
+                <div style="height: 100%; width: 100%; display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding-top: 50px;">
+                    <button mat-raised-button style="background-color: var(--primary);color: white;"
+                        routerLink="/buscar_syllabus">Guardar</button>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
