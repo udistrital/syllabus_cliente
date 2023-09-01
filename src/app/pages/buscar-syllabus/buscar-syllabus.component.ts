@@ -12,6 +12,8 @@ interface Opcion {
   styleUrls: ['./buscar-syllabus.component.css']
 })
 export class BuscarSyllabusComponent {
+  mostrartabla: boolean = false;
+
   formGroup = this._formBuilder.group({
     facultadCtrl: ['', Validators.required],
     ProyectoCurricularCtrl: ['',Validators.required],
@@ -42,6 +44,10 @@ export class BuscarSyllabusComponent {
     {value: '2', viewValue: 'etica'},
     {value: '3', viewValue: 'catedra'},
   ];
+
+  MostrarTabla() {
+    this.mostrartabla = true;
+  }
 
   constructor(private _formBuilder: FormBuilder) {}
 }

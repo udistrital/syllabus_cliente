@@ -1,8 +1,6 @@
-<div style="height: 100%; width: 100%; display: flex;
+<div style="display: flex;
 flex-direction: column;
-justify-content: flex-start;
-align-items: center;
-padding-top: 50px;">
+align-items: center;">
     <mat-card style="background-color: #03678F; color:white; border-radius: 10px;" MatCardAppearance='outlined'>
         <mat-card-content>
             <h3 style="margin: 0%;font-weight: bold;">Gestion de syllabus</h3>
@@ -89,11 +87,11 @@ padding-top: 50px;">
                     </mat-vertical-stepper>
                     <div style="display: flex; justify-content: center; align-items: center;">
                         <button mat-raised-button style="background-color: #03678F;color: white;"
-                            routerLink="/listar_syllabus">Consultar</button>
+                            (click)="MostrarTabla()">Consultar</button>
                     </div>
                 </form>
             </div>
         </mat-card-content>
     </mat-card>
-
+    <app-listar-syllabus *ngIf="mostrartabla"></app-listar-syllabus>
 </div>

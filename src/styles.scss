@@ -57,19 +57,15 @@ $my-theme: mat.define-light-theme((
 //     overflow: hidden;
 // }
 
-body {
-    display: block;
-}
-
 .container {
     display: grid;
     //grid-template-columns: max-content auto;
     grid-template-rows: 100%;
     grid-auto-flow: column;
+    padding-top: 1rem;
 }
 
 .container-border {
-    margin: 3% 0% 0% 0%;
     border: 1px solid var(--primary);
     padding: 1%;
     border-radius: 15px 15px 15px 15px;

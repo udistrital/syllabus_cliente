@@ -14,7 +14,7 @@ th.mat-header-cell {
     color: white;
 }
 
-td.mat-cell {
+td {
     text-align: center;
     padding: 5px 5px 5px 0;
     color: black;

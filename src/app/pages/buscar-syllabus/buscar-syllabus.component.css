@@ -1,5 +1,4 @@
 .container-border {
-    margin: 3% 0% 0% 0%;
     border: 1px solid var(--primary);
     padding: 1%;
     border-radius: 15px 15px 15px 15px;
@@ -16,4 +15,9 @@
     position: relative;
     border-radius: 15px 15px 15px 15px;
     font-weight: normal;
+}
+
+app-listar-syllabus {
+    width: 100%;
+    margin-top: 20px;
 }
