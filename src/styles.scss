@@ -42,20 +42,24 @@ $primary: (
 );
 $my-primary: mat.define-palette($primary, 100);
 $my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$my-typography: mat.define-typography-config(
+    $font-family: 'sans-serif',
+);
 
 $my-theme: mat.define-light-theme((
     color: (
         primary: $my-primary,
         accent: $my-accent,
-    )
+    ),
+    typography: $my-typography,    
 ));
 
 @include mat.all-component-themes($my-theme);
 
-// html,
-// body {
-//     overflow: hidden;
-// }
+html
+{
+   scroll-behavior: smooth;
+}
 
 .container {
     display: grid;
@@ -63,6 +67,10 @@ $my-theme: mat.define-light-theme((
     grid-template-rows: 100%;
     grid-auto-flow: column;
     padding-top: 1rem;
+}
+
+.main-container{
+    overflow-y: scroll;
 }
 
 .container-border {
@@ -139,15 +147,41 @@ table tbody tr td:nth-child(n + 2) {
     border-left: none;
 }
 
-mat-expansion-panel-header {
-    background-color: var(--primary);
-}
-
+// mat-expansion-panel-header {
+//     background-color: var(--primary);
+// }
+.mat-expansion-panel-header,
+.mat-expansion-panel-header.cdk-focused,
 .mat-expansion-panel-header.mat-expanded,
-.mat-expansion-panel-header.mat-expanded:hover,
 .mat-expansion-panel-header.mat-expanded.cdk-focused {
     background-color: var(--primary) !important;
 }
+
+.mat-expansion-panel-header:hover,
+.mat-expansion-panel-header.mat-expanded:hover{
+    background-color: var(--color900) !important;
+}
+
+.mat-expansion-panel-body{
+    .container-border {
+        margin-top: 30px;
+    }
+    
+}
+
+.container-border h4{
+    width: fit-content !important;
+    max-width: 50% !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.mat-expansion-panel-header-title{
+    color: white;
+    /* font-weight: bold; */
+    font-size: medium;
+}
+
 
 .mat-form-field-appearance-fill .mat-form-field-infix {
     padding: 0.25em 0 0em 0 !important;

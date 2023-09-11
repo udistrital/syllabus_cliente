@@ -13,7 +13,7 @@ declare let gtag: Function;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'syllabus_cliente';
@@ -25,7 +25,6 @@ export class AppComponent {
     private router: Router,
     private userService: UserService,
     private localStore: LocalStorageService,
-    private windowref: WindowRefService
   ) {
     this.loaded=false;
     this.router.events.subscribe(event => {
@@ -40,11 +39,10 @@ export class AppComponent {
   }
 
   @HostListener('window:message', ['$event']) onPostMessage(e:any) {
-    console.log('Message received',e);
     if (e.data.type == 'authinfo') {
-      console.log("Message received from the parent: ", e.data); // Message received from parent
       this.loaded = true;
       this.loadRouting=true;
+      this.router.navigate(['/buscar_syllabus']);
     } else {
       const oas = document.querySelector('ng-uui-oas');
       if(!this.loaded){
@@ -52,11 +50,10 @@ export class AppComponent {
       }
 
       oas?.addEventListener('user', (event: any) => {
-        console.log(event)
         if (event.detail) {
           this.loadRouting = true;
           this.userService.updateUser(event.detail);
-          console.log(this.loadRouting);
+          this.router.navigate(['/buscar_syllabus']);
         }
       });
 
@@ -69,7 +66,6 @@ export class AppComponent {
 
       oas?.addEventListener('logout', (event: any) => {
         if (event.detail) {
-          console.log(event.detail);
         }
       });
     }

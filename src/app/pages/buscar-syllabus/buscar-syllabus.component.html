@@ -1,6 +1,6 @@
 <div style="display: flex;
 flex-direction: column;
-align-items: center;">
+align-items: center;" id="formBusqueda">
     <mat-card style="background-color: #03678F; color:white; border-radius: 10px;" MatCardAppearance='outlined'>
         <mat-card-content>
             <h3 style="margin: 0%;font-weight: bold;">Gestion de syllabus</h3>
@@ -17,79 +17,72 @@ align-items: center;">
         </mat-card-content>
 
     </mat-card>
-    <mat-card style="width:calc(100% - 60px); ">
+    <mat-card style="width:calc(100% - 60px); " >
         <mat-card-content>
             <div class="container-border">
                 <h4>Variables de inicio</h4>
-                <form [formGroup]="formGroup">
-                    <mat-vertical-stepper #stepper>
-                        <mat-step formGroupName="facultadCtrl" [stepControl]="formGroup.get('facultadCtrl')!">
-
-                            <ng-template matStepLabel>Facultad</ng-template>
-                            <mat-form-field>
+                <mat-vertical-stepper linear #stepper>
+                    <mat-step [stepControl]="formFacultad">
+                        <form [formGroup]="formFacultad">
+                            <ng-template matStepLabel>Facultad {{facultadSelectedName}}</ng-template>
+                            <mat-form-field appearance="fill" [style.width.%]="80">
                                 <mat-label>Facultad</mat-label>
-                                <mat-select>
-                                    <mat-option *ngFor="let facultad of facultades" [value]="facultad.value">
-                                        {{facultad.viewValue}}
+                                <mat-select (selectionChange)="onChangeFacultad($event.value)"
+                                    formControlName="facultadCtrl">
+                                    <mat-option *ngFor="let facultad of facultades" [value]="facultad">
+                                        {{facultad.Nombre}}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-
-
-                        </mat-step>
-                        <mat-step formGroupName="ProyectoCurricularCtrl"
-                            [stepControl]="formGroup.get('ProyectoCurricularCtrl')!">
-
-                            <ng-template matStepLabel>Proyecto Curricular</ng-template>
-                            <mat-form-field>
-                                <mat-label>Proyecto Curricular</mat-label>
-                                <mat-select>
+                        </form>
+                    </mat-step>
+                    <mat-step [stepControl]="formProyectoCurricular">
+                        <form [formGroup]="formProyectoCurricular">
+                            <ng-template matStepLabel>Proyecto / Programa Curricular {{proyectoCurricularSelectedName}}</ng-template>
+                            <mat-form-field appearance="fill" [style.width.%]="80">
+                                <mat-label>Proyecto / Programa Curricular</mat-label>
+                                <mat-select (selectionChange)="onChangeProyectoCurricular($event.value)" formControlName="proyectoCurricularCtrl">
                                     <mat-option *ngFor="let proyecto_curricular of proyectos_curriculares"
-                                        [value]="proyecto_curricular.value">
-                                        {{proyecto_curricular.viewValue}}
+                                        [value]="proyecto_curricular">
+                                        {{proyecto_curricular.Nombre}}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-
-
-                        </mat-step>
-                        <mat-step formGroupName="PlanEstudiosCtrl" [stepControl]="formGroup.get('PlanEstudiosCtrl')!">
-
-                            <ng-template matStepLabel>Plan de estudios</ng-template>
-                            <mat-form-field>
+                        </form>
+                    </mat-step>
+                    <mat-step [stepControl]="formPlanEstudios">
+                        <form [formGroup]="formPlanEstudios">
+                            <ng-template matStepLabel>Plan de estudios {{planEstudiosSelectedName}}</ng-template>
+                            <mat-form-field appearance="fill" [style.width.%]="80">
                                 <mat-label>Plan de estudios</mat-label>
-                                <mat-select>
+                                <mat-select (selectionChange)="onChangePlanEstudios($event.value)" formControlName="planEstudiosCtrl">
                                     <mat-option *ngFor="let plan_estudios of planes_estudio"
-                                        [value]="plan_estudios.value">
-                                        {{plan_estudios.viewValue}}
+                                        [value]="plan_estudios">
+                                        {{plan_estudios.cra_nombre}}, plan de estudio:{{plan_estudios.pen_nro}}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-
-
-                        </mat-step>
-                        <mat-step formGroupName="EspacioAcademicoCtrl"
-                            [stepControl]="formGroup.get('EspacioAcademicoCtrl')!" optional>
-
-                            <ng-template matStepLabel>Espacio academico</ng-template>
-                            <mat-form-field>
+                        </form>
+                    </mat-step>
+                    <mat-step [stepControl]="formEspaciosAcademicos">
+                        <form [formGroup]="formEspaciosAcademicos">
+                            <ng-template matStepLabel>Espacio academico {{espacioAcademicoSelectedName}}</ng-template>
+                            <mat-form-field appearance="fill" [style.width.%]="80">
                                 <mat-label>Espacio academico</mat-label>
-                                <mat-select>
+                                <mat-select (selectionChange)="onChangeEspacioAcademico($event.value)" formControlName="espaciosAcademicosCtrl">
                                     <mat-option *ngFor="let espacio_academico of espacios_academicos"
-                                        [value]="espacio_academico.value">
-                                        {{espacio_academico.viewValue}}
+                                        [value]="espacio_academico">
+                                        {{espacio_academico.asi_nombre}}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-
-
-                        </mat-step>
-                    </mat-vertical-stepper>
-                    <div style="display: flex; justify-content: center; align-items: center;">
-                        <button mat-raised-button style="background-color: #03678F;color: white;"
-                            (click)="MostrarTabla()">Consultar</button>
-                    </div>
-                </form>
+                        </form>
+                    </mat-step>
+                </mat-vertical-stepper>
+                <!-- <div style="display: flex; justify-content: center; align-items: center;">
+                    <button mat-raised-button style="background-color: #03678F;color: white;"
+                        (click)="MostrarTabla()" #btnRef>Consultar</button>
+                </div> -->
             </div>
         </mat-card-content>
     </mat-card>

@@ -1,15 +1,21 @@
 <div style="display: flex;
 flex-direction: column;
-align-items: center;">
+align-items: center;"  id="tablaResultados">
     <mat-card style="width:calc(100% - 60px); ">
         <mat-card-content>
             <div class="container-border">
                 <h4>Tabla resumen busqueda</h4>
                 <div class="table-responsive">
                     <table mat-table [dataSource]="dataSource">
+                        <ng-container matColumnDef="#">
+                            <th mat-header-cell *matHeaderCellDef> # </th>
+                            <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
                         <!-- Proyecto -->
                         <ng-container matColumnDef="proyecto">
-                            <th mat-header-cell *matHeaderCellDef> Proyecto </th>
+                            <th mat-header-cell *matHeaderCellDef> Proyecto / Programa Curricular </th>
                             <td mat-cell *matCellDef="let element;let rowIndex = index"> {{element.proyecto}} </td>
                             <td mat-footer-cell *matFooterCellDef class="footer">
                             </td>
@@ -39,15 +45,8 @@ align-items: center;">
                             </td>
                         </ng-container>
 
-                        <ng-container matColumnDef="grupo">
-                            <th mat-header-cell *matHeaderCellDef> Grupo </th>
-                            <td mat-cell *matCellDef="let element"> {{element.grupo}} </td>
-                            <td mat-footer-cell *matFooterCellDef class="footer">
-                            </td>
-                        </ng-container>
-
                         <ng-container matColumnDef="acciones_buttons">
-                            <th mat-header-cell *matHeaderCellDef> <a routerLink="/crear_syllabus">
+                            <th mat-header-cell *matHeaderCellDef (click)="FormCrearSyllabus()" style="cursor: pointer;"> <a>
                                     <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="add"
                                         style="color: white;"></mat-icon>
                                 </a>
@@ -86,7 +85,7 @@ align-items: center;">
 
                 <div style="display: flex; justify-content: center; align-items: center;">
                     <button mat-raised-button style="background-color: #03678F;color: white;"
-                        routerLink="/buscar_syllabus">Regresar</button>
+                       (click)="scrollFormBuscar()">Regresar</button>
                 </div>
             </div>
 
