@@ -7,6 +7,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { LocalStorageService } from './@core/utils/local_storage.service';
 import { WindowRefService } from './@core/utils/windowref.service';
+import { RequestManager } from './pages/services/requestManager';
+import { UserService } from './pages/services/userService';
+import { SyllabusService } from './pages/services/syllabus.service';
+import { HttpClientModule } from '@angular/common/http';
 import { BuscarSyllabusComponent } from './pages/buscar-syllabus/buscar-syllabus.component';
 import { ListarSyllabusComponent } from './pages/listar-syllabus/listar-syllabus.component';
 import { CrearSyllabusComponent } from './pages/crear-syllabus/crear-syllabus.component';
@@ -26,6 +30,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 
 @NgModule({
@@ -33,7 +38,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     AppComponent,
     BuscarSyllabusComponent,
     ListarSyllabusComponent,
-    CrearSyllabusComponent
+    CrearSyllabusComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -54,11 +60,15 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatNativeDateModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     AppRoutingModule
   ],
   providers: [
     LocalStorageService,
-    WindowRefService
+    WindowRefService,
+    RequestManager,
+    UserService,
+    SyllabusService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
