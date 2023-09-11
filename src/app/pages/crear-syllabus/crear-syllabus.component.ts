@@ -4,7 +4,7 @@ import {FormBuilder, Validators} from '@angular/forms'
 @Component({
   selector: 'app-crear-syllabus',
   templateUrl: './crear-syllabus.component.html',
-  styleUrls: ['./crear-syllabus.component.css']
+  styleUrls: ['./crear-syllabus.component.scss']
 })
 export class CrearSyllabusComponent {
   formGroupIdentificacionEspacio = this._formBuilder.group({
