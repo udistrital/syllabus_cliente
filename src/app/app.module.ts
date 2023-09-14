@@ -1,4 +1,5 @@
-import { CUSTOM_ELEMENTS_SCHEMA,NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { HashLocationStrategy, LocationStrategy,PercentPipe,CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -14,7 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BuscarSyllabusComponent } from './pages/buscar-syllabus/buscar-syllabus.component';
 import { ListarSyllabusComponent } from './pages/listar-syllabus/listar-syllabus.component';
 import { CrearSyllabusComponent } from './pages/crear-syllabus/crear-syllabus.component';
-
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
@@ -29,9 +30,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-
+import { MatDividerModule  } from '@angular/material/divider'
+import { MatNativeDateModule,DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule, } from '@angular/material-moment-adapter';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,8 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     MatExpansionModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatMomentDateModule,
+    MatDividerModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
@@ -68,7 +71,13 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     WindowRefService,
     RequestManager,
     UserService,
-    SyllabusService
+    SyllabusService,
+    PercentPipe,
+    { provide: MAT_DATE_LOCALE, useValue: 'es-CO' },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
