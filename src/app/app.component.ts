@@ -27,7 +27,28 @@ export class AppComponent {
     private localStore: LocalStorageService,
   ) {
     this.loaded=false;
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event: any) => {
+      // ? Machete?
+      const urltk: string = event.url ? event.url : ""
+      if (urltk.includes('/access_token')) {
+        var params: any = {}, queryString = location.hash.substring(1), regex = /([^&=]+)=([^&]*)/g;
+        let m;
+        while (m = regex.exec(queryString)) {
+          params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+        }
+        const req = new XMLHttpRequest();
+        const query = 'https://' + window.location.host + '?' + queryString;
+        req.open('GET', query, true);
+        if (!!params['id_token']) {
+          const id_token_array = (params['id_token']).split('.');
+          const payload = JSON.parse(atob(id_token_array[1]));
+          window.localStorage.setItem('access_token', params['access_token']);
+          window.localStorage.setItem('expires_in', params['expires_in']);
+          window.localStorage.setItem('state', params['state']);
+          window.localStorage.setItem('id_token', params['id_token']);
+        }
+      }
+      // ? End of Machete?
       if (event instanceof NavigationEnd) {
         gtag('config', 'G-RBY2GQV40M',
           {
