@@ -1,10 +1,10 @@
-<ng-uui-oas  *ngIf="!loaded" [environment]="environment"></ng-uui-oas>
+<ng-uui-oas [environment]="environment"></ng-uui-oas>
 
-<div [ngClass]="loaded? 'container':'main-container'" id="container">
+<div [ngClass]="!loaded? 'container':'main-container'" id="container"  >
     <div class="menu" style="width: 20vw; display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;"  *ngIf="loaded">
+    align-items: center;" *ngIf="!loaded" >
        
             <mat-card style="background-color: #DAE8FC;width: 80%;height: 45vh;border: 1px solid #03678F;">
                 <mat-card-header style="padding: 0%; align-items: center;
@@ -29,7 +29,7 @@
                 </mat-card-content>
             </mat-card>
     </div>
-    <div id="workspace">
+    <div id="workspace" >
             <router-outlet></router-outlet>
     </div>
 </div>

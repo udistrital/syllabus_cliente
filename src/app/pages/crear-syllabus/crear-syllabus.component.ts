@@ -111,7 +111,7 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.Proyecto, this.PlanEstudio, this.EspacioAcademico);
+    //console.log(this.Proyecto, this.PlanEstudio, this.EspacioAcademico);
     if (Object.keys(this.Proyecto).length === 0 || Object.keys(this.PlanEstudio).length === 0 || Object.keys(this.EspacioAcademico).length === 0) {
       this.router.navigate(['/buscar_syllabus'])
     } else {
@@ -122,7 +122,7 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   initForms(): void {
-    console.log(this.Syllabus)
+    //console.log(this.Syllabus)
     this.formSaberesPrevios = this._formBuilder.group({
       saberesPrevios: [this.Syllabus.sugerencias && !this.isNew ? this.Syllabus.sugerencias : '', [Validators.required, Validators.minLength(1)]]
     });
@@ -218,7 +218,7 @@ export class CrearSyllabusComponent implements OnInit {
       idioma_espacio_id: ['', Validators.required]
     })
 
-    console.log("syllabus new", this.Syllabus);
+    //console.log("syllabus new", this.Syllabus);
     if (this.isNew) {
       this.agregarObjetivoEspecifico();
       this.agregarPFA(undefined, false);
@@ -262,7 +262,7 @@ export class CrearSyllabusComponent implements OnInit {
       this.updateViewTableBiblioPag();
     }
     this.formularios.controls = [this.formSaberesPrevios, this.formJustificacion, this.formObjetivos, this.formPFA, this.formContenidosTematicos, this.formEstrategias, this.formEvaluacion, this.formMedios, this.formPracticasAcademicas, this.formBibliografia, this.formSeguimiento, this.formVigencia, this.formIdiomas]
-    console.log("validacion:", this.validateForms());
+    //console.log("validacion:", this.validateForms());
   }
 
   validateForms() {
@@ -272,7 +272,7 @@ export class CrearSyllabusComponent implements OnInit {
   loadInfoIdentificacionEspacioAcademico() {
     this.request.get(environment.ACADEMICA_JBPM_SERVICE, 'detalle_espacio_academico/' + this.PlanEstudio.pen_nro + '/' + this.PlanEstudio.pen_cra_cod + '/' + this.EspacioAcademico.asi_cod).subscribe((dataDetalleEspacioAcademico) => {
       if (dataDetalleEspacioAcademico) {
-        console.log(dataDetalleEspacioAcademico);
+        //console.log(dataDetalleEspacioAcademico);
         this.detalle_espacio_academico = dataDetalleEspacioAcademico.espacios_academicos.espacio_academico[0];
       }
     })
@@ -312,16 +312,16 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   eliminarPFA(index: number) {
-    console.log(index);
-    console.log(this.pfa)
+    //console.log(index);
+    //console.log(this.pfa)
     this.pfa.removeAt(index);
-    console.log(this.pfa)
+    //console.log(this.pfa)
     this.updateViewTablePFA();
   }
 
   updateViewTablePFA() {
     this.dataSourceFormPFA.next(this.pfa.controls);
-    console.log(this.dataSourceFormPFA);
+    //console.log(this.dataSourceFormPFA);
   }
 
   agregarTema(tema?: Tema) {
@@ -339,8 +339,8 @@ export class CrearSyllabusComponent implements OnInit {
     } else {
       this.agregarSubTema(this.temas.length - 1);
     }
-    console.log(this.subtemas(0));
-    console.log(this.formContenidosTematicos);
+    //console.log(this.subtemas(0));
+    //console.log(this.formContenidosTematicos);
   }
 
   eliminarTema(index: number) {
@@ -397,7 +397,7 @@ export class CrearSyllabusComponent implements OnInit {
 
   updateViewTableBiblioBas() {
     this.dataSourceFormBiblioBas.next(this.basicas.controls);
-    console.log(this.dataSourceFormBiblioBas);
+    //console.log(this.dataSourceFormBiblioBas);
   }
 
   agregarBibliografiaComplementaria(d?: string, noUpdate?: boolean) {
@@ -413,7 +413,7 @@ export class CrearSyllabusComponent implements OnInit {
 
   updateViewTableBiblioCom() {
     this.dataSourceFormBiblioCom.next(this.complementarias.controls);
-    console.log(this.dataSourceFormBiblioCom);
+    //console.log(this.dataSourceFormBiblioCom);
   }
 
   agregarBibliografiaPaginaWeb(d?: string, noUpdate?: boolean) {
@@ -429,13 +429,13 @@ export class CrearSyllabusComponent implements OnInit {
 
   updateViewTableBiblioPag() {
     this.dataSourceFormBiblioPag.next(this.paginasWeb.controls);
-    console.log(this.dataSourceFormBiblioPag);
+    //console.log(this.dataSourceFormBiblioPag);
   }
 
 
   SubmitSyllabus() {
     const syllabus: Syllabus = new Syllabus();
-    console.log(this.validateForms());
+    //console.log(this.validateForms());
     if (this.validateForms()) {
       this.uploadActa().subscribe({
         next: (respuesta: any) => {
@@ -463,10 +463,10 @@ export class CrearSyllabusComponent implements OnInit {
           syllabus.seguimiento = this.formSeguimiento.value;
           syllabus.seguimiento.archivo = respuesta.res.Enlace
           syllabus.vigencia = this.formVigencia.value;
-          console.log(syllabus);
+          //console.log(syllabus);
           this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
             next: (respuesta: any) => {
-              console.log(respuesta);
+              //console.log(respuesta);
               Swal.fire({
                 icon: 'success',
                 title: this.isNew?'Creación exitosa':'Edición exitosa',
@@ -483,7 +483,7 @@ export class CrearSyllabusComponent implements OnInit {
           })
         },
         error: (error: Error) => {
-          console.error(error)
+          //console.error(error)
           Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -496,7 +496,7 @@ export class CrearSyllabusComponent implements OnInit {
 
   handleFileInputActaChange(event: any): void {
     this.actaFile = event.target.files[0] ?? null;
-    console.log(this.actaFile);
+    //console.log(this.actaFile);
     if (this.actaFile && this.actaFile.type == "application/pdf") {
       this.formSeguimiento.get('archivo')?.patchValue(this.actaFile.name);
     } else {
@@ -525,7 +525,7 @@ export class CrearSyllabusComponent implements OnInit {
 
   loadIdiomas() {
     this.request.get(environment.IDIOMAS_CRUD, 'idioma?limit=-1').subscribe((dataidiomas) => {
-      console.log(dataidiomas)
+      //console.log(dataidiomas)
       this.idiomas = dataidiomas;
       this.filteredIdiomas = dataidiomas;
     })
@@ -548,7 +548,7 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   onChangeIdioma(idioma_id: any) {
-    console.log(idioma_id);
-    console.log(this.formIdiomas.get('idioma_espacio_id')?.value)
+    //console.log(idioma_id);
+    //console.log(this.formIdiomas.get('idioma_espacio_id')?.value)
   }
 }

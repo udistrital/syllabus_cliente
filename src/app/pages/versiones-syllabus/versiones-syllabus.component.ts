@@ -46,10 +46,10 @@ export class VersionesSyllabusComponent implements  OnInit{
   }
 
   LoadDataTableSyllabusVersions(){
-    console.log(this.Syllabus)
+    //console.log(this.Syllabus)
     this.request.get(environment.SYLLABUS_CRUD, `syllabus?query=syllabus_code:${this.Syllabus.syllabus_code},syllabus_actual:false&sortby=version&order=desc`).subscribe((dataSyllabusVersion) => {
       if (dataSyllabusVersion) {
-        console.log(dataSyllabusVersion);
+        //console.log(dataSyllabusVersion);
         this.syllabusVersions = dataSyllabusVersion.Data;
         this.formatDataSyllabusVersionsForTable();
       }
@@ -58,9 +58,9 @@ export class VersionesSyllabusComponent implements  OnInit{
 
   formatDataSyllabusVersionsForTable(){
     this.syllabusData=[];
-    console.log(this.syllabusVersions);
+    //console.log(this.syllabusVersions);
     this.syllabusVersions.forEach((value,index)=> {
-      console.log(typeof value.vigencia.fechaFin)
+      //console.log(typeof value.vigencia.fechaFin)
       this.syllabusData.push({version:value.version, fecha_inicio: String(value.vigencia.fechaInicio).split('T')[0], fecha_fin: String(value.vigencia.fechaFin).split('T')[0]})
     })
     this.dataSource.data=this.syllabusData;
@@ -70,7 +70,7 @@ export class VersionesSyllabusComponent implements  OnInit{
     const syllabus=this.syllabusVersions[row]
     this.gestorDoc.getByUUID(syllabus.seguimiento.archivo).subscribe({
       next:(document)=>{
-        console.log(document)
+        //console.log(document)
         window.open(document)
       },
       error:()=>{

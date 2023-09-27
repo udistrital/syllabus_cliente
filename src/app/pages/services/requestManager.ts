@@ -25,6 +25,7 @@ export class RequestManager {
 
   updateHeaderToken() {
     const access_token = localStorage.getItem('access_token');
+    //console.log('access_token',access_token);
     if (access_token) {
       this.headerSubject.next({
         headers: new HttpHeaders({

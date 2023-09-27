@@ -11,11 +11,11 @@ export class DependenciaTipoDependencia {
 }
 
 export class Facultad {
-    Id?:                         number;
-    Nombre?:                     string;
-    TelefonoDependencia?:        string;
-    CorreoElectronico?:          string;
-    DependenciaTipoDependencia?: DependenciaTipoDependencia[] | null;
+    Id:                         number;
+    Nombre:                     string;
+    TelefonoDependencia:        string;
+    CorreoElectronico:          string;
+    DependenciaTipoDependencia: DependenciaTipoDependencia[] ;
 
     // constructor(id:number,nombre:string,telefonoDependencia:string,correoElectronico:string,dependenciaTipoDependencia:DependenciaTipoDependencia[]){
     //     this.Id=id;
@@ -27,8 +27,8 @@ export class Facultad {
 }
 
 export class TipoDependenciaID {
-    public Id?:     number;
-    public Nombre?: string;
+    public Id:     number;
+    public Nombre: string;
 
     // constructor(id:number,nombre:string){
     //     this.Id=id;

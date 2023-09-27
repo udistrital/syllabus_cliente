@@ -11,13 +11,13 @@ const routes: Routes = [
     { path: 'crear_syllabus',component:CrearSyllabusComponent},
     { path: 'dashboard', component:DashboardComponent},
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-    { path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
+    { path: '**', redirectTo: 'dashboard'}
   ];
   
   @NgModule({
     imports: [ RouterModule.forRoot(routes, {
-      useHash: true
-      //anchorScrolling: 'enabled'
+      useHash: true,
+      enableTracing: true 
     }) ],
     exports: [ RouterModule ]
   })

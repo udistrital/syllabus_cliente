@@ -34,7 +34,7 @@ export class GestorDocumentalService {
         const result = new Subject<string>();
         let reader =new FileReader();
         //reader.readAsBinaryString(file);
-        console.log(reader);
+        //console.log(reader);
         // reader.onload = (event) => {
         //     console.log(event);
         //     if (event.target?.result) {
@@ -62,10 +62,10 @@ export class GestorDocumentalService {
 
         let documentos: Documento;
 
-        console.log("file", file);
+        //console.log("file", file);
         this.fileToBase64(file.file).subscribe({
             next:(base64) => {
-                console.log(base64);
+                //console.log(base64);
                 const sendFileData = [{
                     IdTipoDocumento: file.IdDocumento,
                     nombre: file.nombre,
@@ -73,7 +73,7 @@ export class GestorDocumentalService {
                     descripcion: file.descripcion ? file.descripcion : "",
                     file: base64
                 }]
-                console.log("sendFileData", sendFileData);
+                //console.log("sendFileData", sendFileData);
     
                 this.request.post(environment.GESTOR_DOCUMENTAL_MID, '/document/upload', sendFileData)
                     .subscribe((dataResponse) => {
@@ -82,7 +82,7 @@ export class GestorDocumentalService {
                     })
             },
             error: (err)=> {
-                console.log(err);
+                //console.log(err);
                 documentsSubject.error(err);
             }
         })

@@ -20,5 +20,6 @@ export class LocalStorageService {
 
   public clearData() {
     localStorage.clear();
+    sessionStorage.clear();
   }
 }
