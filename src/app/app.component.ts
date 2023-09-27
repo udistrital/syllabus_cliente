@@ -24,9 +24,12 @@ export class AppComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private userservice: UserService,
+    private userService: UserService,
+    private localStore: LocalStorageService,
   ) {
-    this.router.events.subscribe((event:any) => {
+    this.loaded=false;
+    this.router.events.subscribe((event: any) => {
+      // ? Machete?
       const urltk: string = event.url ? event.url : ""
       if (urltk.includes('/access_token')) {
         var params: any = {}, queryString = location.hash.substring(1), regex = /([^&=]+)=([^&]*)/g;
@@ -40,12 +43,13 @@ export class AppComponent implements OnInit {
         if (!!params['id_token']) {
           const id_token_array = (params['id_token']).split('.');
           const payload = JSON.parse(atob(id_token_array[1]));
-          window.localStorage.setItem('access_token', params['access_token']);
-          window.localStorage.setItem('expires_in', params['expires_in']);
-          window.localStorage.setItem('state', params['state']);
-          window.localStorage.setItem('id_token', params['id_token']);
+          localStore.saveData('access_token', params['access_token']);
+          localStore.saveData('expires_in', params['expires_in']);
+          localStore.saveData('state', params['state']);
+          localStore.saveData('id_token', params['id_token']);
         }
       }
+      // ? End of Machete?
       if (event instanceof NavigationEnd) {
         gtag('config', 'G-RBY2GQV40M',
           {
@@ -62,7 +66,7 @@ export class AppComponent implements OnInit {
     oas?.addEventListener('user', (event: any) => {
       if (event.detail) {
         this.loaded = true;
-        this.userservice.updateAuth();
+        this.userService.updateAuth();
       }
     });
 
