@@ -5,29 +5,30 @@ align-items: center;
     <mat-card style="width:calc(100% - 60px); " MatCardAppearance='raised'>
         <mat-card-content>
             <div class="container-border">
-                <h4>Nuevo Syllabus</h4>
+                <h4>{{isNew?'Nuevo Syllabus':'Editar Syllabus'}}</h4>
                 <mat-card
                     style="width:calc(100% - 60px); border: 1px #666666 solid; border-radius: 15px;background-color: #F5F5F5; margin: auto;">
                     <mat-card-content>
                         <p>
-                            <label for="">Proyecto
-                                Curricular:_____________________________________________________________ </label>
+                            <label for="">Proyecto / Programa curricular: {{Proyecto.Nombre}}
+                            </label>
+
                         </p>
                         <p>
-                            <label for="">Plan de estudios:
-                                _____________________________________________________________ </label>
+                            <label for="">Plan de estudios: {{PlanEstudio.cra_nombre}}, plan de
+                                estudio:{{PlanEstudio.pen_nro}}</label>
                         </p>
                         <p>
-                            <label for="">Semestre: _____________________________________________________________
+                            <label for="">Periodo académico: {{EspacioAcademico.pen_sem}}
                             </label>
                         </p>
                     </mat-card-content>
                 </mat-card>
-
                 <mat-card>
                     <mat-card-content>
                         <mat-accordion [multi]="true">
-                            <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" [expanded]="true">
+                            <!-- Identificacion del espacio Academico -->
+                            <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
                                         Identificacion del espacio académico
@@ -37,7 +38,7 @@ align-items: center;
                                     <h4> Identificacion del espacio académico </h4>
 
                                     <mat-accordion [multi]="true">
-                                        <mat-expansion-panel [expanded]="true">
+                                        <mat-expansion-panel [expanded]="true" hideToggle>
                                             <mat-expansion-panel-header>
                                                 <mat-panel-title>
                                                     Nombre del espacio académico
@@ -50,21 +51,14 @@ align-items: center;
                                                         Código del espacio académico</td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
-                                                        <mat-form-field>
-                                                            <mat-label>Select</mat-label>
-                                                            <mat-select>
-                                                                <mat-option [value]="1">
-                                                                    options
-                                                                </mat-option>
-                                                            </mat-select>
-                                                        </mat-form-field>
+                                                        {{detalle_espacio_academico?.asi_cod}}
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="background-color: var(--primary);color: white;text-align: center;">
                                                         Número de creditos académicos</td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
-
+                                                        {{detalle_espacio_academico?.pen_cre}}
                                                     </td>
                                                 </tr>
                                             </table>
@@ -79,6 +73,7 @@ align-items: center;
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                        {{detalle_espacio_academico?.pen_nro_ht}}
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="background-color: #F5F5F5;padding: 0px;text-align: center;vertical-align: middle;">
@@ -86,7 +81,7 @@ align-items: center;
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
-
+                                                        {{detalle_espacio_academico?.pen_nro_hp}}
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="background-color: #F5F5F5;padding: 0px;text-align: center;vertical-align: middle;">
@@ -94,7 +89,7 @@ align-items: center;
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
-
+                                                        {{detalle_espacio_academico?.pen_nro_aut}}
                                                     </td>
                                                 </tr>
                                                 <tr class="mat-row">
@@ -107,6 +102,7 @@ align-items: center;
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle; background-color: white;">
+                                                        {{detalle_espacio_academico?.tipo=='ASIGNATURA'?'X':''}}
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="background-color: #F5F5F5;padding: 0px;text-align: center;vertical-align: middle;">
@@ -114,7 +110,7 @@ align-items: center;
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;background-color: white;">
-
+                                                        {{detalle_espacio_academico?.tipo=='CATEDRA'?'X':''}}
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;background-color: white;">
@@ -127,7 +123,7 @@ align-items: center;
                                                 </tr>
                                             </table>
                                         </mat-expansion-panel>
-                                        <mat-expansion-panel [expanded]="true">
+                                        <mat-expansion-panel [expanded]="true" hideToggle>
                                             <mat-expansion-panel-header>
                                                 <mat-panel-title>
                                                     Naturaleza del espacio académico
@@ -140,7 +136,7 @@ align-items: center;
                                                         Obligatorio básico</td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
-
+                                                        {{detalle_espacio_academico?.cea_abr=="OB"?'X':''}}
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
@@ -148,7 +144,7 @@ align-items: center;
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
-
+                                                        {{detalle_espacio_academico?.cea_abr=="OC"?'X':''}}
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
@@ -156,7 +152,7 @@ align-items: center;
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
-
+                                                        {{detalle_espacio_academico?.cea_abr=="EI"?'X':''}}
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
@@ -164,12 +160,20 @@ align-items: center;
                                                     </td>
                                                     <td class="mat-cell"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
-
+                                                        {{detalle_espacio_academico?.cea_abr=="EE"?'X':''}}
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        Electivo
+                                                    </td>
+                                                    <td class="mat-cell"
+                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                        {{detalle_espacio_academico?.cea_abr=="E"?'X':''}}
                                                     </td>
                                                 </tr>
                                             </table>
                                         </mat-expansion-panel>
-                                        <mat-expansion-panel [expanded]="true">
+                                        <mat-expansion-panel [expanded]="true" hideToggle>
                                             <mat-expansion-panel-header>
                                                 <mat-panel-title>
                                                     Carácter del espacio académico
@@ -200,18 +204,10 @@ align-items: center;
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
 
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
-                                                        Otros
-                                                    </td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
-
-                                                    </td>
                                                 </tr>
                                             </table>
                                         </mat-expansion-panel>
-                                        <mat-expansion-panel [expanded]="true">
+                                        <mat-expansion-panel [expanded]="true" hideToggle>
                                             <mat-expansion-panel-header>
                                                 <mat-panel-title>
                                                     Modalidad de oferta del espacio académico
@@ -254,6 +250,27 @@ align-items: center;
                                                 </tr>
                                             </table>
                                         </mat-expansion-panel>
+                                        <mat-expansion-panel [expanded]="true" hideToggle>
+                                            <mat-expansion-panel-header>
+                                                <mat-panel-title>
+                                                    Idiomas en que se oferta el espacio académico
+                                                </mat-panel-title>
+                                            </mat-expansion-panel-header>
+                                            <form [formGroup]="formIdiomas">
+                                                <mat-form-field appearance="fill" [style.width.%]="100">
+                                                    <mat-label>Seleccione los idiomas</mat-label>
+                                                    <mat-select (selectionChange)="onChangeIdioma($event.value)"
+                                                        formControlName="idioma_espacio_id" multiple>
+                                                        <input (keyup)="onKeySearchIdioma($event.target.value)" class="input-search"
+                                                            placeholder="Escriba el nombre del idioma que desea seleccionar">
+                                                        <mat-option *ngFor="let idioma of filteredIdiomas"
+                                                            [value]="idioma.Id">
+                                                            {{idioma.Nombre}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </form>
+                                        </mat-expansion-panel>
                                     </mat-accordion>
 
                                     <mat-action-row style="height: 100%; width: 100%; display: flex;
@@ -266,19 +283,19 @@ align-items: center;
                                 </div>
 
                             </mat-expansion-panel>
-
-                            <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" [expanded]="true">
+                            <!-- Secuencia didactica -->
+                            <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
                                         Secuencia didactica
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <div class="container-border">
-                                    <h4> Secuencia didactica </h4>
+                                    <h4> Definición y desarrollo del espacio académico </h4>
                                     <div style="height: 100%; width: 100%; display: flex;
-                                    flex-direction: column;
-                                    justify-content: flex-start;
-                                    align-items: center;">
+                                        flex-direction: column;
+                                        justify-content: flex-start;
+                                        align-items: center;">
                                         <mat-card
                                             style="max-width: 75%;background-color: #FFFF66; border-radius: 15px; margin: 10px;"
                                             MatCardAppearance='outlined'>
@@ -292,132 +309,582 @@ align-items: center;
 
                                         </mat-card>
                                     </div>
-                                    <mat-stepper orientation="vertical">
-                                        <mat-step>
-                                            <ng-template matStepLabel>Sugerencias de saberes y conocimientos
-                                                previos</ng-template>
-                                            <ng-template matStepContent>
-                                                <mat-form-field style="width: 100%">
-                                                    <mat-label></mat-label>
-                                                    <textarea matInput></textarea>
-                                                  </mat-form-field>
-                                                <button mat-button matStepperNext>Siguiente</button>
-                                            </ng-template>
+                                    <!-- [linear]="isNew" -->
+                                    <mat-stepper orientation="vertical" [linear]="isNew">
+                                        <mat-step [stepControl]="formSaberesPrevios">
+                                            <form [formGroup]="formSaberesPrevios">
+                                                <ng-template matStepLabel>Sugerencias de saberes y conocimientos
+                                                    previos</ng-template>
+                                                <ng-template matStepContent>
+                                                    <mat-form-field style="width: 100%">
+                                                        <mat-label></mat-label>
+                                                        <textarea matInput formControlName='saberesPrevios'></textarea>
+                                                    </mat-form-field>
+                                                    <div>
+                                                        <button mat-button matStepperNext
+                                                            [disabled]="!formSaberesPrevios.valid">Siguiente</button>
+                                                    </div>
+                                                </ng-template>
+                                            </form>
                                         </mat-step>
-                                        <mat-step>
-                                            <ng-template matStepLabel>Justificación del espacio académico</ng-template>
-                                            <ng-template matStepContent>
-                                                <mat-form-field style="width: 100%">
-                                                    <mat-label></mat-label>
-                                                    <textarea matInput></textarea>
-                                                  </mat-form-field>
-                                                <button mat-button matStepperPrevious>Guardar</button>
-                                                <button mat-button matStepperPrevious>Anterior</button>
-                                                <button mat-button matStepperNext>Siguiente</button>
-                                            </ng-template>
+                                        <mat-step [stepControl]="formJustificacion">
+                                            <form [formGroup]="formJustificacion">
+                                                <ng-template matStepLabel>Justificación del espacio
+                                                    académico</ng-template>
+                                                <ng-template matStepContent>
+
+                                                    <mat-form-field style="width: 100%">
+                                                        <mat-label></mat-label>
+                                                        <textarea matInput formControlName="justificacion"></textarea>
+                                                    </mat-form-field>
+                                                    <!-- <button mat-button matStepperPrevious>Guardar</button> -->
+                                                    <button mat-button matStepperPrevious>Anterior</button>
+                                                    <button mat-button matStepperNext
+                                                        [disabled]="!formJustificacion.valid">Siguiente</button>
+                                                </ng-template>
+                                            </form>
                                         </mat-step>
-                                        <mat-step>
-                                            <ng-template matStepLabel>Objetivos del espacio académico (general y
-                                                específicos)</ng-template>
-                                            <ng-template matStepContent>
-                                                <mat-form-field style="width: 100%">
-                                                    <mat-label></mat-label>
-                                                    <textarea matInput></textarea>
-                                                  </mat-form-field>
-                                                <button mat-button matStepperPrevious>Guardar</button>
-                                                <button mat-button matStepperPrevious>Anterior</button>
-                                                <button mat-button matStepperNext>Siguiente</button>
-                                            </ng-template>
+                                        <mat-step [stepControl]="formObjetivos">
+                                            <form [formGroup]="formObjetivos">
+                                                <ng-template matStepLabel>Objetivos del espacio académico (general y
+                                                    específicos)</ng-template>
+                                                <ng-template matStepContent>
+
+                                                    <mat-form-field style="width: 100%">
+                                                        <mat-label for="objetivoGeneral">Objetivo General</mat-label>
+                                                        <textarea id="objetivoGeneral" matInput
+                                                            formControlName="objetivoGeneral"></textarea>
+                                                    </mat-form-field>
+                                                    <div style="display: flex;">
+                                                        <h2>Objetivos específicos</h2>
+                                                        <mat-icon aria-hidden="false"
+                                                            (click)="agregarObjetivoEspecifico()" fontIcon="add" style="color: white;
+                                                            background-color: var(--primary);
+                                                            border-radius: 32px;
+                                                            margin-left: auto;"></mat-icon>
+                                                    </div>
+                                                    <div formArrayName="objetivosEspecificos">
+                                                        <ng-container
+                                                            *ngFor="let ObjEsp of objetivosEspecificos.controls;let i=index">
+                                                            <div [formGroupName]="i">
+                                                                <mat-form-field style="width: 100%">
+                                                                    <mat-label for="ObjEsp-{{i}}">Objetivo Especifico
+                                                                        {{i+1}}</mat-label>
+                                                                    <textarea id="ObjEsp-{{i}}" matInput
+                                                                        formControlName="objetivo"></textarea>
+                                                                    <mat-icon aria-hidden="false" fontIcon="delete"
+                                                                        style="color: white;
+                                                                        background-color: var(--primary);
+                                                                        border-radius: 32px;
+                                                                        height: 25px;
+                                                                        width: 25px;
+                                                                        padding: 0px;" *ngIf="i!=0" matSuffix
+                                                                        (click)="eliminarObjetivoEspecifico(i)"></mat-icon>
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </ng-container>
+                                                    </div>
+                                                    <!-- <button mat-button matStepperPrevious>Guardar</button> -->
+                                                    <button mat-button matStepperPrevious>Anterior</button>
+                                                    <button mat-button matStepperNext
+                                                        [disabled]="!formObjetivos.valid">Siguiente</button>
+                                                </ng-template>
+                                            </form>
                                         </mat-step>
-                                        <mat-step>
-                                            <ng-template matStepLabel>Propositos de formación y de aprendizaje (PFA) del
-                                                espacio académico</ng-template>
-                                            <ng-template matStepContent>
-                                                <mat-form-field style="width: 100%">
-                                                    <mat-label></mat-label>
-                                                    <textarea matInput></textarea>
-                                                  </mat-form-field>
-                                                <button mat-button matStepperPrevious>Guardar</button>
-                                                <button mat-button matStepperPrevious>Anterior</button>
-                                                <button mat-button matStepperNext>Siguiente</button>
-                                            </ng-template>
+                                        <mat-step [stepControl]="formPFA">
+                                            <form [formGroup]="formPFA">
+                                                <ng-template matStepLabel>Propositos de formación y de aprendizaje (PFA)
+                                                    del
+                                                    espacio académico</ng-template>
+                                                <ng-template matStepContent>
+                                                    <table mat-table style="border: 1px var(--primary) solid;"
+                                                        [dataSource]="dataSourceFormPFA" formArrayName="pfa">
+                                                        <!-- Row definitions -->
+                                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsFormPFA">
+                                                        </tr>
+                                                        <tr mat-row
+                                                            *matRowDef="let row; let i = index; columns: displayedColumnsFormPFA;">
+                                                        </tr>
+                                                        <!-- Column definitions -->
+                                                        <ng-container matColumnDef="numero">
+                                                            <th mat-header-cell *matHeaderCellDef
+                                                                style="text-align: center;"> <mat-icon
+                                                                    aria-hidden="false"
+                                                                    (click)="agregarPFA(undefined,false);"
+                                                                    fontIcon="add" style="color: white;
+                                                                background-color: var(--primary);
+                                                                border-radius: 32px;
+                                                                margin-left: auto;"></mat-icon> </th>
+                                                            <td mat-cell *matCellDef="let row; let index = index"
+                                                                style="text-align: center;padding: 0px !important;width: 1vw;">
+                                                                {{index+1}}
+
+                                                                <mat-icon aria-hidden="false" fontIcon="delete" style="color: white;
+                                                                        background-color: var(--primary);
+                                                                        border-radius: 32px;
+                                                                        height: 25px;
+                                                                        width: 25px;
+                                                                        padding: 0px;" *ngIf="index!=0" matSuffix
+                                                                    (click)="eliminarPFA(index)">
+                                                                </mat-icon>
+
+                                                            </td>
+                                                        </ng-container>
+                                                        <ng-container matColumnDef="pfaPrograma">
+                                                            <th mat-header-cell *matHeaderCellDef
+                                                                style="text-align: center;"> PFA del programa /
+                                                                proyecto </th>
+                                                            <td mat-cell *matCellDef="let row; let index = index"
+                                                                [formGroupName]="index"
+                                                                style="padding: 5px 10px 0px 0px !important;text-align: center;vertical-align: middle;">
+                                                                <mat-form-field style="width: 100%;">
+                                                                    <mat-label>PFA programa</mat-label>
+                                                                    <input matInput formControlName="pfaPrograma">
+                                                                </mat-form-field>
+                                                            </td>
+                                                        </ng-container>
+                                                        <ng-container matColumnDef="pfaAsignatura">
+                                                            <th mat-header-cell *matHeaderCellDef
+                                                                style="text-align: center;"> PFA de la asignatura
+                                                            </th>
+                                                            <td mat-cell *matCellDef="let row; let index = index"
+                                                                [formGroupName]="index"
+                                                                style="padding: 5px 10px 0px 0px !important;text-align: center;vertical-align: middle;">
+                                                                <mat-form-field style="width: 100%;">
+                                                                    <mat-label>PFA asignatura</mat-label>
+                                                                    <input matInput formControlName="pfaAsignatura">
+                                                                </mat-form-field>
+                                                            </td>
+                                                        </ng-container>
+                                                        <ng-container matColumnDef="competencias">
+                                                            <th mat-header-cell *matHeaderCellDef
+                                                                style="text-align: center;">
+                                                                Competencias
+                                                            </th>
+                                                            <td mat-cell *matCellDef="let row; let index = index"
+                                                                [formGroupName]="index"
+                                                                style="padding: 5px 10px 0px 0px !important;text-align: center;vertical-align: middle;">
+                                                                <mat-form-field style="width: 100%;">
+                                                                    <mat-label>competencias</mat-label>
+                                                                    <input matInput formControlName="competencias">
+                                                                </mat-form-field>
+                                                            </td>
+                                                        </ng-container>
+                                                    </table>
+                                                    <button mat-button matStepperPrevious
+                                                        style="margin-top: 0px;">Anterior</button>
+                                                    <button mat-button matStepperNext
+                                                        [disabled]="!formPFA.valid">Siguiente</button>
+                                                </ng-template>
+                                            </form>
                                         </mat-step>
-                                        <mat-step>
-                                            <ng-template matStepLabel>Contenidos temáticos</ng-template>
-                                            <ng-template matStepContent>
-                                                <mat-form-field style="width: 100%">
-                                                    <mat-label></mat-label>
-                                                    <textarea matInput></textarea>
-                                                  </mat-form-field>
-                                                <button mat-button matStepperPrevious>Guardar</button>
-                                                <button mat-button matStepperPrevious>Anterior</button>
-                                                <button mat-button matStepperNext>Siguiente</button>
-                                            </ng-template>
+                                        <mat-step [stepControl]="formContenidosTematicos">
+                                            <form [formGroup]="formContenidosTematicos">
+                                                <ng-template matStepLabel>Contenidos temáticos</ng-template>
+                                                <ng-template matStepContent>
+
+                                                    <mat-form-field style="width: 100%">
+                                                        <mat-label>Descripcion</mat-label>
+                                                        <textarea matInput formControlName="descripcion"></textarea>
+                                                    </mat-form-field>
+                                                    <ng-container formArrayName="temas">
+
+                                                        <div style="display: flex;">
+                                                            <h2>Temas</h2>
+                                                            <mat-icon aria-hidden="false" (click)="agregarTema();"
+                                                                fontIcon="add" style="color: white;
+                                                                background-color: var(--primary);
+                                                                border-radius: 32px;
+                                                                margin-left: auto;"></mat-icon>
+                                                        </div>
+                                                        <ng-container *ngFor="let tema of temas.controls;let i=index">
+                                                            <div [formGroupName]="i">
+                                                                <div style="display: flex;">
+                                                                    <h3>Temas {{i+1}}</h3>
+                                                                </div>
+                                                                <mat-form-field style="width: 100%">
+                                                                    <mat-label for="tema-Nombre-{{i}}">Tema
+                                                                        {{i+1}}</mat-label>
+                                                                    <input type="text" id="tema-Nombre-{{i}}" matInput
+                                                                        formControlName="nombre">
+                                                                    <mat-icon aria-hidden="false" fontIcon="delete"
+                                                                        style="color: white;
+                                                                            background-color: var(--primary);
+                                                                            border-radius: 32px;
+                                                                            height: 25px;
+                                                                            width: 25px;
+                                                                            padding: 0px;" *ngIf="i!=0" matSuffix
+                                                                        (click)="eliminarTema(i)">
+                                                                    </mat-icon>
+                                                                </mat-form-field>
+                                                                <div style="display: flex;">
+                                                                    <h5>Subtemas {{tema.get('nombre').value}}</h5>
+                                                                    <mat-icon aria-hidden="false"
+                                                                        (click)="agregarSubTema(i);" fontIcon="add"
+                                                                        style="color: white;
+                                                                    background-color: var(--primary);
+                                                                    border-radius: 32px;
+                                                                    margin-left: auto;"></mat-icon>
+                                                                </div>
+                                                                <ng-container formArrayName="subtemas">
+                                                                    <ng-container
+                                                                        *ngFor="let subtema of subtemas(i).controls;let j=index">
+                                                                        <div>
+                                                                            <mat-form-field style="width: 100%">
+                                                                                <mat-label
+                                                                                    for="subtema-{{i+1}}-{{j+1}}">SubTema
+                                                                                    {{i+1}} - {{j+1}}</mat-label>
+                                                                                <input type="text"
+                                                                                    id="subtema-{{i+1}}-{{j+1}}"
+                                                                                    matInput [formControlName]="j">
+
+                                                                                <mat-icon aria-hidden="false"
+                                                                                    fontIcon="delete" style="color: white;
+                                                                                        background-color: var(--primary);
+                                                                                        border-radius: 32px;
+                                                                                        height: 25px;
+                                                                                        width: 25px;
+                                                                                        padding: 0px;" *ngIf="j!=0"
+                                                                                    matSuffix
+                                                                                    (click)="eliminarSubTema(i,j)">
+                                                                                </mat-icon>
+
+                                                                            </mat-form-field>
+                                                                        </div>
+                                                                    </ng-container>
+                                                                </ng-container>
+                                                                <mat-divider
+                                                                    style="background: var(--primary);"></mat-divider>
+                                                            </div>
+                                                        </ng-container>
+
+                                                    </ng-container>
+
+                                                    <!-- <button mat-button matStepperPrevious>Guardar</button> -->
+                                                    <button mat-button matStepperPrevious>Anterior</button>
+                                                    <button mat-button matStepperNext>Siguiente</button>
+                                                </ng-template>
+                                            </form>
                                         </mat-step>
-                                        <mat-step>
-                                            <ng-template matStepLabel>Estrategias de enseñanza que favorecen el
-                                                aprendizaje</ng-template>
-                                            <ng-template matStepContent>
-                                                <mat-form-field style="width: 100%">
-                                                    <mat-label></mat-label>
-                                                    <textarea matInput></textarea>
-                                                  </mat-form-field>
-                                                <button mat-button matStepperPrevious>Guardar</button>
-                                                <button mat-button matStepperPrevious>Anterior</button>
-                                                <button mat-button matStepperNext>Siguiente</button>
-                                            </ng-template>
+                                        <mat-step [stepControl]="formEstrategias">
+                                            <form [formGroup]="formEstrategias">
+                                                <ng-template matStepLabel>Estrategias de enseñanza que favorecen el
+                                                    aprendizaje</ng-template>
+                                                <ng-template matStepContent>
+
+                                                    <ng-container formArrayName="estrategias">
+                                                        <ng-container
+                                                            *ngFor="let estrategia of estrategias.controls;let i=index">
+                                                            <div style="width: 100%" [formGroupName]="i">
+                                                                <div style="display: flex;">
+                                                                    <h3>Estrategia {{i+1}}</h3>
+                                                                    <mat-icon aria-hidden="false"
+                                                                        (click)="agregarEstrategia();" fontIcon="add"
+                                                                        style="color: white;
+                                                                    background-color: var(--primary);
+                                                                    border-radius: 32px;
+                                                                    margin-left: auto;" *ngIf="i==0"></mat-icon>
+                                                                    <mat-icon aria-hidden="false" fontIcon="delete"
+                                                                        style="color: white;
+                                                                        background-color: var(--primary);
+                                                                        border-radius: 32px;
+                                                                        height: 25px;
+                                                                        width: 25px;
+                                                                        padding: 0px;
+                                                                        margin-left: auto;" *ngIf="i!=0" matSuffix
+                                                                        (click)="eliminarEstrategia(i)">
+                                                                    </mat-icon>
+                                                                </div>
+                                                                <div style="display:flex;width: 100%;
+                                                                gap: 5px;">
+                                                                    <mat-form-field style="width: 25%;">
+                                                                        <mat-label
+                                                                            for="estra-nombre-{{i}}">Nombre</mat-label>
+                                                                        <textarea id="estra-nombre-{{i}}" matInput
+                                                                            formControlName="nombre"></textarea>
+                                                                    </mat-form-field>
+                                                                    <mat-form-field style="width: 25%;">
+                                                                        <mat-label
+                                                                            for="estra-desc-{{i}}">Descripcion</mat-label>
+                                                                        <textarea id="estra-desc-{{i}}" matInput
+                                                                            formControlName="descripcion"></textarea>
+                                                                    </mat-form-field>
+                                                                    <mat-form-field style="width: 25%;">
+                                                                        <mat-label
+                                                                            for="estra-pertinecia-{{i}}">Pertinencia</mat-label>
+                                                                        <textarea id="estra-pertinecia-{{i}}" matInput
+                                                                            formControlName="pertinencia"></textarea>
+                                                                    </mat-form-field>
+                                                                    <mat-form-field style="width: 25%;">
+                                                                        <mat-label
+                                                                            for="estra-arti-{{i}}">Articulacion</mat-label>
+                                                                        <textarea id="estra-arti-{{i}}" matInput
+                                                                            formControlName="articulacion_ra"></textarea>
+                                                                    </mat-form-field>
+
+
+
+                                                                </div>
+                                                                <mat-divider
+                                                                    style="background: var(--primary);"></mat-divider>
+                                                            </div>
+                                                        </ng-container>
+
+                                                    </ng-container>
+
+                                                    <!-- <button mat-button matStepperPrevious>Guardar</button> -->
+                                                    <button mat-button matStepperPrevious>Anterior</button>
+                                                    <button mat-button matStepperNext>Siguiente</button>
+                                                </ng-template>
+                                            </form>
                                         </mat-step>
-                                        <mat-step>
-                                            <ng-template matStepLabel>Evaluación</ng-template>
-                                            <ng-template matStepContent>
-                                                <mat-form-field style="width: 100%">
-                                                    <mat-label></mat-label>
-                                                    <textarea matInput></textarea>
-                                                  </mat-form-field>
-                                                <button mat-button matStepperPrevious>Guardar</button>
-                                                <button mat-button matStepperPrevious>Anterior</button>
-                                                <button mat-button matStepperNext>Siguiente</button>
-                                            </ng-template>
+                                        <mat-step [stepControl]="formEvaluacion">
+                                            <form [formGroup]="formEvaluacion">
+                                                <ng-template matStepLabel>Evaluación</ng-template>
+                                                <ng-template matStepContent>
+
+                                                    <mat-form-field style="width: 100%">
+                                                        <mat-label>Descripcion</mat-label>
+                                                        <textarea matInput formControlName="descripcion"></textarea>
+                                                    </mat-form-field>
+                                                    <ng-container formArrayName="evaluaciones">
+                                                        <ng-container
+                                                            *ngFor="let evalucion of evaluaciones.controls;let i=index">
+                                                            <div style="display: flex;">
+                                                                <h3>Evaluación {{i+1}}</h3>
+                                                                <mat-icon aria-hidden="false"
+                                                                    (click)="agregarEvalucion();" fontIcon="add" style="color: white;
+                                                                    background-color: var(--primary);
+                                                                    border-radius: 32px;
+                                                                    margin-left: auto;" *ngIf="i==0">
+                                                                </mat-icon>
+                                                                <mat-icon aria-hidden="false" fontIcon="delete" style="color: white;
+                                                                        background-color: var(--primary);
+                                                                        border-radius: 32px;
+                                                                        height: 25px;
+                                                                        width: 25px;
+                                                                        padding: 0px;
+                                                                        margin-left: auto;" *ngIf="i!=0" matSuffix
+                                                                    color="primary" (click)="eliminarEvaluacion(i)">
+                                                                </mat-icon>
+                                                            </div>
+                                                            <div [formGroupName]="i" style="display: flex; gap:5px;">
+                                                                <mat-form-field style="width: 25%;">
+                                                                    <mat-label>Nombre</mat-label>
+                                                                    <input matInput formControlName="nombre">
+                                                                </mat-form-field>
+                                                                <mat-form-field style="width: 25%;">
+                                                                    <mat-label>Estrategia</mat-label>
+                                                                    <input matInput formControlName="estrategia">
+                                                                </mat-form-field>
+                                                                <mat-form-field style="width: 25%;">
+                                                                    <mat-label>Momento</mat-label>
+                                                                    <input matInput formControlName="momento">
+                                                                </mat-form-field>
+                                                                <mat-form-field style="width: 25%;">
+                                                                    <mat-label>Porcentaje</mat-label>
+                                                                    <input matInput type="number"
+                                                                        formControlName="porcentaje">
+                                                                </mat-form-field>
+
+
+
+                                                                <mat-divider
+                                                                    style="background: var(--primary);"></mat-divider>
+                                                            </div>
+                                                        </ng-container>
+                                                    </ng-container>
+
+                                                    <!-- <button mat-button matStepperPrevious>Guardar</button> -->
+                                                    <button mat-button matStepperPrevious>Anterior</button>
+                                                    <button mat-button matStepperNext>Siguiente</button>
+                                                </ng-template>
+                                            </form>
                                         </mat-step>
-                                        <mat-step>
-                                            <ng-template matStepLabel>Medios y recursos educativos</ng-template>
-                                            <ng-template matStepContent>
-                                                <mat-form-field style="width: 100%">
-                                                    <mat-label></mat-label>
-                                                    <textarea matInput></textarea>
-                                                  </mat-form-field>
-                                                <button mat-button matStepperPrevious>Guardar</button>
-                                                <button mat-button matStepperPrevious>Anterior</button>
-                                                <button mat-button matStepperNext>Siguiente</button>
-                                            </ng-template>
+                                        <mat-step [stepControl]="formMedios">
+                                            <form [formGroup]="formMedios">
+                                                <ng-template matStepLabel>Medios y recursos educativos</ng-template>
+                                                <ng-template matStepContent>
+
+                                                    <mat-form-field style="width: 100%">
+                                                        <mat-label>Medios y Recursos educativos</mat-label>
+                                                        <textarea matInput formControlName="medios"></textarea>
+                                                    </mat-form-field>
+
+                                                    <!-- <button mat-button matStepperPrevious>Guardar</button> -->
+                                                    <button mat-button matStepperPrevious>Anterior</button>
+                                                    <button mat-button matStepperNext>Siguiente</button>
+                                                </ng-template>
+                                            </form>
                                         </mat-step>
-                                        <mat-step>
-                                            <ng-template matStepLabel>Practicas académicas - salidas de
-                                                campo</ng-template>
-                                            <ng-template matStepContent>
-                                                <mat-form-field style="width: 100%">
-                                                    <mat-label></mat-label>
-                                                    <textarea matInput></textarea>
-                                                  </mat-form-field>
-                                                <button mat-button matStepperPrevious>Guardar</button>
-                                                <button mat-button matStepperPrevious>Anterior</button>
-                                                <button mat-button matStepperNext>Siguiente</button>
-                                            </ng-template>
+                                        <mat-step [stepControl]="formPracticasAcademicas">
+                                            <form [formGroup]="formPracticasAcademicas">
+                                                <ng-template matStepLabel>Practicas académicas - salidas de
+                                                    campo</ng-template>
+                                                <ng-template matStepContent>
+
+                                                    <mat-form-field style="width: 100%">
+                                                        <mat-label>Practicas</mat-label>
+                                                        <textarea matInput
+                                                            formControlName="practicasAcademicas"></textarea>
+                                                    </mat-form-field>
+
+                                                    <!-- <button mat-button matStepperPrevious>Guardar</button> -->
+                                                    <button mat-button matStepperPrevious>Anterior</button>
+                                                    <button mat-button matStepperNext>Siguiente</button>
+                                                </ng-template>
+                                            </form>
                                         </mat-step>
-                                        <mat-step>
-                                            <ng-template matStepLabel>Bibliografía</ng-template>
-                                            <mat-form-field style="width: 100%">
-                                                <mat-label></mat-label>
-                                                <textarea matInput></textarea>
-                                              </mat-form-field>
-                                            <button mat-button matStepperPrevious>Guardar</button>
-                                            <button mat-button matStepperPrevious>Anterior</button>
+                                        <mat-step [stepControl]="formBibliografia">
+                                            <form [formGroup]="formBibliografia">
+                                                <ng-template matStepLabel>Bibliografía</ng-template>
+                                                <ng-template matStepContent>
+                                                    <div>
+                                                        <table mat-table style="border: 1px var(--primary) solid;"
+                                                            [dataSource]="dataSourceFormBiblioBas"
+                                                            formArrayName="basicas">
+                                                            <!-- Row definitions -->
+                                                            <tr mat-header-row
+                                                                *matHeaderRowDef="displayedColumnsBibliografiaBasica">
+                                                            </tr>
+                                                            <tr mat-row
+                                                                *matRowDef="let row; let i = index; columns: displayedColumnsBibliografiaBasica;">
+                                                            </tr>
+                                                            <!-- Column definitions -->
+                                                            <ng-container matColumnDef="basicas">
+                                                                <th mat-header-cell *matHeaderCellDef
+                                                                    style="text-align: center;">
+                                                                    <div style="display: flex;
+                                                                    justify-content: center;">
+                                                                        Básicas <mat-icon aria-hidden="false"
+                                                                            (click)="agregarBibliografiaBasica('',false);"
+                                                                            fontIcon="add" style="color: white;
+                                                                background-color: var(--primary);
+                                                                border-radius: 32px;
+                                                                margin-left: 1vw;"></mat-icon>
+                                                                    </div>
+                                                                </th>
+                                                                <td mat-cell *matCellDef="let row; let index = index"
+                                                                    style="padding: 5px 10px 0px 0px !important;text-align: center;vertical-align: middle;">
+                                                                    <mat-form-field style="width: 100%;">
+                                                                        <mat-label>Básica {{index+1}}</mat-label>
+                                                                        <input matInput [formControlName]="index">
+
+
+                                                                        <mat-icon aria-hidden="false" fontIcon="delete"
+                                                                            style="color: white;
+                                                                                background-color: var(--primary);
+                                                                                border-radius: 32px;
+                                                                                height: 25px;
+                                                                                width: 25px;
+                                                                                padding: 0px;" *ngIf="index!=0"
+                                                                            matSuffix
+                                                                            (click)="eliminarBibliografiaBasica(index)"></mat-icon>
+
+                                                                    </mat-form-field>
+                                                                </td>
+                                                            </ng-container>
+                                                        </table>
+                                                        <table mat-table style="border: 1px var(--primary) solid;"
+                                                            [dataSource]="dataSourceFormBiblioCom"
+                                                            formArrayName="complementarias">
+                                                            <!-- Row definitions -->
+                                                            <tr mat-header-row
+                                                                *matHeaderRowDef="displayedColumnsBibliografiaComplementaria">
+                                                            </tr>
+                                                            <tr mat-row
+                                                                *matRowDef="let row; let i = index; columns: displayedColumnsBibliografiaComplementaria;">
+                                                            </tr>
+                                                            <!-- Column definitions -->
+                                                            <ng-container matColumnDef="complementarias">
+                                                                <th mat-header-cell *matHeaderCellDef
+                                                                    style="text-align: center;">
+                                                                    <div style="display: flex;
+                                                                    justify-content: center;">
+                                                                        Complementarias <mat-icon aria-hidden="false"
+                                                                            (click)="agregarBibliografiaComplementaria('',false);"
+                                                                            fontIcon="add" style="color: white;
+                                                            background-color: var(--primary);
+                                                            border-radius: 32px;
+                                                            margin-left: 1vw;"></mat-icon>
+                                                                    </div>
+                                                                </th>
+                                                                <td mat-cell *matCellDef="let row; let index = index"
+                                                                    style="padding: 5px 10px 0px 0px !important;text-align: center;vertical-align: middle;">
+                                                                    <mat-form-field style="width: 100%;">
+                                                                        <mat-label>Complementaria
+                                                                            {{index+1}}</mat-label>
+                                                                        <input matInput [formControlName]="index">
+                                                                        <mat-icon aria-hidden="false" fontIcon="delete"
+                                                                            style="color: white;
+                                                                                background-color: var(--primary);
+                                                                                border-radius: 32px;
+                                                                                height: 25px;
+                                                                                width: 25px;
+                                                                                padding: 0px;" *ngIf="index!=0"
+                                                                            matSuffix color="primary"
+                                                                            (click)="eliminarBibliografiaComplementaria(index)">
+                                                                        </mat-icon>
+                                                                    </mat-form-field>
+                                                                </td>
+                                                            </ng-container>
+                                                        </table>
+                                                        <table mat-table style="border: 1px var(--primary) solid;"
+                                                            [dataSource]="dataSourceFormBiblioPag"
+                                                            formArrayName="paginasWeb">
+                                                            <!-- Row definitions -->
+                                                            <tr mat-header-row
+                                                                *matHeaderRowDef="displayedColumnsBibliografiaPaginaWeb">
+                                                            </tr>
+                                                            <tr mat-row
+                                                                *matRowDef="let row; let i = index; columns: displayedColumnsBibliografiaPaginaWeb;">
+                                                            </tr>
+                                                            <!-- Column definitions -->
+                                                            <ng-container matColumnDef="paginasWeb">
+                                                                <th mat-header-cell *matHeaderCellDef
+                                                                    style="text-align: center;">
+                                                                    <div style="display: flex;
+                                                                    justify-content: center;">
+                                                                        Páginas web <mat-icon aria-hidden="false"
+                                                                            (click)="agregarBibliografiaPaginaWeb('',false);"
+                                                                            fontIcon="add" style="color: white;
+                                                            background-color: var(--primary);
+                                                            border-radius: 32px;
+                                                            margin-left: 1vw;"></mat-icon>
+                                                                    </div>
+                                                                </th>
+                                                                <td mat-cell *matCellDef="let row; let index = index"
+                                                                    style="padding: 5px 10px 0px 0px !important;text-align: center;vertical-align: middle;">
+                                                                    <mat-form-field style="width: 100%;">
+                                                                        <mat-label>Página web {{index+1}}</mat-label>
+                                                                        <input matInput [formControlName]="index">
+
+                                                                        <mat-icon aria-hidden="false" fontIcon="delete"
+                                                                            style="color: white;
+                                                                                background-color: var(--primary);
+                                                                                border-radius: 32px;
+                                                                                height: 25px;
+                                                                                width: 25px;
+                                                                                padding: 0px;" *ngIf="index!=0"
+                                                                            matSuffix
+                                                                            (click)="eliminarBibliografiaPaginaWeb(index)">
+                                                                        </mat-icon>
+
+                                                                    </mat-form-field>
+                                                                </td>
+                                                            </ng-container>
+                                                        </table>
+                                                    </div>
+                                                    <!-- <button mat-button matStepperPrevious>Guardar</button> -->
+                                                    <button mat-button matStepperPrevious>Anterior</button>
+                                                </ng-template>
+                                            </form>
                                         </mat-step>
                                     </mat-stepper>
                                     <mat-action-row style="height: 100%; width: 100%; display: flex;
-                                    flex-direction: column;
-                                    justify-content: flex-start;
-                                    align-items: center;">
+                                        flex-direction: column;
+                                        justify-content: flex-start;
+                                        align-items: center;">
                                         <button mat-button style="background-color:var(--primary);color: white;"
                                             (click)="nextStep()">Continuar</button>
                                     </mat-action-row>
@@ -425,7 +892,7 @@ align-items: center;
 
                             </mat-expansion-panel>
 
-                            <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" [expanded]="true">
+                            <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
                                         Seguimiento y actualización del Syllabus
@@ -433,10 +900,82 @@ align-items: center;
                                 </mat-expansion-panel-header>
                                 <div class="container-border">
                                     <h4> Seguimiento y actualización del Syllabus </h4>
+                                    <form [formGroup]="formSeguimiento">
+                                        <div style="display: flex;
+                                        flex-direction: column;
+                                        gap: 5px;">
+                                            <div style="    display: flex;
+                                            flex-direction: row;
+                                            width: 100%;border: 1px var(--primary) solid;">
+                                                <div style="background-color: var(--primary);color: white;text-align: center; width: 50%;    display: flex;
+                                                    justify-content: center;
+                                                    align-items: center;">
+                                                    <h3 style="margin: 0px;">Fecha de revisión por Consejo Curricular
+                                                    </h3>
+                                                </div>
+                                                <div style="width: 50%;
+                                                display: flex;
+                                                justify-content: center;
+                                                align-items: center;">
+                                                    <mat-form-field style="width: 100%;">
+                                                        <mat-label>Fecha de revisión</mat-label>
+                                                        <input matInput [matDatepicker]="fechaRevisionConsejo"
+                                                            formControlName="fechaRevisionConsejo">
+                                                        <mat-datepicker-toggle matIconSuffix
+                                                            [for]="fechaRevisionConsejo"></mat-datepicker-toggle>
+                                                        <mat-datepicker #fechaRevisionConsejo></mat-datepicker>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                            <div style="display: flex; border: 1px var(--primary) solid;">
+                                                <div style="background-color: var(--primary);color: white;text-align: center; width: 25%;  display: flex;
+                                                    justify-content: center;
+                                                    align-items: center;">
+                                                    <h3 style="margin: 0px;">Fecha aprobación por
+                                                        consejo curricular</h3>
+                                                </div>
+                                                <div
+                                                    style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
+                                                    <mat-form-field style="width: 100%;">
+                                                        <mat-label>Fecha aprobación</mat-label>
+                                                        <input matInput [matDatepicker]="fechaAprobacionConsejo"
+                                                            formControlName="fechaAprobacionConsejo">
+                                                        <mat-datepicker-toggle matIconSuffix
+                                                            [for]="fechaAprobacionConsejo"></mat-datepicker-toggle>
+                                                        <mat-datepicker #fechaAprobacionConsejo></mat-datepicker>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div style="background-color: var(--primary);color: white;text-align: center;width: 25%;    display: flex;
+                                                    justify-content: center;
+                                                    align-items: center;">
+                                                    <h3 style="margin: 0px;">Número de acta</h3>
+                                                </div>
+                                                <div
+                                                    style="padding: 0px;text-align: center;vertical-align: middle;width: 25%; border-top: 1px var(--primary) solid;">
+                                                    <mat-form-field style="width: 100%;">
+                                                        <mat-label>Número de acta</mat-label>
+                                                        <input matInput type="text" formControlName="numeroActa">
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                            <div style="border: 1px var(--primary) solid;display: flex;">
+                                                <mat-form-field style="width: 100%;" (click)="f_input.click()">
+                                                    <mat-label>Acta</mat-label>
+                                                    <button mat-icon-button matPrefix>
+                                                        <mat-icon>attach_file</mat-icon>
+                                                    </button>
+                                                    <input type="text" readonly matInput formControlName="archivo" />
+                                                    <input type="file" hidden #f_input
+                                                        (change)="handleFileInputActaChange($event)" />
+                                                    <mat-error>Ingrese un archivo en formato pdf</mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </form>
                                     <mat-action-row style="height: 100%; width: 100%; display: flex;
-                                    flex-direction: column;
-                                    justify-content: flex-start;
-                                    align-items: center;">
+                                        flex-direction: column;
+                                        justify-content: flex-start;
+                                        align-items: center;">
                                         <button mat-button style="background-color:var(--primary);color:white;"
                                             (click)="nextStep()">Continuar</button>
                                     </mat-action-row>
@@ -444,42 +983,50 @@ align-items: center;
 
                             </mat-expansion-panel>
 
-                            <mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)" [expanded]="true">
+                            <mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)" hideToggle>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
-                                        Validez
+                                        Vigencia
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <div class="container-border">
-                                    <h4> Validez </h4>
-                                    <table class="mat-table" style="border: 1px var(--primary) solid;">
-                                        <tr class="mat-row">
-                                            <td class="mat-cell"
-                                                style="background-color: var(--primary);color: white;text-align: center;">
-                                                Fecha Inicio</td>
-                                            <td class="mat-cell"
-                                                style="padding: 0px;text-align: center;vertical-align: middle;">
-                                                <mat-form-field>
-                                                    <input matInput [matDatepicker]="fecha_inicio">
-                                                    <mat-datepicker-toggle matIconSuffix
-                                                        [for]="fecha_inicio"></mat-datepicker-toggle>
-                                                    <mat-datepicker #fecha_inicio></mat-datepicker>
-                                                </mat-form-field>
-                                            </td>
-                                            <td class="mat-cell"
-                                                style="background-color: var(--primary);color: white;text-align: center;">
-                                                Fecha Fin</td>
-                                            <td class="mat-cell"
-                                                style="padding: 0px;text-align: center;vertical-align: middle;">
-                                                <mat-form-field>
-                                                    <input matInput [matDatepicker]="fecha_fin">
-                                                    <mat-datepicker-toggle matIconSuffix
-                                                        [for]="fecha_fin"></mat-datepicker-toggle>
-                                                    <mat-datepicker #fecha_fin></mat-datepicker>
-                                                </mat-form-field>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    <h4> Vigencia </h4>
+                                    <form [formGroup]="formVigencia">
+                                        <div style="border: 1px var(--primary) solid;">
+                                            <div style="display: flex;">
+                                                <div style="background-color: var(--primary);color: white;text-align: center; width: 25%;display: flex;
+                                                    justify-content: center;
+                                                    align-items: center;">
+                                                    Fecha Inicio</div>
+                                                <div
+                                                    style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
+                                                    <mat-form-field style="width: 100%;">
+                                                        <mat-label>Fecha Inicio</mat-label>
+                                                        <input matInput [matDatepicker]="fechaInicio"
+                                                            formControlName="fechaInicio">
+                                                        <mat-datepicker-toggle matIconSuffix
+                                                            [for]="fechaInicio"></mat-datepicker-toggle>
+                                                        <mat-datepicker #fechaInicio></mat-datepicker>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div style="background-color: var(--primary);color: white;text-align: center; width: 25%;display: flex;
+                                                    justify-content: center;
+                                                    align-items: center;">
+                                                    Fecha Fin</div>
+                                                <div
+                                                    style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
+                                                    <mat-form-field style="width: 100%;">
+                                                        <mat-label>Fecha Fin</mat-label>
+                                                        <input matInput [matDatepicker]="fechaFin"
+                                                            formControlName="fechaFin">
+                                                        <mat-datepicker-toggle matIconSuffix
+                                                            [for]="fechaFin"></mat-datepicker-toggle>
+                                                        <mat-datepicker #fechaFin></mat-datepicker>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
 
                             </mat-expansion-panel>
@@ -487,13 +1034,17 @@ align-items: center;
                     </mat-card-content>
                 </mat-card>
 
-                <div style="height: 100%; width: 100%; display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
+                <div style="height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
                 align-items: center;
-                padding-top: 50px;">
+                padding-top: 15px;
+                gap: 10px;">
                     <button mat-raised-button style="background-color: var(--primary);color: white;"
-                        routerLink="/buscar_syllabus">Guardar</button>
+                        (click)="regresar()">Regresar</button>
+                    <button mat-raised-button style="background-color: var(--primary);color: white;"
+                        (click)="SubmitSyllabus()" [disabled]="!validateForms()">Guardar</button>
                 </div>
             </div>
         </mat-card-content>

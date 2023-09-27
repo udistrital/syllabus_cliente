@@ -46,23 +46,23 @@ align-items: center;"  id="tablaResultados">
                         </ng-container>
 
                         <ng-container matColumnDef="acciones_buttons">
-                            <th mat-header-cell *matHeaderCellDef (click)="FormCrearSyllabus()" style="cursor: pointer;"> <a>
+                            <th mat-header-cell *matHeaderCellDef (click)="FormCrearSyllabus($event)" style="cursor: pointer;"> <a>
                                     <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="add"
-                                        style="color: white;"></mat-icon>
+                                        style="color: white;" *ngIf="syllabus.length==0"></mat-icon>
                                 </a>
                             </th>
-                            <td mat-cell *matCellDef="let element" style="text-align: center;">
-                                <button mat-icon-button>
+                            <td mat-cell *matCellDef="let element;let row=index " style="text-align: center;">
+                                <button mat-icon-button (click)="openSyllabusVisualizarSyllabusDocument(row)">
                                     <mat-icon aria-hidden="false" aria-label="Example home icon"
-                                        fontIcon="visibility"></mat-icon>
+                                        fontIcon="visibility" ></mat-icon>
                                 </button>
-                                <button mat-icon-button>
+                                <button mat-icon-button (click)="FormEditSyllabus(row)">
                                     <mat-icon aria-hidden="false" aria-label="Example home icon"
-                                        fontIcon="edit document"></mat-icon>
+                                        fontIcon="edit document" ></mat-icon>
                                 </button>
-                                <button mat-icon-button>
+                                <button mat-icon-button *ngIf="syllabus[row].version!=1" (click)="openSyllabusVersion(row)">
                                     <mat-icon aria-hidden="false" aria-label="Example home icon"
-                                        fontIcon="folder open">add</mat-icon>
+                                        fontIcon="folder open"  >add</mat-icon>
                                 </button>
                             </td>
                             <td mat-footer-cell *matFooterCellDef class="footer">
@@ -83,7 +83,7 @@ align-items: center;"  id="tablaResultados">
                     </table>
                 </div>
 
-                <div style="display: flex; justify-content: center; align-items: center;">
+                <div style="display: flex; justify-content: center; align-items: center; margin-top: 1vh;">
                     <button mat-raised-button style="background-color: #03678F;color: white;"
                        (click)="scrollFormBuscar()">Regresar</button>
                 </div>

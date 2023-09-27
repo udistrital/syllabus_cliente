@@ -1,4 +1,4 @@
-import { Component, ViewChild,ElementRef, OnInit} from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RequestManager } from '../services/requestManager';
 import { environment } from '../../../environments/environment';
@@ -9,6 +9,8 @@ import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
 import { ListarSyllabusComponent } from '../listar-syllabus/listar-syllabus.component';
+import { LocalStorageService } from 'src/app/@core/utils/local_storage.service';
+import Swal from 'sweetalert2';
 
 
 interface Opcion {
@@ -21,32 +23,26 @@ interface Opcion {
   templateUrl: './buscar-syllabus.component.html',
   styleUrls: ['./buscar-syllabus.component.scss']
 })
-export class BuscarSyllabusComponent implements OnInit{
+export class BuscarSyllabusComponent implements OnInit {
   mostrartabla: boolean = false;
   facultades: Facultad[] = [];
   proyectos_curriculares: ProyectoAcademico[] = [];
   planes_estudio: PlanEstudio[] = [];
   espacios_academicos: EspacioAcademico[] = [];
-  facultadSelected!:Facultad;
+  facultadSelected!: Facultad;
   facultadSelectedName: string = "";
-  proyectoCurricularSelected!:ProyectoAcademico;
+  proyectoCurricularSelected!: ProyectoAcademico;
   proyectoCurricularSelectedName: string = "";
-  planEstudiosSelected!:PlanEstudio;
+  planEstudiosSelected!: PlanEstudio;
   planEstudiosSelectedName: string = "";
-  espacioAcademicoSelected!:EspacioAcademico;
+  espacioAcademicoSelected!: EspacioAcademico;
   espacioAcademicoSelectedName: string = "";
-  formFacultad: FormGroup = this._formBuilder.group({
-    facultadCtrl: ['', Validators.required]
-  });
-  formProyectoCurricular: FormGroup = this._formBuilder.group({
-    proyectoCurricularCtrl: ['', Validators.required]
-  });
-  formPlanEstudios: FormGroup = this._formBuilder.group({
-    planEstudiosCtrl: ['', Validators.required]
-  });
-  formEspaciosAcademicos: FormGroup = this._formBuilder.group({
-    espaciosAcademicosCtrl: ['', Validators.required]
-  });
+  formFacultad: FormGroup;
+  formProyectoCurricular: FormGroup; 
+  formPlanEstudios: FormGroup; 
+  formEspaciosAcademicos: FormGroup;
+  roles:string[];
+  dependenciasId:number[];
 
   @ViewChild('stepper') private myStepper!: MatStepper;
   @ViewChild(ListarSyllabusComponent) tablaResultados!: ListarSyllabusComponent;
@@ -54,30 +50,54 @@ export class BuscarSyllabusComponent implements OnInit{
   constructor(
     private _formBuilder: FormBuilder,
     private request: RequestManager,
-    private syllabusService:SyllabusService
+    private syllabusService: SyllabusService,
+    private localStorage:LocalStorageService
   ) {
-    this.loadFacultades();
-    this.syllabusService.facultad$.subscribe((facultad) => {
-     this.facultadSelected = facultad;
-   });
-   this.syllabusService.proyectoAcademico$.subscribe((proyectoAcademico) => {
-     this.proyectoCurricularSelected = proyectoAcademico;
-   });
-   this.syllabusService.planEstudios$.subscribe((planEstudio) => {
-     this.planEstudiosSelected = planEstudio;
-   });
-   this.syllabusService.espacioAcademico$.subscribe((espacioAcademico) => {
-     this.espacioAcademicoSelected = espacioAcademico;
-   });
+    
   }
 
-  ngOnInit(){
+  ngOnInit() {
     
+    this.loadFacultades();
+    this.formFacultad = this._formBuilder.group({
+      facultadCtrl: ['', Validators.required]
+    });
+    this.formProyectoCurricular= this._formBuilder.group({
+      proyectoCurricularCtrl: ['', Validators.required]
+    });
+    this.formPlanEstudios= this._formBuilder.group({
+      planEstudiosCtrl: ['', Validators.required]
+    });
+    this.formEspaciosAcademicos = this._formBuilder.group({
+      espaciosAcademicosCtrl: ['', Validators.required]
+    });
+
+    this.syllabusService.facultad$.subscribe((facultad) => {
+      this.facultadSelected = facultad;
+    });
+    this.syllabusService.proyectoAcademico$.subscribe((proyectoAcademico) => {
+      this.proyectoCurricularSelected = proyectoAcademico;
+    });
+    this.syllabusService.planEstudios$.subscribe((planEstudio) => {
+      this.planEstudiosSelected = planEstudio;
+    });
+    this.syllabusService.espacioAcademico$.subscribe((espacioAcademico) => {
+      this.espacioAcademicoSelected = espacioAcademico;
+    });
+    // console.log('playload', this.implictToken.getPayload());
+    // this.implictToken.getRole().then((roleSystem:string[]) => {
+    //   if (typeof roleSystem !== 'undefined' && roleSystem !== null) {
+    //     console.log('roles',roleSystem);
+    //     this.roles=roleSystem;
+    //   }
+    // })
+    
+    this.dependenciasId=JSON.parse(this.localStorage.getData('dependencias_persona_id')!)
   }
 
   MostrarTabla() {
     this.mostrartabla = true;
-    if(this.tablaResultados) this.tablaResultados.scrollTablaResultados();
+    if (this.tablaResultados) this.tablaResultados.scrollTablaResultados();
   }
 
   loadFacultades() {
@@ -92,6 +112,7 @@ export class BuscarSyllabusComponent implements OnInit{
     this.request.get(environment.OIKOS_SERVICE, 'dependencia/proyectosPorFacultad/' + this.facultadSelected.Id).subscribe((dataProyectosCurriculares: any) => {
       if (dataProyectosCurriculares) {
         this.proyectos_curriculares = dataProyectosCurriculares;
+        this.filtrarDependencias();
       }
     })
   }
@@ -148,5 +169,20 @@ export class BuscarSyllabusComponent implements OnInit{
     this.espacioAcademicoSelectedName = espacioAcademico.asi_nombre;
     this.MostrarTabla();
     //if(this.tablaResultados) document.getElementById('formBusqueda')?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }
+
+  filtrarDependencias(){
+    if(this.dependenciasId.length!=0){
+      this.proyectos_curriculares= this.proyectos_curriculares.filter((proyecto)=>{
+        this.dependenciasId.includes(proyecto.Id)
+      })
+      if(this.proyectos_curriculares.length==0){
+        Swal.fire({
+          icon: 'warning',
+          title: 'Sin proyectos relacionados',
+          text: 'No se encontraron proyectos relacionados de esta facultad',
+        })
+      }
+    }
   }
 }

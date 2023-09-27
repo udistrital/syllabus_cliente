@@ -1,0 +1,21 @@
+<mat-dialog-content class="mat-typography">
+    <div style="display: flex;width:100%;height: 100%;align-items: center;justify-content: center;"
+        *ngIf="!SyllabusDocumentLoad">
+        <mat-spinner></mat-spinner>
+    </div>
+
+    <object [data]="syllabusDocumentData | safeUrl " type="application/pdf" *ngIf="SyllabusDocumentLoad"
+        id="pdf_view"></object>
+</mat-dialog-content>
+<mat-dialog-actions style="align-items: center;justify-content: center;flex-direction: row;">
+    <button mat-icon-button (click)="DownloadSyllabus()">
+        <mat-icon class="material-symbols-outlined">file_download</mat-icon>
+        <!-- <span class="material-symbols-outlined">
+            download
+        </span> -->
+    </button>
+    <button mat-icon-button (click)="EditSyllabus()" mat-dialog-close>
+        <mat-icon aria-label="Example home icon" fontIcon="edit document"></mat-icon>
+    </button>
+    <button mat-button mat-dialog-close style="background-color: var(--primary);color: white;">Cerrar</button>
+</mat-dialog-actions>

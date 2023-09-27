@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { HashLocationStrategy, LocationStrategy,PercentPipe,CommonModule } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy, PercentPipe, CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,11 +11,15 @@ import { WindowRefService } from './@core/utils/windowref.service';
 import { RequestManager } from './pages/services/requestManager';
 import { UserService } from './pages/services/userService';
 import { SyllabusService } from './pages/services/syllabus.service';
+import { GestorDocumentalService } from './pages/services/gestor_documental.service';
 import { HttpClientModule } from '@angular/common/http';
 import { BuscarSyllabusComponent } from './pages/buscar-syllabus/buscar-syllabus.component';
 import { ListarSyllabusComponent } from './pages/listar-syllabus/listar-syllabus.component';
 import { CrearSyllabusComponent } from './pages/crear-syllabus/crear-syllabus.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { VersionesSyllabusComponent } from './pages/versiones-syllabus/versiones-syllabus.component';
+import { VisualizarSyllabusComponent } from './pages/visualizar-syllabus/visualizar-syllabus.component';
+import { SafeURL } from './@core/pipes/safeUrl.pipe';
 
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
@@ -30,9 +34,13 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDividerModule  } from '@angular/material/divider'
-import { MatNativeDateModule,DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider'
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule, } from '@angular/material-moment-adapter';
+
 
 @NgModule({
   declarations: [
@@ -40,7 +48,10 @@ import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPT
     BuscarSyllabusComponent,
     ListarSyllabusComponent,
     CrearSyllabusComponent,
-    DashboardComponent
+    DashboardComponent,
+    VersionesSyllabusComponent,
+    VisualizarSyllabusComponent,
+    SafeURL
   ],
   imports: [
     BrowserAnimationsModule,
@@ -61,16 +72,20 @@ import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPT
     MatNativeDateModule,
     MatMomentDateModule,
     MatDividerModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SweetAlert2Module.forRoot()
   ],
   providers: [
+    //ImplicitAutenticationService,
     LocalStorageService,
     WindowRefService,
-    RequestManager,
-    UserService,
+    //RequestManager,
+    //UserService,
     SyllabusService,
     PercentPipe,
     { provide: MAT_DATE_LOCALE, useValue: 'es-CO' },
