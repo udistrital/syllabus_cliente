@@ -67,12 +67,13 @@ export class AppComponent implements OnInit {
       if (event.detail) {
         this.loaded = true;
         this.userService.updateAuth();
+        this.router.navigate(['/dashboard'], { skipLocationChange: true })
       }
     });
 
     oas?.addEventListener('option', (event: any) => {
       if (event.detail) {
-        setTimeout(() => (this.router.navigate([event.detail.Url])), 50)
+        setTimeout(() => (this.router.navigate([event.detail.Url],{ skipLocationChange: true })), 50)
           ;
       }
     });

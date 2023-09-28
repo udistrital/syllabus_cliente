@@ -9,6 +9,7 @@ import { RequestManager } from '../services/requestManager';
 import { environment } from '../../../environments/environment';
 import { Syllabus} from '../../@core/models/syllabus'
 import { GestorDocumentalService } from '../services/gestor_documental.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-versiones-syllabus',
@@ -67,14 +68,30 @@ export class VersionesSyllabusComponent implements  OnInit{
   }
 
   loadDocumentosRelacionados(row:any){
+    Swal.fire({
+      title: 'Cargando documento ...',
+      html: `Por favor espere`,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      willOpen: () => {
+        Swal.showLoading();
+      },
+    })
     const syllabus=this.syllabusVersions[row]
     this.gestorDoc.getByUUID(syllabus.seguimiento.archivo).subscribe({
       next:(document)=>{
         //console.log(document)
-        window.open(document)
+        Swal.close();
+        window.open(document);
+        
       },
       error:()=>{
-
+        Swal.close();
+        Swal.fire({
+          icon:'error',
+          title:'Error',
+          text:'ocurrió un error al cargar el documento'
+        })
       }
     });
   }
@@ -84,7 +101,7 @@ export class VersionesSyllabusComponent implements  OnInit{
     formBusqueda?.scrollIntoView({ behavior: 'instant', block: 'start' });
     this.syllabusService.setisNew(false);
     this.syllabusService.setSyllabus(this.Syllabus);
-    this.router.navigate(['/crear_syllabus']);
+    this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
   }
 }
 

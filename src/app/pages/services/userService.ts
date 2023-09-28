@@ -64,15 +64,15 @@ export class UserService {
         if (DocIdentificacion) {
           await this.findByDocument(DocIdentificacion, UsuarioWSO2, CorreoUsuario).then(found => foundId = true).catch(e => foundId = false);
         }
-
+        //consol.log('found by doc',foundId);
         if (UsuarioWSO2 && !foundId) {
           await this.findByUserEmail(UsuarioWSO2).then(found => foundId = true).catch(e => foundId = false);
         }
-
+        //consol.log('found by email',foundId);
         if (CorreoUsuario && !foundId) {
           await this.findByUserEmail(CorreoUsuario).then(found => foundId = true).catch(e => foundId = false);
         }
-
+        //consol.log('found by email',foundId);
         if (!foundId) {
           this.localstorage.saveData('persona_id', '0');
         } else {
@@ -127,7 +127,8 @@ export class UserService {
             this.user['Documento'] = DocIdentificacion;
             if (Object.keys(this.user).length !== 0) {
               //this.user$.next(this.user);
-              this.userSubject.next(this.user);              // this.localstorage.saveData('ente', res[0].Ente);
+              //console.log("finddoc",this.user)
+              //this.userSubject.next(this.user);              // this.localstorage.saveData('ente', res[0].Ente);
               this.localstorage.saveData('persona_id', this.user.Id);
               resolve(true);
             } else {
@@ -150,7 +151,8 @@ export class UserService {
             this.user = res[0];
             if (Object.keys(this.user).length !== 0) {
               //this.user$.next(this.user);
-              this.userSubject.next(this.user);
+              //consol.log("findemail",this.user)
+              //this.userSubject.next(this.user);
               this.localstorage.saveData('persona_id', this.user.Id);
               resolve(true);
             } else {
@@ -249,12 +251,19 @@ export class UserService {
 
   public getRole() {
     const rolePromise = new Promise<string[]>((resolve, reject) => {
-      this.userSubject.subscribe((data: any) => {
-        const { user, userService } = data;
-        const roleUser = typeof user.role !== 'undefined' ? user.role : [];
-        const roleUserService = typeof userService.role !== 'undefined' ? userService.role : [];
-        const roles = (roleUser.concat(roleUserService)).filter((data: any) => (data.indexOf('/') === -1));
-        resolve(roles);
+      this.userSubject.subscribe({
+        next:(data: any) => {
+          console.log(data)
+          const { user, userService } = data;
+          const roleUser = typeof user !== 'undefined' ? user.role : [];
+          const roleUserService = typeof userService !== 'undefined' ? userService.role : [];
+          const roles = (roleUser.concat(roleUserService)).filter((data: any) => (data.indexOf('/') === -1));
+          resolve(roles);
+        },
+        error:(error) =>{
+          console.log(error);
+          reject([])
+        }
       });
     });
     return rolePromise;

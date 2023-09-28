@@ -83,6 +83,6 @@ export class VisualizarSyllabusComponent implements OnInit{
     formBusqueda?.scrollIntoView({ behavior: 'instant', block: 'start' });
     this.syllabusService.setisNew(false);
     this.syllabusService.setSyllabus(this.Syllabus);
-    this.router.navigate(['/crear_syllabus']);
+    this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
   }
 }
