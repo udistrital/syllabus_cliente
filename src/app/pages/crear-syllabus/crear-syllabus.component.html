@@ -10,16 +10,16 @@ align-items: center;
                     style="width:calc(100% - 60px); border: 1px #666666 solid; border-radius: 15px;background-color: #F5F5F5; margin: auto;">
                     <mat-card-content>
                         <p>
-                            <label for="">Proyecto / Programa curricular: {{Proyecto.Nombre}}
+                            <label for=""><strong>Proyecto / Programa curricular:</strong> {{Proyecto.Nombre}}
                             </label>
 
                         </p>
                         <p>
-                            <label for="">Plan de estudios: {{PlanEstudio.cra_nombre}}, plan de
+                            <label for=""><strong>Plan de estudios:</strong> {{PlanEstudio.cra_nombre}}, plan de
                                 estudio:{{PlanEstudio.pen_nro}}</label>
                         </p>
                         <p>
-                            <label for="">Periodo académico: {{EspacioAcademico.pen_sem}}
+                            <label for=""><strong>Periodo académico:</strong> {{EspacioAcademico.pen_sem}}
                             </label>
                         </p>
                     </mat-card-content>
@@ -68,7 +68,7 @@ align-items: center;
                                                         style="background-color: var(--primary);color: white;text-align: center;">
                                                         Distribución horas de trabajo</td>
                                                     <td class="mat-cell"
-                                                        style="background-color: #F5F5F5; padding: 0px;text-align: center;vertical-align: middle;">
+                                                        style="background-color: #d1d1d1; padding: 0px;text-align: center;vertical-align: middle;">
                                                         HTD
                                                     </td>
                                                     <td class="mat-cell"
@@ -76,7 +76,7 @@ align-items: center;
                                                         {{detalle_espacio_academico?.pen_nro_ht}}
                                                     </td>
                                                     <td class="mat-cell"
-                                                        style="background-color: #F5F5F5;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        style="background-color: #d1d1d1;padding: 0px;text-align: center;vertical-align: middle;">
                                                         HTC
                                                     </td>
                                                     <td class="mat-cell"
@@ -84,7 +84,7 @@ align-items: center;
                                                         {{detalle_espacio_academico?.pen_nro_hp}}
                                                     </td>
                                                     <td class="mat-cell"
-                                                        style="background-color: #F5F5F5;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        style="background-color: #d1d1d1;padding: 0px;text-align: center;vertical-align: middle;">
                                                         HTA
                                                     </td>
                                                     <td class="mat-cell"
@@ -97,7 +97,7 @@ align-items: center;
                                                         style="background-color: var(--primary);color: white;text-align: center;">
                                                         Tipo de espacio académico</td>
                                                     <td class="mat-cell"
-                                                        style="background-color: #F5F5F5; padding: 0px;text-align: center;vertical-align: middle;">
+                                                        style="background-color: #d1d1d1; padding: 0px;text-align: center;vertical-align: middle;">
                                                         Asignatura
                                                     </td>
                                                     <td class="mat-cell"
@@ -105,7 +105,7 @@ align-items: center;
                                                         {{detalle_espacio_academico?.tipo=='ASIGNATURA'?'X':''}}
                                                     </td>
                                                     <td class="mat-cell"
-                                                        style="background-color: #F5F5F5;padding: 0px;text-align: center;vertical-align: middle;">
+                                                        style="background-color: #d1d1d1;padding: 0px;text-align: center;vertical-align: middle;">
                                                         Catedra
                                                     </td>
                                                     <td class="mat-cell"
@@ -261,7 +261,8 @@ align-items: center;
                                                     <mat-label>Seleccione los idiomas</mat-label>
                                                     <mat-select (selectionChange)="onChangeIdioma($event.value)"
                                                         formControlName="idioma_espacio_id" multiple>
-                                                        <input (keyup)="onKeySearchIdioma($event.target.value)" class="input-search"
+                                                        <input (keyup)="onKeySearchIdioma($event.target.value)"
+                                                            class="input-search"
                                                             placeholder="Escriba el nombre del idioma que desea seleccionar">
                                                         <mat-option *ngFor="let idioma of filteredIdiomas"
                                                             [value]="idioma.Id">
@@ -287,7 +288,7 @@ align-items: center;
                             <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
-                                        Secuencia didactica
+                                        Secuencia didáctica
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <div class="container-border">
@@ -322,7 +323,7 @@ align-items: center;
                                                     </mat-form-field>
                                                     <div>
                                                         <button mat-button matStepperNext
-                                                            [disabled]="!formSaberesPrevios.valid">Siguiente</button>
+                                                            [disabled]="!formSaberesPrevios.valid" mat-raised-button style="background-color: var(--primary);color: white;">Siguiente</button>
                                                     </div>
                                                 </ng-template>
                                             </form>
@@ -338,9 +339,9 @@ align-items: center;
                                                         <textarea matInput formControlName="justificacion"></textarea>
                                                     </mat-form-field>
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious>Anterior</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
                                                     <button mat-button matStepperNext
-                                                        [disabled]="!formJustificacion.valid">Siguiente</button>
+                                                        [disabled]="!formJustificacion.valid" mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -357,7 +358,7 @@ align-items: center;
                                                     </mat-form-field>
                                                     <div style="display: flex;">
                                                         <h2>Objetivos específicos</h2>
-                                                        <mat-icon aria-hidden="false"
+                                                        <mat-icon aria-label="Agregar objetivo específico"
                                                             (click)="agregarObjetivoEspecifico()" fontIcon="add" style="color: white;
                                                             background-color: var(--primary);
                                                             border-radius: 32px;
@@ -372,8 +373,8 @@ align-items: center;
                                                                         {{i+1}}</mat-label>
                                                                     <textarea id="ObjEsp-{{i}}" matInput
                                                                         formControlName="objetivo"></textarea>
-                                                                    <mat-icon aria-hidden="false" fontIcon="delete"
-                                                                        style="color: white;
+                                                                    <mat-icon aria-label="Eliminar objetivo específico"
+                                                                        fontIcon="delete" style="color: white;
                                                                         background-color: var(--primary);
                                                                         border-radius: 32px;
                                                                         height: 25px;
@@ -385,9 +386,9 @@ align-items: center;
                                                         </ng-container>
                                                     </div>
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious>Anterior</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
                                                     <button mat-button matStepperNext
-                                                        [disabled]="!formObjetivos.valid">Siguiente</button>
+                                                        [disabled]="!formObjetivos.valid" mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -409,7 +410,7 @@ align-items: center;
                                                         <ng-container matColumnDef="numero">
                                                             <th mat-header-cell *matHeaderCellDef
                                                                 style="text-align: center;"> <mat-icon
-                                                                    aria-hidden="false"
+                                                                    aria-label="Agregar fila"
                                                                     (click)="agregarPFA(undefined,false);"
                                                                     fontIcon="add" style="color: white;
                                                                 background-color: var(--primary);
@@ -419,7 +420,8 @@ align-items: center;
                                                                 style="text-align: center;padding: 0px !important;width: 1vw;">
                                                                 {{index+1}}
 
-                                                                <mat-icon aria-hidden="false" fontIcon="delete" style="color: white;
+                                                                <mat-icon aria-label="Eliminar fila" fontIcon="delete"
+                                                                    style="color: white;
                                                                         background-color: var(--primary);
                                                                         border-radius: 32px;
                                                                         height: 25px;
@@ -472,9 +474,9 @@ align-items: center;
                                                         </ng-container>
                                                     </table>
                                                     <button mat-button matStepperPrevious
-                                                        style="margin-top: 0px;">Anterior</button>
+                                                        style="margin-top: 0px;" mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
                                                     <button mat-button matStepperNext
-                                                        [disabled]="!formPFA.valid">Siguiente</button>
+                                                        [disabled]="!formPFA.valid" mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px; margin-top: 14px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -491,7 +493,7 @@ align-items: center;
 
                                                         <div style="display: flex;">
                                                             <h2>Temas</h2>
-                                                            <mat-icon aria-hidden="false" (click)="agregarTema();"
+                                                            <mat-icon aria-label="Agregar tema" (click)="agregarTema();"
                                                                 fontIcon="add" style="color: white;
                                                                 background-color: var(--primary);
                                                                 border-radius: 32px;
@@ -507,8 +509,8 @@ align-items: center;
                                                                         {{i+1}}</mat-label>
                                                                     <input type="text" id="tema-Nombre-{{i}}" matInput
                                                                         formControlName="nombre">
-                                                                    <mat-icon aria-hidden="false" fontIcon="delete"
-                                                                        style="color: white;
+                                                                    <mat-icon aria-label="Eliminar tema"
+                                                                        fontIcon="delete" style="color: white;
                                                                             background-color: var(--primary);
                                                                             border-radius: 32px;
                                                                             height: 25px;
@@ -519,7 +521,7 @@ align-items: center;
                                                                 </mat-form-field>
                                                                 <div style="display: flex;">
                                                                     <h5>Subtemas {{tema.get('nombre').value}}</h5>
-                                                                    <mat-icon aria-hidden="false"
+                                                                    <mat-icon aria-label="Agregar sub tema"
                                                                         (click)="agregarSubTema(i);" fontIcon="add"
                                                                         style="color: white;
                                                                     background-color: var(--primary);
@@ -538,7 +540,7 @@ align-items: center;
                                                                                     id="subtema-{{i+1}}-{{j+1}}"
                                                                                     matInput [formControlName]="j">
 
-                                                                                <mat-icon aria-hidden="false"
+                                                                                <mat-icon aria-label="Eliminar subtema"
                                                                                     fontIcon="delete" style="color: white;
                                                                                         background-color: var(--primary);
                                                                                         border-radius: 32px;
@@ -561,8 +563,8 @@ align-items: center;
                                                     </ng-container>
 
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious>Anterior</button>
-                                                    <button mat-button matStepperNext>Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -578,14 +580,14 @@ align-items: center;
                                                             <div style="width: 100%" [formGroupName]="i">
                                                                 <div style="display: flex;">
                                                                     <h3>Estrategia {{i+1}}</h3>
-                                                                    <mat-icon aria-hidden="false"
+                                                                    <mat-icon aria-label="Agregar estrategia"
                                                                         (click)="agregarEstrategia();" fontIcon="add"
                                                                         style="color: white;
                                                                     background-color: var(--primary);
                                                                     border-radius: 32px;
                                                                     margin-left: auto;" *ngIf="i==0"></mat-icon>
-                                                                    <mat-icon aria-hidden="false" fontIcon="delete"
-                                                                        style="color: white;
+                                                                    <mat-icon aria-label="Eliminar estrategia"
+                                                                        fontIcon="delete" style="color: white;
                                                                         background-color: var(--primary);
                                                                         border-radius: 32px;
                                                                         height: 25px;
@@ -633,8 +635,8 @@ align-items: center;
                                                     </ng-container>
 
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious>Anterior</button>
-                                                    <button mat-button matStepperNext>Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -652,13 +654,14 @@ align-items: center;
                                                             *ngFor="let evalucion of evaluaciones.controls;let i=index">
                                                             <div style="display: flex;">
                                                                 <h3>Evaluación {{i+1}}</h3>
-                                                                <mat-icon aria-hidden="false"
+                                                                <mat-icon aria-label="Agregar evaluación"
                                                                     (click)="agregarEvalucion();" fontIcon="add" style="color: white;
                                                                     background-color: var(--primary);
                                                                     border-radius: 32px;
                                                                     margin-left: auto;" *ngIf="i==0">
                                                                 </mat-icon>
-                                                                <mat-icon aria-hidden="false" fontIcon="delete" style="color: white;
+                                                                <mat-icon aria-label="Eliminar evaluación"
+                                                                    fontIcon="delete" style="color: white;
                                                                         background-color: var(--primary);
                                                                         border-radius: 32px;
                                                                         height: 25px;
@@ -696,8 +699,8 @@ align-items: center;
                                                     </ng-container>
 
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious>Anterior</button>
-                                                    <button mat-button matStepperNext>Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -712,8 +715,8 @@ align-items: center;
                                                     </mat-form-field>
 
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious>Anterior</button>
-                                                    <button mat-button matStepperNext>Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -730,8 +733,8 @@ align-items: center;
                                                     </mat-form-field>
 
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious>Anterior</button>
-                                                    <button mat-button matStepperNext>Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -756,7 +759,8 @@ align-items: center;
                                                                     style="text-align: center;">
                                                                     <div style="display: flex;
                                                                     justify-content: center;">
-                                                                        Básicas <mat-icon aria-hidden="false"
+                                                                        <h3>Básicas</h3>
+                                                                        <mat-icon aria-label="Agregar bibliografía"
                                                                             (click)="agregarBibliografiaBasica('',false);"
                                                                             fontIcon="add" style="color: white;
                                                                 background-color: var(--primary);
@@ -771,8 +775,8 @@ align-items: center;
                                                                         <input matInput [formControlName]="index">
 
 
-                                                                        <mat-icon aria-hidden="false" fontIcon="delete"
-                                                                            style="color: white;
+                                                                        <mat-icon aria-label="Eliminar"
+                                                                            fontIcon="delete" style="color: white;
                                                                                 background-color: var(--primary);
                                                                                 border-radius: 32px;
                                                                                 height: 25px;
@@ -801,7 +805,9 @@ align-items: center;
                                                                     style="text-align: center;">
                                                                     <div style="display: flex;
                                                                     justify-content: center;">
-                                                                        Complementarias <mat-icon aria-hidden="false"
+                                                                        <h3 style="position: absolute;">Complementarias
+                                                                        </h3> <mat-icon
+                                                                            aria-label="Agregar bibliografía"
                                                                             (click)="agregarBibliografiaComplementaria('',false);"
                                                                             fontIcon="add" style="color: white;
                                                             background-color: var(--primary);
@@ -815,8 +821,8 @@ align-items: center;
                                                                         <mat-label>Complementaria
                                                                             {{index+1}}</mat-label>
                                                                         <input matInput [formControlName]="index">
-                                                                        <mat-icon aria-hidden="false" fontIcon="delete"
-                                                                            style="color: white;
+                                                                        <mat-icon aria-label="Eliminar bibliografía"
+                                                                            fontIcon="delete" style="color: white;
                                                                                 background-color: var(--primary);
                                                                                 border-radius: 32px;
                                                                                 height: 25px;
@@ -845,12 +851,13 @@ align-items: center;
                                                                     style="text-align: center;">
                                                                     <div style="display: flex;
                                                                     justify-content: center;">
-                                                                        Páginas web <mat-icon aria-hidden="false"
+                                                                        <h3 style="position: absolute;">Páginas web</h3>
+                                                                        <mat-icon aria-label="Agregar bibliografía"
                                                                             (click)="agregarBibliografiaPaginaWeb('',false);"
                                                                             fontIcon="add" style="color: white;
                                                             background-color: var(--primary);
                                                             border-radius: 32px;
-                                                            margin-left: 1vw;"></mat-icon>
+                                                            margin-left: auto;"></mat-icon>
                                                                     </div>
                                                                 </th>
                                                                 <td mat-cell *matCellDef="let row; let index = index"
@@ -859,8 +866,8 @@ align-items: center;
                                                                         <mat-label>Página web {{index+1}}</mat-label>
                                                                         <input matInput [formControlName]="index">
 
-                                                                        <mat-icon aria-hidden="false" fontIcon="delete"
-                                                                            style="color: white;
+                                                                        <mat-icon aria-label="Eliminar bibliografía"
+                                                                            fontIcon="delete" style="color: white;
                                                                                 background-color: var(--primary);
                                                                                 border-radius: 32px;
                                                                                 height: 25px;
@@ -876,7 +883,7 @@ align-items: center;
                                                         </table>
                                                     </div>
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious>Anterior</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -918,7 +925,7 @@ align-items: center;
                                                 justify-content: center;
                                                 align-items: center;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>Fecha de revisión</mat-label>
+                                                        <mat-label>{{!isNew?Syllabus.seguimiento.fechaRevisionConsejo.split('T')[0]:'Fecha de revisión'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaRevisionConsejo"
                                                             formControlName="fechaRevisionConsejo">
                                                         <mat-datepicker-toggle matIconSuffix
@@ -937,7 +944,7 @@ align-items: center;
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>Fecha aprobación</mat-label>
+                                                        <mat-label>{{!isNew?Syllabus.seguimiento.fechaAprobacionConsejo.split('T')[0]:'Fecha aprobación'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaAprobacionConsejo"
                                                             formControlName="fechaAprobacionConsejo">
                                                         <mat-datepicker-toggle matIconSuffix
@@ -953,7 +960,7 @@ align-items: center;
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%; border-top: 1px var(--primary) solid;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>Número de acta</mat-label>
+                                                        <mat-label>{{!isNew?Syllabus.seguimiento.numeroActa:'Número de acta'}}</mat-label>
                                                         <input matInput type="text" formControlName="numeroActa">
                                                     </mat-form-field>
                                                 </div>
@@ -1001,7 +1008,7 @@ align-items: center;
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>Fecha Inicio</mat-label>
+                                                        <mat-label>{{!isNew?Syllabus.vigencia.fechaInicio.split('T')[0]:'Fecha Inicio'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaInicio"
                                                             formControlName="fechaInicio">
                                                         <mat-datepicker-toggle matIconSuffix
@@ -1016,7 +1023,7 @@ align-items: center;
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>Fecha Fin</mat-label>
+                                                        <mat-label>{{!isNew?Syllabus.vigencia.fechaFin.split('T')[0]:'Fecha Fin'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaFin"
                                                             formControlName="fechaFin">
                                                         <mat-datepicker-toggle matIconSuffix

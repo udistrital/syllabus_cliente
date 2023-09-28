@@ -1,7 +1,7 @@
 <div class="container-baner">
     <h1 class="title-home">El sistema de Syllabus le da la bienvenida</h1>
     <p class="guide-home">En este módulo podrá consultar los syllabus de los proyectos/programas académicos de la universidad.</p>
-    <button mat-raised-button color="primary" (click)="goToSearch()" style="background: var(--primary);
+    <button mat-raised-button color="primary" (click)="goToSearch()" [hidden]="!isValidRol" style="background: var(--primary);
     border: 0;
     border-radius: 32px;
     box-shadow: 0 3px 6px rgba(0,0,0,.2);

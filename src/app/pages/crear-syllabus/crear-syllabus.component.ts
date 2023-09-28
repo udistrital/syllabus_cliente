@@ -113,7 +113,7 @@ export class CrearSyllabusComponent implements OnInit {
   ngOnInit(): void {
     //console.log(this.Proyecto, this.PlanEstudio, this.EspacioAcademico);
     if (Object.keys(this.Proyecto).length === 0 || Object.keys(this.PlanEstudio).length === 0 || Object.keys(this.EspacioAcademico).length === 0) {
-      this.router.navigate(['/buscar_syllabus'])
+      this.router.navigate(['/buscar_syllabus'],{ skipLocationChange: true })
     } else {
       this.loadInfoIdentificacionEspacioAcademico();
       this.loadIdiomas();
@@ -437,6 +437,15 @@ export class CrearSyllabusComponent implements OnInit {
     const syllabus: Syllabus = new Syllabus();
     //console.log(this.validateForms());
     if (this.validateForms()) {
+      Swal.fire({
+        title: this.isNew?'Creando Syllabus':'Edicitando Syllabus',
+        html: `Por favor espere`,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        willOpen: () => {
+          Swal.showLoading();
+        },
+      })
       this.uploadActa().subscribe({
         next: (respuesta: any) => {
           syllabus.espacio_academico_id = Number(this.EspacioAcademico.asi_cod);
@@ -467,13 +476,15 @@ export class CrearSyllabusComponent implements OnInit {
           this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
             next: (respuesta: any) => {
               //console.log(respuesta);
+              Swal.close();
               Swal.fire({
                 icon: 'success',
                 title: this.isNew?'Creación exitosa':'Edición exitosa',
               })
-              this.router.navigate(['/buscar_syllabus']);
+              this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
             },
             error: (error) => {
+              Swal.close();
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -484,6 +495,7 @@ export class CrearSyllabusComponent implements OnInit {
         },
         error: (error: Error) => {
           //console.error(error)
+          Swal.close();
           Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -520,7 +532,7 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   regresar() {
-    this.router.navigate(['/buscar_syllabus'])
+    this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true })
   }
 
   loadIdiomas() {
