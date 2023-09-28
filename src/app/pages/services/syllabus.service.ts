@@ -1,7 +1,7 @@
-import { Injectable,EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
-import { DependenciaTipoDependencia, Facultad } from 'src/app/@core/models/facultad';
+import { Facultad } from 'src/app/@core/models/facultad';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
 import { Syllabus } from 'src/app/@core/models/syllabus';
@@ -15,6 +15,9 @@ export class SyllabusService {
   private proyectoAcademico = new BehaviorSubject<ProyectoAcademico>(new ProyectoAcademico);
   private planEstudio = new BehaviorSubject<PlanEstudio>(new PlanEstudio);
   private espacioAcademico = new BehaviorSubject<EspacioAcademico>(new EspacioAcademico);
+  private proyectosAcademicos = new BehaviorSubject<ProyectoAcademico[]>([]);
+  private planesEstudio = new BehaviorSubject<PlanEstudio[]>([]);
+  private espaciosAcademicos = new BehaviorSubject<EspacioAcademico[]>([]);
   private syllabus =new BehaviorSubject<Syllabus>(new Syllabus);
   private isNew= new BehaviorSubject<Boolean>(new Boolean);
 
@@ -22,6 +25,9 @@ export class SyllabusService {
   proyectoAcademico$=this.proyectoAcademico.asObservable();
   planEstudios$=this.planEstudio.asObservable();
   espacioAcademico$=this.espacioAcademico.asObservable();
+  proyectosAcademicos$=this.proyectosAcademicos.asObservable();
+  planesEstudio$=this.planesEstudio.asObservable();
+  espaciosAcademicos$=this.espaciosAcademicos.asObservable();
   syllabus$=this.syllabus.asObservable();
   isNew$=this.isNew.asObservable();
 
@@ -42,6 +48,18 @@ export class SyllabusService {
 
   setEspacioAcademico(espacioAcademico:EspacioAcademico){
     this.espacioAcademico.next(espacioAcademico);
+  }
+
+  setProyectosAcademicos(proyectosAcademicos:ProyectoAcademico[]){
+    this.proyectosAcademicos.next(proyectosAcademicos)
+  }
+
+  setPlanesEstudio(planesEstudio:PlanEstudio[]){
+    this.planesEstudio.next(planesEstudio)
+  }
+
+  setEspaciosAcademicos(espaciosAcademicos:EspacioAcademico[]){
+    this.espaciosAcademicos.next(espaciosAcademicos)
   }
 
   setSyllabus(syllabus:Syllabus){

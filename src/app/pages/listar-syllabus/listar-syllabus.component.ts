@@ -9,15 +9,17 @@ import { RequestManager } from '../services/requestManager';
 import { environment } from '../../../environments/environment';
 import { Syllabus } from '../../@core/models/syllabus'
 import { MatDialog } from '@angular/material/dialog';
+import { BehaviorSubject } from 'rxjs';
 import { VersionesSyllabusComponent } from '../versiones-syllabus/versiones-syllabus.component';
 import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-listar-syllabus',
   templateUrl: './listar-syllabus.component.html',
   styleUrls: ['./listar-syllabus.component.scss']
 })
-export class ListarSyllabusComponent implements AfterViewInit, OnInit {
+export class ListarSyllabusComponent implements OnInit {
   displayedColumns: string[] = ['#', 'proyecto', 'plan_estudios', 'semestre', 'espacio_academico', 'acciones_buttons'];
   displayedHeaders: string[] = ['resultadosConsulta', 'acciones'];
   dataSource = new MatTableDataSource<SyllabusInterface>();
@@ -28,6 +30,7 @@ export class ListarSyllabusComponent implements AfterViewInit, OnInit {
   PlanEstudio!: PlanEstudio;
   EspacioAcademico!: EspacioAcademico;
   Syllabus: Syllabus;
+  //SyllabusLoad:BehaviorSubject<boolean> = new BehaviorSubject(false);;
 
   constructor(private router: Router, private syllabusService: SyllabusService, private request: RequestManager, public dialog: MatDialog) {
 
@@ -44,18 +47,29 @@ export class ListarSyllabusComponent implements AfterViewInit, OnInit {
       this.EspacioAcademico = espacioAcademico;
       this.changeDataTableSyllabus();
     });
-  }
 
-  ngAfterViewInit() {
-    this.scrollTablaResultados();
   }
 
   changeDataTableSyllabus() {
-    this.request.get(environment.SYLLABUS_CRUD, `syllabus?query=espacio_academico_id:${this.EspacioAcademico.asi_cod},proyecto_curricular_id:${this.PlanEstudio.pen_cra_cod},plan_estudios_id:${this.PlanEstudio.pen_nro},syllabus_actual:true,activo:true`).subscribe((dataSyllabus) => {
-      if (dataSyllabus) {
-        //console.log(dataSyllabus);
-        this.syllabus = dataSyllabus.Data;
-        this.formatDataSyllabusForTable();
+    this.request.get(environment.SYLLABUS_CRUD, `syllabus?query=espacio_academico_id:${this.EspacioAcademico.asi_cod},proyecto_curricular_id:${this.PlanEstudio.pen_cra_cod},plan_estudios_id:${this.PlanEstudio.pen_nro},syllabus_actual:true,activo:true`).subscribe({
+      next:(dataSyllabus) => {
+        if (dataSyllabus) {
+          //consol.log(dataSyllabus);
+          this.syllabus = dataSyllabus.Data;
+          //this.SyllabusLoad.next(true);
+          this.formatDataSyllabusForTable();
+        }
+      },
+      error:() => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error al traer los syllabus',
+        })
+      },
+      complete:()=> {
+        //consol.log('hola');
+        this.scrollTablaResultados();
       }
     })
 
@@ -103,6 +117,7 @@ export class ListarSyllabusComponent implements AfterViewInit, OnInit {
 
   scrollTablaResultados() {
     const tablaResultados = document.getElementById('tablaResultados');
+    //consol.log(tablaResultados);
     tablaResultados?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 
@@ -119,7 +134,7 @@ export class ListarSyllabusComponent implements AfterViewInit, OnInit {
       const formBusqueda = document.getElementById("workspace");
       formBusqueda?.scrollIntoView({ behavior: 'instant', block: 'start' });
       this.syllabusService.setisNew(true);
-      this.router.navigate(['/crear_syllabus']);
+      this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
     }
   }
 
@@ -129,7 +144,7 @@ export class ListarSyllabusComponent implements AfterViewInit, OnInit {
     this.syllabusService.setisNew(false);
     this.Syllabus = this.syllabus[row];
     this.syllabusService.setSyllabus(this.Syllabus);
-    this.router.navigate(['/crear_syllabus']);
+    this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
   }
 }
 

@@ -152,6 +152,10 @@ table tbody tr td:nth-child(n + 2) {
 // mat-expansion-panel-header {
 //     background-color: var(--primary);
 // }
+
+.mat-expansion-panel-header:not([aria-expanded=true]){
+    border-bottom: 1px var(--color2) solid;
+}
 .mat-expansion-panel-header,
 .mat-expansion-panel-header.cdk-focused,
 .mat-expansion-panel-header.mat-expanded,
