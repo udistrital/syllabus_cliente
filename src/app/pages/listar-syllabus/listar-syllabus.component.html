@@ -54,21 +54,21 @@ align-items: center;" id="tablaResultados">
                         <ng-container matColumnDef="acciones_buttons">
                             <th mat-header-cell *matHeaderCellDef (click)="FormCrearSyllabus($event)"
                                 [ngStyle]="{'cursor': syllabus.length==0 ? default : pointer }"> <a
-                                    aria-label="Crear syllabus">
+                                    aria-label="Crear syllabus" matTooltip="Crear syllabus">
                                     <mat-icon fontIcon="add" style="color: white;"
                                         *ngIf="syllabus.length==0"></mat-icon>
                                 </a>
                             </th>
                             <td mat-cell *matCellDef="let element;let row=index " style="text-align: center;">
                                 <button mat-icon-button (click)="openSyllabusVisualizarSyllabusDocument(row)"
-                                    aria-label="Ver syllabus">
+                                    aria-label="Ver syllabus" matTooltip="Ver syllabus">
                                     <mat-icon fontIcon="visibility"></mat-icon>
                                 </button>
-                                <button mat-icon-button (click)="FormEditSyllabus(row)" aria-label="Editar syllabus">
+                                <button mat-icon-button (click)="FormEditSyllabus(row)" aria-label="Editar syllabus" matTooltip="Editar syllabus">
                                     <mat-icon fontIcon="edit document"></mat-icon>
                                 </button>
                                 <button mat-icon-button *ngIf="syllabus[row].version!=1"
-                                    (click)="openSyllabusVersion(row)" aria-label="Ver versiones" aria-hidden="false">
+                                    (click)="openSyllabusVersion(row)" aria-label="Ver versiones" matTooltip="Ver versiones">
                                     <mat-icon fontIcon="folder open">add</mat-icon>
                                 </button>
                             </td>
