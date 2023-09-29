@@ -57,8 +57,9 @@ align-items: center;" id="formBusqueda">
                         <ng-container matColumnDef="acciones_buttons">
                             <th mat-header-cell *matHeaderCellDef> Documento relacionados </th>
                             <td mat-cell *matCellDef="let element;let row=index;" style="text-align: center;">
-                                <button mat-icon-button (click)="loadDocumentosRelacionados(row)">
-                                    <mat-icon aria-label="Ver documento" >attach_file</mat-icon>
+                                <button mat-icon-button (click)="loadDocumentosRelacionados(row)"
+                                    matTooltip="Ver documento">
+                                    <mat-icon>attach_file</mat-icon>
                                 </button>
                             </td>
                             <td mat-footer-cell *matFooterCellDef class="footer">

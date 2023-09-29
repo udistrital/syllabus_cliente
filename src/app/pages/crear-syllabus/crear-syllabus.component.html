@@ -358,7 +358,7 @@ align-items: center;
                                                     </mat-form-field>
                                                     <div style="display: flex;">
                                                         <h2>Objetivos específicos</h2>
-                                                        <mat-icon aria-label="Agregar objetivo específico"
+                                                        <mat-icon matTooltip="Agregar objetivo específico"
                                                             (click)="agregarObjetivoEspecifico()" fontIcon="add" style="color: white;
                                                             background-color: var(--primary);
                                                             border-radius: 32px;
@@ -373,7 +373,7 @@ align-items: center;
                                                                         {{i+1}}</mat-label>
                                                                     <textarea id="ObjEsp-{{i}}" matInput
                                                                         formControlName="objetivo"></textarea>
-                                                                    <mat-icon aria-label="Eliminar objetivo específico"
+                                                                    <mat-icon matTooltip="Eliminar objetivo específico"
                                                                         fontIcon="delete" style="color: white;
                                                                         background-color: var(--primary);
                                                                         border-radius: 32px;
@@ -410,7 +410,7 @@ align-items: center;
                                                         <ng-container matColumnDef="numero">
                                                             <th mat-header-cell *matHeaderCellDef
                                                                 style="text-align: center;"> <mat-icon
-                                                                    aria-label="Agregar fila"
+                                                                    matTooltip="Agregar fila"
                                                                     (click)="agregarPFA(undefined,false);"
                                                                     fontIcon="add" style="color: white;
                                                                 background-color: var(--primary);
@@ -420,7 +420,7 @@ align-items: center;
                                                                 style="text-align: center;padding: 0px !important;width: 1vw;">
                                                                 {{index+1}}
 
-                                                                <mat-icon aria-label="Eliminar fila" fontIcon="delete"
+                                                                <mat-icon matTooltip="Eliminar fila" fontIcon="delete"
                                                                     style="color: white;
                                                                         background-color: var(--primary);
                                                                         border-radius: 32px;
@@ -493,7 +493,7 @@ align-items: center;
 
                                                         <div style="display: flex;">
                                                             <h2>Temas</h2>
-                                                            <mat-icon aria-label="Agregar tema" (click)="agregarTema();"
+                                                            <mat-icon matTooltip="Agregar tema" (click)="agregarTema();"
                                                                 fontIcon="add" style="color: white;
                                                                 background-color: var(--primary);
                                                                 border-radius: 32px;
@@ -509,7 +509,7 @@ align-items: center;
                                                                         {{i+1}}</mat-label>
                                                                     <input type="text" id="tema-Nombre-{{i}}" matInput
                                                                         formControlName="nombre">
-                                                                    <mat-icon aria-label="Eliminar tema"
+                                                                    <mat-icon matTooltip="Eliminar tema"
                                                                         fontIcon="delete" style="color: white;
                                                                             background-color: var(--primary);
                                                                             border-radius: 32px;
@@ -521,7 +521,7 @@ align-items: center;
                                                                 </mat-form-field>
                                                                 <div style="display: flex;">
                                                                     <h5>Subtemas {{tema.get('nombre').value}}</h5>
-                                                                    <mat-icon aria-label="Agregar sub tema"
+                                                                    <mat-icon matTooltip="Agregar sub tema"
                                                                         (click)="agregarSubTema(i);" fontIcon="add"
                                                                         style="color: white;
                                                                     background-color: var(--primary);
@@ -540,7 +540,7 @@ align-items: center;
                                                                                     id="subtema-{{i+1}}-{{j+1}}"
                                                                                     matInput [formControlName]="j">
 
-                                                                                <mat-icon aria-label="Eliminar subtema"
+                                                                                <mat-icon matTooltip="Eliminar subtema"
                                                                                     fontIcon="delete" style="color: white;
                                                                                         background-color: var(--primary);
                                                                                         border-radius: 32px;
@@ -580,13 +580,13 @@ align-items: center;
                                                             <div style="width: 100%" [formGroupName]="i">
                                                                 <div style="display: flex;">
                                                                     <h3>Estrategia {{i+1}}</h3>
-                                                                    <mat-icon aria-label="Agregar estrategia"
+                                                                    <mat-icon matTooltip="Agregar estrategia"
                                                                         (click)="agregarEstrategia();" fontIcon="add"
                                                                         style="color: white;
                                                                     background-color: var(--primary);
                                                                     border-radius: 32px;
                                                                     margin-left: auto;" *ngIf="i==0"></mat-icon>
-                                                                    <mat-icon aria-label="Eliminar estrategia"
+                                                                    <mat-icon matTooltip="Eliminar estrategia"
                                                                         fontIcon="delete" style="color: white;
                                                                         background-color: var(--primary);
                                                                         border-radius: 32px;
@@ -654,13 +654,13 @@ align-items: center;
                                                             *ngFor="let evalucion of evaluaciones.controls;let i=index">
                                                             <div style="display: flex;">
                                                                 <h3>Evaluación {{i+1}}</h3>
-                                                                <mat-icon aria-label="Agregar evaluación"
+                                                                <mat-icon matTooltip="Agregar evaluación"
                                                                     (click)="agregarEvalucion();" fontIcon="add" style="color: white;
                                                                     background-color: var(--primary);
                                                                     border-radius: 32px;
                                                                     margin-left: auto;" *ngIf="i==0">
                                                                 </mat-icon>
-                                                                <mat-icon aria-label="Eliminar evaluación"
+                                                                <mat-icon matTooltip="Eliminar evaluación"
                                                                     fontIcon="delete" style="color: white;
                                                                         background-color: var(--primary);
                                                                         border-radius: 32px;
@@ -759,13 +759,13 @@ align-items: center;
                                                                     style="text-align: center;">
                                                                     <div style="display: flex;
                                                                     justify-content: center;">
-                                                                        <h3>Básicas</h3>
-                                                                        <mat-icon aria-label="Agregar bibliografía"
+                                                                        <h3 style="position: absolute;">Básicas</h3>
+                                                                        <mat-icon matTooltip="Agregar bibliografía"
                                                                             (click)="agregarBibliografiaBasica('',false);"
                                                                             fontIcon="add" style="color: white;
                                                                 background-color: var(--primary);
                                                                 border-radius: 32px;
-                                                                margin-left: 1vw;"></mat-icon>
+                                                                margin-left: auto;"></mat-icon>
                                                                     </div>
                                                                 </th>
                                                                 <td mat-cell *matCellDef="let row; let index = index"
@@ -775,7 +775,7 @@ align-items: center;
                                                                         <input matInput [formControlName]="index">
 
 
-                                                                        <mat-icon aria-label="Eliminar"
+                                                                        <mat-icon matTooltip="Eliminar"
                                                                             fontIcon="delete" style="color: white;
                                                                                 background-color: var(--primary);
                                                                                 border-radius: 32px;
@@ -807,12 +807,12 @@ align-items: center;
                                                                     justify-content: center;">
                                                                         <h3 style="position: absolute;">Complementarias
                                                                         </h3> <mat-icon
-                                                                            aria-label="Agregar bibliografía"
+                                                                            matTooltip="Agregar bibliografía"
                                                                             (click)="agregarBibliografiaComplementaria('',false);"
                                                                             fontIcon="add" style="color: white;
                                                             background-color: var(--primary);
                                                             border-radius: 32px;
-                                                            margin-left: 1vw;"></mat-icon>
+                                                            margin-left: auto;"></mat-icon>
                                                                     </div>
                                                                 </th>
                                                                 <td mat-cell *matCellDef="let row; let index = index"
@@ -821,7 +821,7 @@ align-items: center;
                                                                         <mat-label>Complementaria
                                                                             {{index+1}}</mat-label>
                                                                         <input matInput [formControlName]="index">
-                                                                        <mat-icon aria-label="Eliminar bibliografía"
+                                                                        <mat-icon matTooltip="Eliminar bibliografía"
                                                                             fontIcon="delete" style="color: white;
                                                                                 background-color: var(--primary);
                                                                                 border-radius: 32px;
@@ -852,7 +852,7 @@ align-items: center;
                                                                     <div style="display: flex;
                                                                     justify-content: center;">
                                                                         <h3 style="position: absolute;">Páginas web</h3>
-                                                                        <mat-icon aria-label="Agregar bibliografía"
+                                                                        <mat-icon matTooltip="Agregar bibliografía"
                                                                             (click)="agregarBibliografiaPaginaWeb('',false);"
                                                                             fontIcon="add" style="color: white;
                                                             background-color: var(--primary);
@@ -866,7 +866,7 @@ align-items: center;
                                                                         <mat-label>Página web {{index+1}}</mat-label>
                                                                         <input matInput [formControlName]="index">
 
-                                                                        <mat-icon aria-label="Eliminar bibliografía"
+                                                                        <mat-icon matTooltip="Eliminar bibliografía"
                                                                             fontIcon="delete" style="color: white;
                                                                                 background-color: var(--primary);
                                                                                 border-radius: 32px;
