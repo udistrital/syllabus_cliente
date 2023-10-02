@@ -253,7 +253,7 @@ export class UserService {
     const rolePromise = new Promise<string[]>((resolve, reject) => {
       this.userSubject.subscribe({
         next:(data: any) => {
-          console.log(data)
+          //console.log(data)
           const { user, userService } = data;
           const roleUser = typeof user !== 'undefined' ? user.role : [];
           const roleUserService = typeof userService !== 'undefined' ? userService.role : [];

@@ -30,13 +30,15 @@ export class ListarSyllabusComponent implements OnInit {
   PlanEstudio!: PlanEstudio;
   EspacioAcademico!: EspacioAcademico;
   Syllabus: Syllabus;
-  //SyllabusLoad:BehaviorSubject<boolean> = new BehaviorSubject(false);;
+  SyllabusLoad:boolean;
 
   constructor(private router: Router, private syllabusService: SyllabusService, private request: RequestManager, public dialog: MatDialog) {
 
   }
 
   ngOnInit(): void {
+    
+    this.SyllabusLoad=false;
     this.syllabusService.proyectoAcademico$.subscribe((proyectoAcademico) => {
       this.Proyecto = proyectoAcademico;
     });
@@ -45,6 +47,8 @@ export class ListarSyllabusComponent implements OnInit {
     });
     this.syllabusService.espacioAcademico$.subscribe((espacioAcademico) => {
       this.EspacioAcademico = espacioAcademico;
+      this.SyllabusLoad=false;
+      this.scrollTablaResultados();
       this.changeDataTableSyllabus();
     });
 
@@ -56,8 +60,9 @@ export class ListarSyllabusComponent implements OnInit {
         if (dataSyllabus) {
           //consol.log(dataSyllabus);
           this.syllabus = dataSyllabus.Data;
-          //this.SyllabusLoad.next(true);
+          this.SyllabusLoad=true;
           this.formatDataSyllabusForTable();
+          //this.scrollTablaResultados();
         }
       },
       error:() => {
@@ -69,7 +74,7 @@ export class ListarSyllabusComponent implements OnInit {
       },
       complete:()=> {
         //consol.log('hola');
-        this.scrollTablaResultados();
+        
       }
     })
 
@@ -117,7 +122,6 @@ export class ListarSyllabusComponent implements OnInit {
 
   scrollTablaResultados() {
     const tablaResultados = document.getElementById('tablaResultados');
-    //consol.log(tablaResultados);
     tablaResultados?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 
