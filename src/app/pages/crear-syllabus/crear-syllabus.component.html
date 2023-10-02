@@ -31,11 +31,11 @@ align-items: center;
                             <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
-                                        Identificacion del espacio académico
+                                        Identificación del espacio académico
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <div class="container-border">
-                                    <h4> Identificacion del espacio académico </h4>
+                                    <h4> Identificación del espacio académico </h4>
 
                                     <mat-accordion [multi]="true">
                                         <mat-expansion-panel [expanded]="true" hideToggle>
@@ -288,7 +288,7 @@ align-items: center;
                             <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
-                                        Secuencia didáctica
+                                        Definición y desarrollo del espacio académico
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <div class="container-border">
@@ -322,8 +322,8 @@ align-items: center;
                                                         <textarea matInput formControlName='saberesPrevios'></textarea>
                                                     </mat-form-field>
                                                     <div>
-                                                        <button mat-button matStepperNext
-                                                            [disabled]="!formSaberesPrevios.valid" mat-raised-button style="background-color: var(--primary);color: white;">Siguiente</button>
+                                                        <button mat-button matStepperNext mat-raised-button
+                                                            style="background-color: var(--primary);color: white;">Siguiente</button>
                                                     </div>
                                                 </ng-template>
                                             </form>
@@ -339,9 +339,10 @@ align-items: center;
                                                         <textarea matInput formControlName="justificacion"></textarea>
                                                     </mat-form-field>
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
-                                                    <button mat-button matStepperNext
-                                                        [disabled]="!formJustificacion.valid" mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button
+                                                        style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button
+                                                        style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -386,9 +387,10 @@ align-items: center;
                                                         </ng-container>
                                                     </div>
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
-                                                    <button mat-button matStepperNext
-                                                        [disabled]="!formObjetivos.valid" mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button
+                                                        style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button
+                                                        style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -441,7 +443,7 @@ align-items: center;
                                                                 style="padding: 5px 10px 0px 0px !important;text-align: center;vertical-align: middle;">
                                                                 <mat-form-field style="width: 100%;">
                                                                     <mat-label>PFA programa</mat-label>
-                                                                    <input matInput formControlName="pfaPrograma">
+                                                                    <input matInput formControlName="pfa_programa">
                                                                 </mat-form-field>
                                                             </td>
                                                         </ng-container>
@@ -454,7 +456,7 @@ align-items: center;
                                                                 style="padding: 5px 10px 0px 0px !important;text-align: center;vertical-align: middle;">
                                                                 <mat-form-field style="width: 100%;">
                                                                     <mat-label>PFA asignatura</mat-label>
-                                                                    <input matInput formControlName="pfaAsignatura">
+                                                                    <input matInput formControlName="pfa_asignatura">
                                                                 </mat-form-field>
                                                             </td>
                                                         </ng-container>
@@ -473,10 +475,11 @@ align-items: center;
                                                             </td>
                                                         </ng-container>
                                                     </table>
-                                                    <button mat-button matStepperPrevious
-                                                        style="margin-top: 0px;" mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
-                                                    <button mat-button matStepperNext
-                                                        [disabled]="!formPFA.valid" mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px; margin-top: 14px;">Siguiente</button>
+                                                    <button mat-button matStepperPrevious style="margin-top: 0px;"
+                                                        mat-raised-button
+                                                        style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button
+                                                        style="background-color: var(--primary);color: white; margin-left: 10px; margin-top: 14px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -563,8 +566,10 @@ align-items: center;
                                                     </ng-container>
 
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
-                                                    <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button
+                                                        style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button
+                                                        style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -635,8 +640,10 @@ align-items: center;
                                                     </ng-container>
 
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
-                                                    <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button
+                                                        style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button
+                                                        style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -699,8 +706,10 @@ align-items: center;
                                                     </ng-container>
 
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
-                                                    <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button
+                                                        style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button
+                                                        style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -715,8 +724,10 @@ align-items: center;
                                                     </mat-form-field>
 
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
-                                                    <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button
+                                                        style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button
+                                                        style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -733,8 +744,10 @@ align-items: center;
                                                     </mat-form-field>
 
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
-                                                    <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button
+                                                        style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button
+                                                        style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -883,7 +896,8 @@ align-items: center;
                                                         </table>
                                                     </div>
                                                     <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperPrevious mat-raised-button
+                                                        style="background-color: var(--primary);color: white;">Anterior</button>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
@@ -925,7 +939,8 @@ align-items: center;
                                                 justify-content: center;
                                                 align-items: center;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>{{!isNew?Syllabus.seguimiento.fechaRevisionConsejo.split('T')[0]:'Fecha de revisión'}}</mat-label>
+                                                        <mat-label>{{!isNew?Syllabus.seguimiento.fechaRevisionConsejo.split('T')[0]:'Fecha
+                                                            de revisión'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaRevisionConsejo"
                                                             formControlName="fechaRevisionConsejo">
                                                         <mat-datepicker-toggle matIconSuffix
@@ -939,12 +954,13 @@ align-items: center;
                                                     justify-content: center;
                                                     align-items: center;">
                                                     <h3 style="margin: 0px;">Fecha aprobación por
-                                                        consejo curricular</h3>
+                                                        Consejo Curricular</h3>
                                                 </div>
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>{{!isNew?Syllabus.seguimiento.fechaAprobacionConsejo.split('T')[0]:'Fecha aprobación'}}</mat-label>
+                                                        <mat-label>{{!isNew?Syllabus.seguimiento.fechaAprobacionConsejo.split('T')[0]:'Fecha
+                                                            aprobación'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaAprobacionConsejo"
                                                             formControlName="fechaAprobacionConsejo">
                                                         <mat-datepicker-toggle matIconSuffix
@@ -960,7 +976,8 @@ align-items: center;
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%; border-top: 1px var(--primary) solid;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>{{!isNew?Syllabus.seguimiento.numeroActa:'Número de acta'}}</mat-label>
+                                                        <mat-label>{{!isNew?Syllabus.seguimiento.numeroActa:'Número de
+                                                            acta'}}</mat-label>
                                                         <input matInput type="text" formControlName="numeroActa">
                                                     </mat-form-field>
                                                 </div>
@@ -984,7 +1001,7 @@ align-items: center;
                                         justify-content: flex-start;
                                         align-items: center;">
                                         <button mat-button style="background-color:var(--primary);color:white;"
-                                            (click)="nextStep()">Continuar</button>
+                                            (click)="nextStep()" [disabled]="formSeguimiento.invalid">Continuar</button>
                                     </mat-action-row>
                                 </div>
 
@@ -1004,11 +1021,12 @@ align-items: center;
                                                 <div style="background-color: var(--primary);color: white;text-align: center; width: 25%;display: flex;
                                                     justify-content: center;
                                                     align-items: center;">
-                                                    Fecha Inicio</div>
+                                                    Fecha inicio</div>
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>{{!isNew?Syllabus.vigencia.fechaInicio.split('T')[0]:'Fecha Inicio'}}</mat-label>
+                                                        <mat-label>{{!isNew?Syllabus.vigencia.fechaInicio.split('T')[0]:'Fecha
+                                                            Inicio'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaInicio"
                                                             formControlName="fechaInicio">
                                                         <mat-datepicker-toggle matIconSuffix
@@ -1019,11 +1037,12 @@ align-items: center;
                                                 <div style="background-color: var(--primary);color: white;text-align: center; width: 25%;display: flex;
                                                     justify-content: center;
                                                     align-items: center;">
-                                                    Fecha Fin</div>
+                                                    Fecha fin</div>
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>{{!isNew?Syllabus.vigencia.fechaFin.split('T')[0]:'Fecha Fin'}}</mat-label>
+                                                        <mat-label>{{!isNew?Syllabus.vigencia.fechaFin.split('T')[0]:'Fecha
+                                                            Fin'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaFin"
                                                             formControlName="fechaFin">
                                                         <mat-datepicker-toggle matIconSuffix
@@ -1051,7 +1070,7 @@ align-items: center;
                     <button mat-raised-button style="background-color: var(--primary);color: white;"
                         (click)="regresar()">Regresar</button>
                     <button mat-raised-button style="background-color: var(--primary);color: white;"
-                        (click)="SubmitSyllabus()" [disabled]="!validateForms()">Guardar</button>
+                        (click)="SubmitSyllabus()" >Guardar</button>
                 </div>
             </div>
         </mat-card-content>
