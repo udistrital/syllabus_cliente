@@ -126,7 +126,7 @@ export class GestorDocumentalService {
         const documentsSubject = new Subject<any>();
         const documents$ = documentsSubject.asObservable();
         let documento: any = null;
-        this.request.get(environment.GESTOR_DOCUMENTAL_MID, '/document/' + uuid)
+        this.request.get(environment.GESTOR_DOCUMENTAL_MID, 'document/' + uuid)
             .subscribe({
                 next: async (f: any) => {
                     const url = await this.getUrlFile(f.file, f['file:content']['mime-type']);
