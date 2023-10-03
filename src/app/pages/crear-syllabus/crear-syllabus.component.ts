@@ -123,15 +123,18 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   initForms(): void {
-    //console.log(this.Syllabus)
+    console.log(this.Syllabus)
     this.formSaberesPrevios = this._formBuilder.group({
       saberesPrevios: [this.Syllabus.sugerencias && !this.isNew ? this.Syllabus.sugerencias : '', [Validators.required, Validators.minLength(1),EmptySpaceValidator.noEmptySpaceAllowed]]
     });
 
+    this.formularios.controls.push(this.formSaberesPrevios);
 
     this.formJustificacion = this._formBuilder.group({
       justificacion: [this.Syllabus.justificacion && !this.isNew ? this.Syllabus.justificacion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
     });
+
+    this.formularios.controls.push(this.formJustificacion);
 
     this.formObjetivos = this._formBuilder.group({
       objetivoGeneral: [this.Syllabus.objetivo_general && !this.isNew ? this.Syllabus.objetivo_general : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
@@ -140,6 +143,7 @@ export class CrearSyllabusComponent implements OnInit {
       ]),
     });
 
+    this.formularios.controls.push(this.formObjetivos);
 
     this.formPFA = this._formBuilder.group({
       pfa: this._formBuilder.array([
@@ -147,6 +151,7 @@ export class CrearSyllabusComponent implements OnInit {
       ], [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed])
     });
 
+    this.formularios.controls.push(this.formPFA);
 
     this.formContenidosTematicos = this._formBuilder.group({
       descripcion: [this.Syllabus.contenido && !this.isNew ? this.Syllabus.contenido.descripcion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
@@ -154,6 +159,8 @@ export class CrearSyllabusComponent implements OnInit {
 
       ])
     });
+
+    this.formularios.controls.push(this.formContenidosTematicos);
 
 
     this.formEstrategias = this._formBuilder.group({
@@ -167,6 +174,7 @@ export class CrearSyllabusComponent implements OnInit {
       ])
     });
 
+    this.formularios.controls.push(this.formEstrategias);
 
     this.formEvaluacion = this._formBuilder.group({
       descripcion: [this.Syllabus.evaluacion && !this.isNew ? this.Syllabus.evaluacion.descripcion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
@@ -180,13 +188,19 @@ export class CrearSyllabusComponent implements OnInit {
       ])
     })
 
+    this.formularios.controls.push(this.formEvaluacion);
+
     this.formMedios = this._formBuilder.group({
       medios: [this.Syllabus.recursos_educativos && !this.isNew ? this.Syllabus.recursos_educativos : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
     })
 
+    this.formularios.controls.push(this.formMedios);
+
     this.formPracticasAcademicas = this._formBuilder.group({
       practicasAcademicas: [this.Syllabus.practicas_academicas && !this.isNew ? this.Syllabus.practicas_academicas : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
     })
+
+    this.formularios.controls.push(this.formPracticasAcademicas);
 
     this.formBibliografia = this._formBuilder.group({
 
@@ -201,7 +215,7 @@ export class CrearSyllabusComponent implements OnInit {
       ])
     })
 
-
+    this.formularios.controls.push(this.formBibliografia);
 
     this.formSeguimiento = this._formBuilder.group({
       fechaRevisionConsejo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
@@ -210,16 +224,21 @@ export class CrearSyllabusComponent implements OnInit {
       archivo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
     })
 
+    this.formularios.controls.push(this.formSeguimiento);
+
     this.formVigencia = this._formBuilder.group({
       fechaInicio: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
       fechaFin: ['']
     })
 
+    this.formularios.controls.push(this.formVigencia);
+
     this.formIdiomas = this._formBuilder.group({
       idioma_espacio_id: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
     })
 
-    //console.log("syllabus new", this.Syllabus);
+    this.formularios.controls.push(this.formIdiomas);
+
     if (this.isNew) {
       this.agregarObjetivoEspecifico();
       this.agregarPFA(undefined, false);
@@ -233,43 +252,44 @@ export class CrearSyllabusComponent implements OnInit {
     } else {
       this.formIdiomas.get('idioma_espacio_id')?.setValue(this.Syllabus.idioma_espacio_id);
 
-      this.Syllabus.objetivos_especificos.forEach((obj_esp) => {
+      this.Syllabus.objetivos_especificos?.forEach((obj_esp) => {
         this.agregarObjetivoEspecifico(obj_esp);
       })
-      this.Syllabus.propositos.forEach((pfa) => {
+      this.Syllabus.resultados_aprendizaje?.forEach((pfa) => {
         this.agregarPFA(pfa, true);
       })
       this.updateViewTablePFA();
-      this.Syllabus.contenido.temas.forEach((tema) => {
+      this.Syllabus.contenido?.temas?.forEach((tema) => {
         this.agregarTema(tema);
       })
-      this.Syllabus.estrategias.forEach((estrategia) => {
+      this.Syllabus.estrategias?.forEach((estrategia) => {
         this.agregarEstrategia(estrategia);
       })
-      this.Syllabus.evaluacion.evaluaciones.forEach((evaluacion) => {
+      this.Syllabus.evaluacion?.evaluaciones?.forEach((evaluacion) => {
         this.agregarEvalucion(evaluacion);
       })
-      this.Syllabus.bibliografia.basicas.forEach((basica) => {
+      this.Syllabus.bibliografia?.basicas?.forEach((basica) => {
         this.agregarBibliografiaBasica(basica, true);
       })
       this.updateViewTableBiblioBas();
-      this.Syllabus.bibliografia.complementarias.forEach((comple) => {
+      this.Syllabus.bibliografia?.complementarias?.forEach((comple) => {
         this.agregarBibliografiaComplementaria(comple, true);
       })
       this.updateViewTableBiblioCom();
-      this.Syllabus.bibliografia.paginasWeb.forEach((pagina) => {
+      this.Syllabus.bibliografia?.paginasWeb?.forEach((pagina) => {
         this.agregarBibliografiaPaginaWeb(pagina, true);
       })
       this.updateViewTableBiblioPag();
     }
-    this.formularios.controls = [this.formSaberesPrevios, this.formJustificacion, this.formObjetivos, this.formPFA, this.formContenidosTematicos, this.formEstrategias, this.formEvaluacion, this.formMedios, this.formPracticasAcademicas, this.formBibliografia, this.formSeguimiento, this.formVigencia, this.formIdiomas];
   }
 
   validateForms() {
     let isValid:Boolean=true;
+    console.log(this.formularios);
     this.formularios.controls.forEach(element => {
-      //console.log(element,element.valid)
+      console.log(element,element.valid)
       if(!element.valid){
+        element.markAllAsTouched();
         isValid=false;
       }
     });
@@ -403,6 +423,7 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   updateViewTableBiblioBas() {
+    console.log('basicas',this.basicas);
     this.dataSourceFormBiblioBas.next(this.basicas.controls);
     //console.log(this.dataSourceFormBiblioBas);
   }
@@ -442,6 +463,7 @@ export class CrearSyllabusComponent implements OnInit {
 
   SubmitSyllabus() {
     const syllabus: Syllabus = new Syllabus();
+    console.log(this.validateForms());
     if (this.validateForms()) {
       Swal.fire({
         title: this.isNew?'Creando Syllabus':'Editando Syllabus',
@@ -468,7 +490,7 @@ export class CrearSyllabusComponent implements OnInit {
           // this.objetivosEspecificos.controls.forEach(obj_esp => {
           //   syllabus.objetivos_especificos.push(obj_esp.get('objetivo')?.value);
           // });
-          syllabus.propositos = this.pfa.value;
+          syllabus.resultados_aprendizaje = this.pfa.value;
           syllabus.contenido = this.formContenidosTematicos.value;
           syllabus.estrategias = this.estrategias.value;
           syllabus.evaluacion = this.formEvaluacion.value;

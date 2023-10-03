@@ -76,9 +76,14 @@ export class GestorDocumentalService {
                 //console.log("sendFileData", sendFileData);
     
                 this.request.post(environment.GESTOR_DOCUMENTAL_MID, '/document/upload', sendFileData)
-                    .subscribe((dataResponse) => {
-                        documentos = dataResponse;
-                        documentsSubject.next(documentos);
+                    .subscribe({
+                        next:(dataResponse) => {
+                            documentos = dataResponse;
+                            documentsSubject.next(documentos);
+                        },
+                        error:()=> {
+                            documentsSubject.error(new Error('error al cargar el documento'));
+                        }
                     })
             },
             error: (err)=> {

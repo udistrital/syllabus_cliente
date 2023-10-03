@@ -279,7 +279,7 @@ align-items: center;
                                     justify-content: flex-start;
                                     align-items: center;">
                                         <button mat-button style="background-color: #03678F;color: white;"
-                                            (click)="nextStep()">Continuar</button>
+                                            (click)="nextStep()" [disabled]="formIdiomas.invalid">Continuar</button>
                                     </mat-action-row>
                                 </div>
 
