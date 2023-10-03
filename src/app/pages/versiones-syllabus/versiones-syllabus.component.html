@@ -1,0 +1,89 @@
+<mat-dialog-content class="mat-typography">
+    <div style="display: flex;
+flex-direction: column;
+align-items: center;" id="formBusqueda">
+        <mat-card style="background-color: #03678F; color:white; border-radius: 10px; margin-bottom: 20px;"
+            MatCardAppearance='outlined'>
+            <mat-card-content>
+                <h3 style="margin: 0%;font-weight: bold;">Historial de versiones</h3>
+            </mat-card-content>
+
+        </mat-card>
+        <mat-card
+            style="width:calc(100% - 90px); border: 1px #666666 solid; border-radius: 15px;background-color: #F5F5F5; margin: auto;">
+            <mat-card-content>
+                <p>
+                    <label><strong>Proyecto / Programa curricular:</strong> {{Proyecto.Nombre}}
+                    </label>
+
+                </p>
+                <p>
+                    <label><strong>Plan de estudios:</strong> {{PlanEstudio.cra_nombre}}, plan de
+                        estudio:{{PlanEstudio.pen_nro}}</label>
+                </p>
+                <p>
+                    <label><strong>Periodo académico:</strong> {{EspacioAcademico.pen_sem}}
+                    </label>
+                </p>
+            </mat-card-content>
+        </mat-card>
+        <mat-card style="width:calc(100% - 60px); margin-top: 15px;">
+            <mat-card-content>
+                <div class="container-border">
+                    <h4>Historico</h4>
+                    <table mat-table [dataSource]="dataSource">
+                        <ng-container matColumnDef="version">
+                            <th mat-header-cell *matHeaderCellDef> Version</th>
+                            <td mat-cell *matCellDef="let element"> {{element.version}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
+                        <!-- Fecha Inicio -->
+                        <ng-container matColumnDef="fecha_inicio">
+                            <th mat-header-cell *matHeaderCellDef> Fecha Inicio </th>
+                            <td mat-cell *matCellDef="let element"> {{element.fecha_inicio}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="fecha_fin">
+                            <th mat-header-cell *matHeaderCellDef> Fecha Fin </th>
+                            <td mat-cell *matCellDef="let element"> {{element.fecha_fin}} </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="acciones_buttons">
+                            <th mat-header-cell *matHeaderCellDef> Documento relacionados </th>
+                            <td mat-cell *matCellDef="let element;let row=index;" style="text-align: center;">
+                                <button mat-icon-button (click)="loadDocumentosRelacionados(row)"
+                                    matTooltip="Ver documento">
+                                    <mat-icon>attach_file</mat-icon>
+                                </button>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
+                        <!-- Headers -->
+                        <!-- <ng-container matColumnDef="resultadosConsulta">
+                            <th id="col-combinado" mat-header-cell *matHeaderCellDef [attr.colspan]="5">Resultados
+                                consulta</th>
+                        </ng-container>
+                        <ng-container matColumnDef="acciones">
+                            <th id="col-combinado" mat-header-cell *matHeaderCellDef [attr.colspan]="1">Acciones</th>
+                        </ng-container> -->
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+    <button mat-button mat-dialog-close style="background-color: var(--primary);color: white;"
+        (click)="EditSyllabus()">Editar</button>
+    <button mat-button mat-dialog-close style="background-color: var(--primary);color: white;">Cerrar</button>
+</mat-dialog-actions>

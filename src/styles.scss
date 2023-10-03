@@ -1,0 +1,363 @@
+/* You can add global styles to this file, and also import other style files */
+
+@use '@angular/material' as mat;
+
+@import url("https://pruebasassets.portaloas.udistrital.edu.co/urano-style.css");
+@import url("https://pruebasassets.portaloas.udistrital.edu.co/oas.css");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0");
+
+
+
+// material customize
+
+$primary: (
+    50: var(--primary),
+    100: var(--primary),
+    200: var(--primary),
+    300: var(--primary),
+    400: var(--primary),
+    500: var(--primary),
+    600: var(--primary),
+    700: var(--primary),
+    800: var(--primary),
+    900: var(--primary),
+    A100: var(--primary),
+    A200: var(--primary),
+    A400: var(--primary),
+    A700: var(--primary),
+    contrast: (50: white,
+        100: white,
+        200: white,
+        300: white,
+        400: white,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+        A100: white,
+        A200: white,
+        A400: white,
+        A700: white,
+    ),
+);
+$my-primary: mat.define-palette($primary, 100);
+$my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$my-typography: mat.define-typography-config(
+    $font-family: 'sans-serif',
+);
+
+$my-theme: mat.define-light-theme((
+    color: (
+        primary: $my-primary,
+        accent: $my-accent,
+    ),
+    typography: $my-typography,    
+));
+
+@include mat.all-component-themes($my-theme);
+
+html
+{
+   scroll-behavior: smooth;
+}
+
+.container {
+    display: grid;
+    //grid-template-columns: max-content auto;
+    grid-template-rows: 100%;
+    grid-auto-flow: column;
+    padding-top: 1rem;
+}
+
+.main-container{
+    overflow-y: scroll;
+}
+
+.container-border {
+    border: 1px solid var(--primary);
+    padding: 1%;
+    border-radius: 15px 15px 15px 15px;
+}
+
+.container-border h4 {
+    width: 17%;
+    background-color: var(--primary) !important;
+    color: #F1F5F8;
+    font-size: 15px;
+    margin-top: -28px;
+    margin-left: 7px;
+    padding: 0.5%;
+    position: relative;
+    border-radius: 15px 15px 15px 15px;
+    font-weight: normal;
+}
+
+// .mat-step-text-label{
+//         background-color: var(--primary) !important;
+//         color: #F1F5F8;
+//         font-size: 15px;
+//         border-radius: 15px 15px 15px 15px;
+//         font-weight: normal;
+//         width: auto;
+//         padding-left: 5px;
+//         padding-right: 5px;
+// }
+
+b {
+    color: var(--primary)
+}
+
+.mat-table {
+    overflow-x: scroll;
+}
+
+td.mat-cell,
+th.mat-header-cell {
+    padding: 1em;
+    width: 50vmax;
+    height: 100%;
+}
+
+.example-month-picker.mat-calendar {
+    height: 250px !important;
+
+    .mat-calendar-table {
+        border-collapse: unset;
+    }
+
+    .mat-calendar-table-header th {
+        padding: 0px 0;
+    }
+}
+
+table thead tr th {
+    background-color: var(--primary) !important;
+    color: #fff;
+}
+
+table thead tr th:nth-child(n + 2) {
+    border-left: none;
+}
+
+table tbody tr td {
+    padding: 10px !important;
+}
+
+table tbody tr td:nth-child(n + 2) {
+    border-left: none;
+}
+
+// mat-expansion-panel-header {
+//     background-color: var(--primary);
+// }
+
+.mat-expansion-panel-header:not([aria-expanded=true]){
+    border-bottom: 1px var(--color2) solid;
+}
+.mat-expansion-panel-header,
+.mat-expansion-panel-header.cdk-focused,
+.mat-expansion-panel-header.mat-expanded,
+.mat-expansion-panel-header.mat-expanded.cdk-focused {
+    background-color: var(--primary) !important;
+}
+
+.mat-expansion-panel-header:hover,
+.mat-expansion-panel-header.mat-expanded:hover{
+    background-color: var(--color900) !important;
+}
+
+.mat-expansion-panel-body{
+    .container-border {
+        margin-top: 30px;
+    }
+    
+}
+
+.container-border h4{
+    width: fit-content !important;
+    max-width: 50% !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.mat-expansion-panel-header-title{
+    color: white;
+    /* font-weight: bold; */
+    font-size: medium;
+}
+
+
+.mat-form-field-appearance-fill .mat-form-field-infix {
+    padding: 0.25em 0 0em 0 !important;
+    ;
+}
+
+.card-oas {
+    width: calc(100vw - 60px);
+}
+
+.card-oas-int {
+    width: calc(98vw - 60px);
+}
+
+.card-dialog {
+    width: calc(75vw - 60px);
+}
+
+mat-label {
+    color: var(--primary);
+}
+
+
+.mat-input-element:disabled,
+.mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+    color: #333;
+}
+
+
+.mat-form-field-flex {
+    background-color: #fff !important;
+
+}
+
+.swal2-styled.swal2-confirm {
+    background-color: var(--primary) !important;
+}
+
+.swal2-loader {
+    border-color: var(--primary) transparent var(--primary) transparent !important;
+}
+
+
+.example-section {
+    margin: 12px 0;
+}
+
+.example-margin {
+    margin: 0 12px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.subtitle-term-conditional {
+    text-align: left;
+    font-size: 1.1rem;
+    color: var(--primary);
+    font-family: 'Open Sans';
+}
+
+.title-term-conditional {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--primary);
+    font-family: 'Open Sans';
+}
+
+.text-term-condional {
+    text-align: justify;
+    font-family: 'Open Sans';
+    font-size: 1rem;
+}
+
+.main-container {
+    flex-direction: column;
+}
+
+.username-info {
+    position: relative;
+
+    background-color: white;
+    color: var(--primary);
+    justify-content: center;
+    text-align: center;
+    display: flex;
+    padding: 12px 0px;
+    top: -14px;
+    left: -16px;
+    flex-wrap: wrap-reverse;
+    width: 100vw;
+    font-size: 0.8rem;
+}
+
+.text-justify {
+    text-align: justify;
+    margin-left: 1rem;
+    max-width: 70%;
+
+}
+
+
+.text-note {
+    text-align: justify;
+    margin-left: 1rem;
+    max-width: 70%;
+}
+
+a {
+    color: var(--primary)
+}
+
+.item-default {
+    display: flex;
+    flex-wrap: nowrap;
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+
+}
+
+.important-list {
+    text-align: left;
+}
+
+
+.item-list-important {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: justify;
+    font-family: 'Open Sans';
+    font-size: 1rem;
+
+    .success {
+        color: var(--primary);
+        margin-right: 1rem;
+    }
+
+    .pending {
+        color: var(--color1);
+        margin-right: 1rem;
+    }
+}
+
+.mat-row:nth-child(even) {
+    background-color: #E7D6D6;
+}
+
+.mat-row:nth-child(odd) {
+    background-color: white;
+}
+
+mat-icon{
+    color: var(--primary);
+}
+
+@media screen and (max-width: 425px) {
+
+    table tbody tr td {
+        font-size: 0.675em !important;
+    }
+
+}
+
+@media screen and (min-width: 1024px) {
+
+    .username-info {
+        display: none;
+    }
+
+}

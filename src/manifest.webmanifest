@@ -1,0 +1,9 @@
+{
+    "name": "syllabus-cliente",
+    "short_name": "Syllabus",
+    "theme_color": "#397A18",
+    "background_color": "#fafafa",
+    "display": "standalone",
+    "scope": "./",
+    "start_url": "./"
+}
