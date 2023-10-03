@@ -10,7 +10,7 @@ export class Syllabus {
   justificacion: string
   objetivo_general: string
   objetivos_especificos: ObjetivoEspecifico[]
-  propositos: PFA[]
+  resultados_aprendizaje: PFA[]
   articulacion_resultados_aprendizaje: string
   contenido: Contenido
   estrategias: Estrategia[]
