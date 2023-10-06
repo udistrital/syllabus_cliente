@@ -332,7 +332,7 @@ export class CrearSyllabusComponent implements OnInit {
     const rowPFA = this._formBuilder.group({
       pfa_programa: [d && d.pfa_programa ? d.pfa_programa : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
       pfa_asignatura: [d && d.pfa_asignatura ? d.pfa_asignatura : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      competencias: [d && d.competencias ? d.competencias : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
+      competencias: [d && d.competencias ? d.competencias : '']
     })
     this.pfa.push(rowPFA);
     if (!noUpdate) { this.updateViewTablePFA(); }
@@ -385,10 +385,10 @@ export class CrearSyllabusComponent implements OnInit {
 
   agregarEstrategia(d?: Estrategia) {
     const formestrategia = this._formBuilder.group({
-      nombre: [d ? d.nombre : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
+      //nombre: [d ? d.nombre : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
       descripcion: [d ? d.descripcion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      pertinencia: [d ? d.pertinencia : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      articulacion_ra: [d ? d.articulacion_ra : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
+      //pertinencia: [d ? d.pertinencia : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
+      //articulacion_ra: [d ? d.articulacion_ra : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
     })
     this.estrategias.push(formestrategia);
   }
@@ -570,7 +570,7 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   loadIdiomas() {
-    this.request.get(environment.IDIOMAS_CRUD, 'idioma?limit=-1').subscribe((dataidiomas) => {
+    this.request.get(environment.IDIOMAS_CRUD, 'idioma?query=Id.in:1|2|49|72|53|130|32').subscribe((dataidiomas) => {
       //console.log(dataidiomas)
       this.idiomas = dataidiomas;
       this.filteredIdiomas = dataidiomas;

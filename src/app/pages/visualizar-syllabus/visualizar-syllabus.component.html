@@ -7,15 +7,16 @@
     <object [data]="syllabusDocumentData | safeUrl " type="application/pdf" *ngIf="SyllabusDocumentLoad"
         id="pdf_view"></object>
 </mat-dialog-content>
-<mat-dialog-actions style="align-items: center;justify-content: center;flex-direction: row;">
-    <button mat-icon-button (click)="DownloadSyllabus()">
+<mat-dialog-actions style="align-items: center;flex-direction: row;">
+    <button mat-icon-button (click)="DownloadSyllabus()" matTooltip="Descargar syllabus" style="margin-left: 20px;">
         <mat-icon class="material-symbols-outlined">file_download</mat-icon>
         <!-- <span class="material-symbols-outlined">
             download
         </span> -->
     </button>
-    <button mat-icon-button (click)="EditSyllabus()" mat-dialog-close>
+    <button mat-icon-button (click)="EditSyllabus()" mat-dialog-close *ngIf="Syllabus.syllabus_actual && canEdit" matTooltip="Editar syllabus">
         <mat-icon  fontIcon="edit document"></mat-icon>
     </button>
-    <button mat-button mat-dialog-close style="background-color: var(--primary);color: white;">Cerrar</button>
+    <button mat-button mat-dialog-close style="background-color: var(--primary);color: white; position: absolute;
+    margin-left: calc( 80vw/2 - 30px);" matTooltip="Cerrar visualizador">Cerrar</button>
 </mat-dialog-actions>
