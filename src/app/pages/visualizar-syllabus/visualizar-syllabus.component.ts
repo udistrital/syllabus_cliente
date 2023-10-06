@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Input } from '@angular/core';
 import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
@@ -18,11 +18,12 @@ export class VisualizarSyllabusComponent implements OnInit{
   Proyecto:ProyectoAcademico;
   PlanEstudio:PlanEstudio;
   EspacioAcademico:EspacioAcademico;
-  Syllabus:Syllabus;
   syllabusDocument:any;
   syllabusDocumentData:string;
   SyllabusDocumentLoad:boolean=false;
-
+  canEdit:boolean;
+  @Input() Syllabus:Syllabus;
+  
   constructor(private router:Router,private syllabusService:SyllabusService,private request:RequestManager){
    
   }
@@ -37,16 +38,21 @@ export class VisualizarSyllabusComponent implements OnInit{
     this.syllabusService.espacioAcademico$.subscribe((espacioAcademico) => {
       this.EspacioAcademico = espacioAcademico;
     });
-    this.syllabusService.syllabus$.subscribe((syllabus) => {
-      this.Syllabus = syllabus;
+    // this.syllabusService.syllabus$.subscribe((syllabus) => {
+    //   this.Syllabus = syllabus;
+    // });
+    this.syllabusService.rolwithEdit$.subscribe((canEdit) => {
+      this.canEdit = canEdit;
     });
     this.getSyllabusDocument();
   }
 
   getSyllabusDocument(){
     //console.log(this.Syllabus);
-    const body:any={syllabusCode:this.Syllabus.syllabus_code}
-    //console.log(body);
+    const body:any={
+      syllabusCode:this.Syllabus.syllabus_code
+    }
+    this.Syllabus.syllabus_actual?null:body.version=this.Syllabus.version;
     this.request.post(environment.SGA_MID,'espacios_academicos/syllabus_template',body).subscribe({
       next:(syllabus_document) => {
         if(syllabus_document){

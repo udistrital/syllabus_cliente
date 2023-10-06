@@ -7,8 +7,10 @@ import { SyllabusService } from '../services/syllabus.service';
 import { Router } from '@angular/router';
 import { RequestManager } from '../services/requestManager';
 import { environment } from '../../../environments/environment';
-import { Syllabus} from '../../@core/models/syllabus'
+import { Syllabus} from '../../@core/models/syllabus';
+import { MatDialog } from '@angular/material/dialog';
 import { GestorDocumentalService } from '../services/gestor_documental.service';
+import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -17,7 +19,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./versiones-syllabus.component.scss']
 })
 export class VersionesSyllabusComponent implements  OnInit{
-  displayedColumns: string[] = ['version','fecha_fin', 'fecha_fin','acciones_buttons'];
+  displayedColumns: string[] = ['version','fecha_inicio', 'fecha_fin','acciones_buttons','syllabus_template'];
   dataSource = new MatTableDataSource<SyllabusVersionInterface>();
   Proyecto:ProyectoAcademico;
   PlanEstudio:PlanEstudio;
@@ -25,8 +27,9 @@ export class VersionesSyllabusComponent implements  OnInit{
   Syllabus:Syllabus;
   syllabusVersions:Syllabus[];
   syllabusData:SyllabusVersionInterface[];
+  canEdit:boolean;
 
-  constructor(private gestorDoc:GestorDocumentalService,private syllabusService:SyllabusService,private request:RequestManager,private router:Router){
+  constructor(private gestorDoc:GestorDocumentalService,private syllabusService:SyllabusService,private request:RequestManager,private router:Router, public dialog: MatDialog){
    
   }
 
@@ -42,6 +45,9 @@ export class VersionesSyllabusComponent implements  OnInit{
     });
     this.syllabusService.syllabus$.subscribe((syllabus) => {
       this.Syllabus = syllabus;
+    });
+    this.syllabusService.rolwithEdit$.subscribe((canEdit) => {
+      this.canEdit = canEdit;
     });
     this.LoadDataTableSyllabusVersions();
   }
@@ -102,6 +108,21 @@ export class VersionesSyllabusComponent implements  OnInit{
     this.syllabusService.setisNew(false);
     this.syllabusService.setSyllabus(this.Syllabus);
     this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
+  }
+
+  openSyllabusVisualizarSyllabusDocument(row: number) {
+    try {
+      const dialogRefViewDocument = this.dialog.open(VisualizarSyllabusComponent, {
+        width: '80vw',   // Set width to 60 percent of view port width
+        height: '90vh',
+      });
+      dialogRefViewDocument.componentInstance.Syllabus=this.syllabusVersions[row];
+      dialogRefViewDocument.afterClosed().subscribe(result => {
+        //console.log(`Dialog result: ${result}`);
+      });
+    } catch (error) {
+      //console.log(error);
+    }
   }
 }
 
