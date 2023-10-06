@@ -19,7 +19,8 @@ export class SyllabusService {
   private planesEstudio = new BehaviorSubject<PlanEstudio[]>([]);
   private espaciosAcademicos = new BehaviorSubject<EspacioAcademico[]>([]);
   private syllabus =new BehaviorSubject<Syllabus>(new Syllabus);
-  private isNew= new BehaviorSubject<Boolean>(new Boolean);
+  private isNew= new BehaviorSubject<boolean>(false);
+  private rolwithEdit= new BehaviorSubject<boolean>(false);
 
   facultad$=this.facultad.asObservable();
   proyectoAcademico$=this.proyectoAcademico.asObservable();
@@ -30,6 +31,7 @@ export class SyllabusService {
   espaciosAcademicos$=this.espaciosAcademicos.asObservable();
   syllabus$=this.syllabus.asObservable();
   isNew$=this.isNew.asObservable();
+  rolwithEdit$=this.rolwithEdit.asObservable();
 
   constructor() { }
 
@@ -68,5 +70,9 @@ export class SyllabusService {
   
   setisNew(isnew:boolean){
     this.isNew.next(isnew);
+  }
+
+  setrolwithEdit(canEdit:boolean){
+    this.rolwithEdit.next(canEdit);
   }
 }

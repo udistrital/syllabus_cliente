@@ -58,8 +58,19 @@ align-items: center;" id="formBusqueda">
                             <th mat-header-cell *matHeaderCellDef> Documento relacionados </th>
                             <td mat-cell *matCellDef="let element;let row=index;" style="text-align: center;">
                                 <button mat-icon-button (click)="loadDocumentosRelacionados(row)"
-                                    matTooltip="Ver documento">
+                                    matTooltip="Ver acta">
                                     <mat-icon>attach_file</mat-icon>
+                                </button>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="footer">
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="syllabus_template">
+                            <th mat-header-cell *matHeaderCellDef> Syllabus </th>
+                            <td mat-cell *matCellDef="let element;let row=index;" style="text-align: center;">
+                                <button mat-icon-button (click)="openSyllabusVisualizarSyllabusDocument(row)"
+                                    aria-label="Ver syllabus" matTooltip="Ver syllabus">
+                                    <mat-icon fontIcon="visibility"></mat-icon>
                                 </button>
                             </td>
                             <td mat-footer-cell *matFooterCellDef class="footer">
@@ -84,6 +95,6 @@ align-items: center;" id="formBusqueda">
 </mat-dialog-content>
 <mat-dialog-actions align="center">
     <button mat-button mat-dialog-close style="background-color: var(--primary);color: white;"
-        (click)="EditSyllabus()">Editar</button>
+        (click)="EditSyllabus()" *ngIf="canEdit">Editar</button>
     <button mat-button mat-dialog-close style="background-color: var(--primary);color: white;">Cerrar</button>
 </mat-dialog-actions>

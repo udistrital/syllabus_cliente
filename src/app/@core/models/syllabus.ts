@@ -47,10 +47,10 @@ export class Tema {
 }
 
 export class Estrategia {
-  nombre: string
+  //nombre: string
   descripcion: string
-  pertinencia: string
-  articulacion_ra: string
+  //pertinencia: string
+  //articulacion_ra: string
 
 }
 
