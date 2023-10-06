@@ -129,7 +129,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     //   }
     // })
 
-    this.dependenciasId = JSON.parse(this.localStorage.getData('dependencias_persona_id')!)
+    this.dependenciasId = JSON.parse(this.localStorage.getData('dependencias_persona_id')!)?JSON.parse(this.localStorage.getData('dependencias_persona_id')!):[];
   }
 
   ngAfterViewInit() {
