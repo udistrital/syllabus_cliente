@@ -64,10 +64,14 @@ export class ListarSyllabusComponent implements OnInit {
           this.syllabus = dataSyllabus.Data;
           this.SyllabusLoad=true;
           if(this.syllabus.length==0){
+            this.syllabusData = [];
+            this.dataSource.data=this.syllabusData;
             Swal.fire({
               icon: 'warning',
               title: 'Sin syllabus',
               text: 'No se encontraron syllabus para este espacio académico.',
+            }).then(()=>{
+              this.scrollFormBuscar();
             })
           }else{
             this.formatDataSyllabusForTable();
