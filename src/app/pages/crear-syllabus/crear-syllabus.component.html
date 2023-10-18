@@ -47,19 +47,17 @@ align-items: center;
                                                     Parametrización del espacio académico
                                                 </mat-panel-title>
                                             </mat-expansion-panel-header>
-                                            <table class="mat-table" style="margin-top: 10px;">
+                                            <table class="mat-table" style="margin-top: 10px;border-spacing: 10px;border-collapse: separate;">
                                                 <tr class="mat-row">
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Código del espacio académico</td>
-                                                    <td class="mat-cell"
+                                                    <td class="mat-cell casilla-informacion"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
                                                         {{detalle_espacio_academico?.asi_cod}}
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Número de creditos académicos</td>
-                                                    <td class="mat-cell"
+                                                    <td class="mat-cell casilla-informacion"
                                                         style="padding: 0px;text-align: center;vertical-align: middle;">
                                                         {{detalle_espacio_academico?.pen_cre}}
                                                     </td>
@@ -132,45 +130,35 @@ align-items: center;
                                                     Naturaleza del espacio académico
                                                 </mat-panel-title>
                                             </mat-expansion-panel-header>
-                                            <table class="mat-table" style="margin-top: 10px;">
+                                            <table class="mat-table" style="margin-top: 10px;border-spacing: 10px;border-collapse: separate;">
                                                 <tr class="mat-row">
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Obligatorio básico</td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
                                                         {{detalle_espacio_academico?.cea_abr=="OB"?'X':''}}
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Obligatorio complementario
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
                                                         {{detalle_espacio_academico?.cea_abr=="OC"?'X':''}}
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Electivo intrínseco
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
                                                         {{detalle_espacio_academico?.cea_abr=="EI"?'X':''}}
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Electivo extrínseco
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
                                                         {{detalle_espacio_academico?.cea_abr=="EE"?'X':''}}
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Electivo
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
                                                         {{detalle_espacio_academico?.cea_abr=="E"?'X':''}}
                                                     </td>
                                                 </tr>
@@ -182,29 +170,23 @@ align-items: center;
                                                     Carácter del espacio académico
                                                 </mat-panel-title>
                                             </mat-expansion-panel-header>
-                                            <table class="mat-table" style="margin-top: 10px;">
+                                            <table class="mat-table" style="margin-top: 10px;border-spacing: 10px;border-collapse: separate;">
                                                 <tr class="mat-row">
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Teórico</td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
 
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Práctico
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
 
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Teórico / Practico
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
 
                                                     </td>
                                                 </tr>
@@ -217,37 +199,29 @@ align-items: center;
                                                 </mat-panel-title>
                                             </mat-expansion-panel-header>
 
-                                            <table class="mat-table" style="margin-top: 10px;">
+                                            <table class="mat-table" style="margin-top: 10px;border-spacing: 10px;border-collapse: separate;">
                                                 <tr class="mat-row">
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;text-align: center;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Presencial</td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
 
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Presencial con incorporación de TIC
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
 
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Virtual
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
 
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="background-color: var(--primary);color: white;padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-caracteristica">
                                                         Otros
                                                     </td>
-                                                    <td class="mat-cell"
-                                                        style="padding: 0px;text-align: center;vertical-align: middle;">
+                                                    <td class="mat-cell casilla-informacion">
 
                                                     </td>
                                                 </tr>
