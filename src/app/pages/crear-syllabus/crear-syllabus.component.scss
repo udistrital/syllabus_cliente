@@ -11,3 +11,21 @@ mat-panel-title{
     height: 30px;
     border-radius: 5px 5px 5px 5px;
 }
+
+.casilla-caracteristica{
+    background-color: #D8E8FD;
+    color: black;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 5px;
+    border: solid 1px;
+}
+
+.casilla-informacion{
+    padding: 0px;
+    text-align: center;
+    vertical-align: middle;
+    border: solid 1px;
+    border-radius: 5px;
+    background-color: #F5F5F5;
+}
