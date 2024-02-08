@@ -48,7 +48,6 @@ export class VisualizarSyllabusComponent implements OnInit{
   }
 
   getSyllabusDocument(){
-    //console.log(this.Syllabus);
     const body:any={
       syllabusCode:this.Syllabus.syllabus_code
     }
@@ -56,12 +55,10 @@ export class VisualizarSyllabusComponent implements OnInit{
     this.request.post(environment.SGA_MID,'espacios_academicos/syllabus_template',body).subscribe({
       next:(syllabus_document) => {
         if(syllabus_document){
-          //console.log(syllabus_document);
           this.syllabusDocument=syllabus_document.Data.document
           if(this.syllabusDocument){
             this.SyllabusDocumentLoad=true;
             this.syllabusDocumentData="data:application/pdf;base64,"+this.syllabusDocument;
-            //console.log(this.syllabusDocumentData);
           }
         }
       },
@@ -74,6 +71,7 @@ export class VisualizarSyllabusComponent implements OnInit{
       }
     })
   }
+  
 
   DownloadSyllabus(){
     const src = this.syllabusDocumentData;
@@ -82,6 +80,34 @@ export class VisualizarSyllabusComponent implements OnInit{
     link.download = `Syllabus_${this.Proyecto.Nombre}_${this.PlanEstudio.pen_nro}_${this.EspacioAcademico.asi_nombre}`
     link.click()
     link.remove()
+  }
+
+  DownloadSyllabusXLSX(){
+    const body:any={
+      syllabusCode:this.Syllabus.syllabus_code,
+      format: "xlsx"
+    }
+    this.Syllabus.syllabus_actual?null:body.version=this.Syllabus.version;
+    this.request.post(environment.SGA_MID,'espacios_academicos/syllabus_template',body).subscribe({
+      next:(syllabus_document) => {
+        if(syllabus_document){
+          if(syllabus_document.Data.document){
+            const link = document.createElement("a")
+            link.href = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,"+syllabus_document.Data.document;
+            link.download = `Syllabus_${this.Proyecto.Nombre}_${this.PlanEstudio.pen_nro}_${this.EspacioAcademico.asi_nombre}`
+            link.click()
+            link.remove()
+          }
+        }
+      },
+      error: (error)=> {
+        //console.error(error);
+        Swal.fire({
+          icon:'error',
+          title:'Error descargando el syllabus en formato XLSX',
+        })
+      }
+    })
   }
 
   EditSyllabus(){
