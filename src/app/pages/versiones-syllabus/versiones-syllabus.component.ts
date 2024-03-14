@@ -84,22 +84,30 @@ export class VersionesSyllabusComponent implements  OnInit{
       },
     })
     const syllabus=this.syllabusVersions[row]
-    this.gestorDoc.getByUUID(syllabus.seguimiento.archivo).subscribe({
-      next:(document)=>{
-        //console.log(document)
-        Swal.close();
-        window.open(document);
-        
-      },
-      error:()=>{
-        Swal.close();
-        Swal.fire({
-          icon:'error',
-          title:'Error',
-          text:'ocurrió un error al cargar el documento'
-        })
-      }
-    });
+    if (syllabus.seguimiento.archivo) {
+      this.gestorDoc.getByUUID(syllabus.seguimiento.archivo).subscribe({
+        next:(document)=>{
+          //console.log(document)
+          Swal.close();
+          window.open(document);
+          
+        },
+        error:()=>{
+          Swal.close();
+          Swal.fire({
+            icon:'error',
+            title:'Error',
+            text:'ocurrió un error al cargar el documento'
+          })
+        }
+      });
+    } else {
+      Swal.fire({
+        icon:'info',
+        title:'Sin documento',
+        text:'documento no cargado'
+      })
+    }
   }
 
   EditSyllabus(){
