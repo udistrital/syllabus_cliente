@@ -78,14 +78,14 @@ export class Bibliografia {
 
 export class Seguimiento {
   elaboracion: string
-  fechaRevisionConsejo: string
-  fechaAprobacionConsejo: string
+  fechaRevisionConsejo: string | null
+  fechaAprobacionConsejo: string | null
   numeroActa: string
-  archivo: string
+  archivo: string | null
 }
 
 export class Vigencia {
-  fechaInicio: string
-  fechaFin: string
+  fechaInicio: string | null
+  fechaFin: string | null
 
 }

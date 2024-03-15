@@ -8,11 +8,14 @@
         id="pdf_view"></object>
 </mat-dialog-content>
 <mat-dialog-actions style="align-items: center;flex-direction: row;">
-    <button mat-icon-button (click)="DownloadSyllabus()" matTooltip="Descargar syllabus" style="margin-left: 20px;">
+    <button mat-icon-button (click)="DownloadSyllabus()" matTooltip="Descargar syllabus PDF" style="margin-left: 20px;">
         <mat-icon class="material-symbols-outlined">file_download</mat-icon>
         <!-- <span class="material-symbols-outlined">
             download
         </span> -->
+    </button>
+    <button mat-icon-button (click)="DownloadSyllabusXLSX()" matTooltip="Descargar syllabus XLSX" style="margin-left: 20px;">
+        <mat-icon class="material-symbols-outlined">file_download</mat-icon>
     </button>
     <button mat-icon-button (click)="EditSyllabus()" mat-dialog-close *ngIf="Syllabus.syllabus_actual && canEdit" matTooltip="Editar syllabus">
         <mat-icon  fontIcon="edit document"></mat-icon>
