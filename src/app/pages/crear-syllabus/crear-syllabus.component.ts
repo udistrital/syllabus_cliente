@@ -7,7 +7,7 @@ import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
 import { Router } from '@angular/router';
 import { RequestManager } from '../services/requestManager';
 import { environment } from '../../../environments/environment';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { Estrategia, Evaluaciones, Syllabus, Tema, PFA, ObjetivoEspecifico } from 'src/app/@core/models/syllabus';
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { Documento } from 'src/app/@core/models/documento';
@@ -46,6 +46,7 @@ export class CrearSyllabusComponent implements OnInit {
   actaFile: File;
   idiomas: any[];
   filteredIdiomas: any[];
+  actaPrevia: { uid: string | null, url: string | null } = { uid: null, url: null };
 
   formularios: FormArray = this._formBuilder.array([]);
 
@@ -123,7 +124,6 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   initForms(): void {
-    console.log(this.Syllabus)
     this.formSaberesPrevios = this._formBuilder.group({
       saberesPrevios: [this.Syllabus.sugerencias && !this.isNew ? this.Syllabus.sugerencias : '', [Validators.required, Validators.minLength(1),EmptySpaceValidator.noEmptySpaceAllowed]]
     });
@@ -218,17 +218,17 @@ export class CrearSyllabusComponent implements OnInit {
     this.formularios.controls.push(this.formBibliografia);
 
     this.formSeguimiento = this._formBuilder.group({
-      fechaRevisionConsejo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      fechaAprobacionConsejo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      numeroActa: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      archivo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
+      fechaRevisionConsejo: [!this.isNew ? this.Syllabus.seguimiento.fechaRevisionConsejo : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
+      fechaAprobacionConsejo: [!this.isNew ? this.Syllabus.seguimiento.fechaAprobacionConsejo : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
+      numeroActa: [!this.isNew ? this.Syllabus.seguimiento.numeroActa : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
+      archivo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]] // loaded in handleFileInputActaChange()
     })
 
     this.formularios.controls.push(this.formSeguimiento);
 
     this.formVigencia = this._formBuilder.group({
-      fechaInicio: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      fechaFin: ['']
+      fechaInicio: [!this.isNew ? this.Syllabus.vigencia.fechaInicio : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
+      fechaFin: [!this.isNew ? this.Syllabus.vigencia.fechaFin : '']
     })
 
     this.formularios.controls.push(this.formVigencia);
@@ -248,7 +248,6 @@ export class CrearSyllabusComponent implements OnInit {
       this.agregarBibliografiaBasica(undefined, false);
       this.agregarBibliografiaComplementaria(undefined, false);
       this.agregarBibliografiaPaginaWeb(undefined, false);
-
     } else {
       this.formIdiomas.get('idioma_espacio_id')?.setValue(this.Syllabus.idioma_espacio_id);
 
@@ -280,14 +279,33 @@ export class CrearSyllabusComponent implements OnInit {
         this.agregarBibliografiaPaginaWeb(pagina, true);
       })
       this.updateViewTableBiblioPag();
+
+      if (this.Syllabus.seguimiento.archivo) {
+        this.actaPrevia = { uid: null, url: null };
+        this.gestorService.getByUUID(this.Syllabus.seguimiento.archivo).subscribe({
+        next:(document)=>{
+          this.actaPrevia.uid = this.Syllabus.seguimiento.archivo;
+          this.actaPrevia.url = document;
+
+          this.formSeguimiento.get('archivo')?.patchValue(this.ver('Acta')+'.pdf');
+        },
+        error:()=>{
+          Swal.fire({
+            icon:'error',
+            title:'Error',
+            text:'ocurrió un error al cargar el documento'
+          })
+        }
+      });
+      } else {
+        this.actaPrevia = {uid: null, url: null};
+      }
     }
   }
 
   validateForms() {
     let isValid:Boolean=true;
-    console.log(this.formularios);
     this.formularios.controls.forEach(element => {
-      console.log(element,element.valid)
       if(!element.valid){
         element.markAllAsTouched();
         isValid=false;
@@ -542,15 +560,30 @@ export class CrearSyllabusComponent implements OnInit {
 
   handleFileInputActaChange(event: any): void {
     this.actaFile = event.target.files[0] ?? null;
-    //console.log(this.actaFile);
-    if (this.actaFile && this.actaFile.type == "application/pdf") {
-      this.formSeguimiento.get('archivo')?.patchValue(this.actaFile.name);
+    let name = "";
+    let incorrect = false;
+    if (this.actaFile) {
+      name = this.actaFile.name;
+      if (this.actaFile.type != "application/pdf") {
+        incorrect = true;
+      }
+    } else if (this.actaPrevia.uid) {
+      name = this.ver('Acta')+'.pdf';
+      incorrect = false;
     } else {
-      this.formSeguimiento.get('archivo')?.setErrors({ 'incorrect': true });
+      incorrect = true;
     }
+    this.formSeguimiento.get('archivo')?.patchValue(name);
+    if (incorrect) {
+      this.formSeguimiento.get('archivo')?.setErrors({ 'incorrect': true });
+   }
   }
 
   uploadActa(): Observable<Documento> {
+    if (!this.actaFile && this.actaPrevia.uid) {
+      const doc: any = {res: {Enlace: this.actaPrevia.uid}};
+      return of(doc)
+    }
     const sendActa = {
       IdDocumento: 74,
       nombre: (this.actaFile.name).split('.')[0],
@@ -596,5 +629,35 @@ export class CrearSyllabusComponent implements OnInit {
   onChangeIdioma(idioma_id: any) {
     //console.log(idioma_id);
     //console.log(this.formIdiomas.get('idioma_espacio_id')?.value)
+  }
+
+  ver(text: string): string {
+    return text + ' versión ' + ((this.Syllabus.version - 1)||1); 
+  }
+
+  formatDate(date: string | null): string {
+    if (date) {
+      return date.split('T')[0];
+    } else {
+      return "Sin definir";
+    }
+  }
+
+  previewFile(){
+    if (this.isNew) {
+      if (this.actaFile) {
+        window.open(URL.createObjectURL(this.actaFile));
+      }
+    } else {
+      if(this.actaFile) {
+        window.open(URL.createObjectURL(this.actaFile));
+      } else if (this.actaPrevia.url) {
+        window.open(this.actaPrevia.url)
+      }
+    }
+  }
+
+  existFile() {
+    return !(this.actaFile || this.actaPrevia.url);
   }
 }
