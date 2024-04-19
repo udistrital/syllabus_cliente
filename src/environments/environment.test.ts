@@ -20,7 +20,10 @@ export const environment = {
   DOCUMENTO_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/',
   TERCEROS:'https://autenticacion.portaloas.udistrital.edu.co/apioas/terceros_crud/v1/',
   IDIOMAS_CRUD:'https://autenticacion.portaloas.udistrital.edu.co/apioas/idiomas_crud/v2/',
-  SGA_MID:'https://autenticacion.portaloas.udistrital.edu.co/apioas/sga_mid/v1/',
+  //SYLLABUS_MID: 'http://localhost:8096/v1/',
+  //ADMISIONES_MID:'http://localhost:8095/v1/',
+  SYLLABUS_MID: 'http://pruebasapi3.intranetoas.udistrital.edu.co:8555/',
+  ADMISIONES_MID: 'http://pruebasapi3.intranetoas.udistrital.edu.co:8547/',
 
   CONFIGURACION_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/',
   CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/', 

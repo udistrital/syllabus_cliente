@@ -10,8 +10,9 @@ const routes: Routes = [
     { path: 'listar_syllabus',component:ListarSyllabusComponent},
     { path: 'crear_syllabus',component:CrearSyllabusComponent},
     { path: 'dashboard', component:DashboardComponent},
+    { path: '**', redirectTo: 'dashboard'},
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-    { path: '**', redirectTo: 'dashboard'}
+
   ];
   
   @NgModule({

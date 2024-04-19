@@ -77,8 +77,9 @@ export class UserService {
           this.localstorage.saveData('persona_id', '0');
         } else {
           if (payload.role.includes('JEFE_DEPENDENCIA') || payload.role.includes('COORDINADOR')) {
-            this.request.get(environment.SGA_MID, 'admision/dependencia_vinculacion_tercero/' + this.user.Id).subscribe({
+              this.request.get(environment.ADMISIONES_MID, 'admision/dependencia_vinculacion_tercero/' + this.user.Id).subscribe({
               next: (dataDependencias) => {
+                console.log(dataDependencias)
                 //console.log(dataDependencias)
                 this.localstorage.saveData('dependencias_persona_id', JSON.stringify(dataDependencias.Data.DependenciaId));
               },

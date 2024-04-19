@@ -77,6 +77,7 @@ export class RequestManager {
   post(path:any, endpoint:any, element:any) {
     return this.header$.pipe(
       mergeMap(header => {
+        console.log(header)
         return this.http.post<any>(`${path}${endpoint}`, element, header).pipe(
           catchError(this.errManager.handleError)
         )

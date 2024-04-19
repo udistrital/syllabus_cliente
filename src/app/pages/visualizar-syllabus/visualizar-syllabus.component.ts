@@ -52,10 +52,14 @@ export class VisualizarSyllabusComponent implements OnInit{
       syllabusCode:this.Syllabus.syllabus_code
     }
     this.Syllabus.syllabus_actual?null:body.version=this.Syllabus.version;
-    this.request.post(environment.SGA_MID,'espacios_academicos/syllabus_template',body).subscribe({
+    console.log("body1")
+    console.log(JSON.stringify(body))
+      this.request.post(environment.SYLLABUS_MID,'syllabus/generar-plantilla',body).subscribe({
       next:(syllabus_document) => {
+        console.log(syllabus_document)
         if(syllabus_document){
-          this.syllabusDocument=syllabus_document.Data.document
+          this.syllabusDocument=syllabus_document.data.Data
+          console.log(this.syllabusDocument)
           if(this.syllabusDocument){
             this.SyllabusDocumentLoad=true;
             this.syllabusDocumentData="data:application/pdf;base64,"+this.syllabusDocument;
@@ -88,12 +92,15 @@ export class VisualizarSyllabusComponent implements OnInit{
       format: "xlsx"
     }
     this.Syllabus.syllabus_actual?null:body.version=this.Syllabus.version;
-    this.request.post(environment.SGA_MID,'espacios_academicos/syllabus_template',body).subscribe({
+    console.log("body2")
+    console.log(JSON.stringify(body))
+    this.request.post(environment.SYLLABUS_MID,'syllabus/generar-plantilla',body).subscribe({
       next:(syllabus_document) => {
+        console.log(syllabus_document)
         if(syllabus_document){
-          if(syllabus_document.Data.document){
+          if(syllabus_document.data.Data){
             const link = document.createElement("a")
-            link.href = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,"+syllabus_document.Data.document;
+            link.href = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,"+syllabus_document.data.Data;
             link.download = `Syllabus_${this.Proyecto.Nombre}_${this.PlanEstudio.pen_nro}_${this.EspacioAcademico.asi_nombre}`
             link.click()
             link.remove()

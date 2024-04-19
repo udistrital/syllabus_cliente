@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
     private userService: UserService,
     private localStore: LocalStorageService,
   ) {
-    this.loaded=false;
+    this.loaded = false;
     this.router.events.subscribe((event: any) => {
       // ? Machete?
       const urltk: string = event.url ? event.url : ""
@@ -73,7 +73,7 @@ export class AppComponent implements OnInit {
 
     oas?.addEventListener('option', (event: any) => {
       if (event.detail) {
-        setTimeout(() => (this.router.navigate([event.detail.Url],{ skipLocationChange: true })), 50)
+        setTimeout(() => (this.router.navigate([event.detail.Url], { skipLocationChange: true })), 50)
           ;
       }
     });
