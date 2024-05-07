@@ -48,8 +48,12 @@ export class VisualizarSyllabusComponent implements OnInit{
   }
 
   getSyllabusDocument(){
+    let pen_cra_cod = Number(this.PlanEstudio.pen_cra_cod);
+    let pen_nro = Number(this.PlanEstudio.pen_nro);
     const body:any={
-      syllabusCode:this.Syllabus.syllabus_code
+      syllabusCode:this.Syllabus.syllabus_code,
+      proyectoId:pen_cra_cod,
+      planId:pen_nro
     }
     this.Syllabus.syllabus_actual?null:body.version=this.Syllabus.version;
     this.request.post(environment.SGA_MID,'espacios_academicos/syllabus_template',body).subscribe({

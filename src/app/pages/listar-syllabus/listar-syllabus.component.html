@@ -76,6 +76,18 @@ align-items: center;">
                                         matTooltip="Ver versiones">
                                         <mat-icon fontIcon="folder open">add</mat-icon>
                                     </button>
+                                    <button mat-icon-button
+                                        (click)="addProjectPlan2Syllabus(row)" aria-label="Asignar syllabus"    
+                                        matTooltip="Asignar syllabus"
+                                        *ngIf="canEdit && shouldAddSyllabusButton(row)">
+                                        <mat-icon fontIcon="add"></mat-icon>
+                                    </button>
+                                    <button mat-icon-button
+                                        (click)="removeProjectPlan2Syllabus(row)" aria-label="Retirar del syllabus"
+                                        matTooltip="Retirar del syllabus"
+                                        *ngIf="canEdit && shouldRemoveSyllabusButton(row)">
+                                        <mat-icon fontIcon="remove"></mat-icon>
+                                    </button>
                                 </td>
                                 <td mat-footer-cell *matFooterCellDef class="footer">
                                 </td>

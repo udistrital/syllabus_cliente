@@ -69,7 +69,6 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
 
     this.syllabusService.facultad$.subscribe((facultad) => {
       this.facultadSelected = facultad;
-      //consol.log(this.facultadSelected);
       if (Object.keys(this.facultadSelected).length != 0) {
         this.formFacultad.get('facultadCtrl')?.setValue(this.facultadSelected);
         this.facultadSelectedName = facultad.Nombre;
