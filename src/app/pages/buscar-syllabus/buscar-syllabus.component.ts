@@ -10,7 +10,8 @@ import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
 import { ListarSyllabusComponent } from '../listar-syllabus/listar-syllabus.component';
 import { LocalStorageService } from 'src/app/@core/utils/local_storage.service';
-import Swal from 'sweetalert2';
+// @ts-ignore
+import Swal from 'sweetalert2/dist/sweetalert2';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
@@ -389,7 +390,6 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     this.syllabusService.setEspacioAcademico(espacioAcademico);
     this.espacioAcademicoSelectedName = espacioAcademico.asi_nombre;
     this.MostrarTabla();
-    //if(this.tablaResultados) document.getElementById('formBusqueda')?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 
   filtrarDependencias() {

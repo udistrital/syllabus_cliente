@@ -7,7 +7,8 @@ import { Router } from '@angular/router';
 import { RequestManager } from '../services/requestManager';
 import { environment } from '../../../environments/environment';
 import { Syllabus} from '../../@core/models/syllabus'
-import Swal from 'sweetalert2';
+// @ts-ignore
+import Swal from 'sweetalert2/dist/sweetalert2';
 
 @Component({
   selector: 'app-visualizar-syllabus',

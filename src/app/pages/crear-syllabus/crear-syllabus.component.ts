@@ -12,7 +12,8 @@ import { Estrategia, Evaluaciones, Syllabus, Tema, PFA, ObjetivoEspecifico } fro
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { Documento } from 'src/app/@core/models/documento';
 import  {EmptySpaceValidator } from '../../@core/validators/emptyValue.validator'
-import Swal from 'sweetalert2';
+// @ts-ignore
+import Swal from 'sweetalert2/dist/sweetalert2';
 
 @Component({
   selector: 'app-crear-syllabus',
