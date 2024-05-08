@@ -1,25 +1,58 @@
 <mat-dialog-content class="mat-typography">
-    <div style="display: flex;width:100%;height: 100%;align-items: center;justify-content: center;"
-        *ngIf="!SyllabusDocumentLoad">
-        <mat-spinner></mat-spinner>
-    </div>
+  <div
+    style="
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+    "
+    *ngIf="!SyllabusDocumentLoad"
+  >
+    <mat-spinner></mat-spinner>
+  </div>
 
-    <object [data]="syllabusDocumentData | safeUrl " type="application/pdf" *ngIf="SyllabusDocumentLoad"
-        id="pdf_view"></object>
+  <object
+    [data]="syllabusDocumentData | safeUrl"
+    type="application/pdf"
+    *ngIf="SyllabusDocumentLoad"
+    id="pdf_view"
+  ></object>
 </mat-dialog-content>
-<mat-dialog-actions style="align-items: center;flex-direction: row;">
-    <button mat-icon-button (click)="DownloadSyllabus()" matTooltip="Descargar syllabus PDF" style="margin-left: 20px;">
-        <mat-icon class="material-symbols-outlined">file_download</mat-icon>
-        <!-- <span class="material-symbols-outlined">
+<mat-dialog-actions style="align-items: center; flex-direction: row">
+  <button
+    mat-icon-button
+    (click)="DownloadSyllabus()"
+    matTooltip="Descargar syllabus PDF"
+    style="margin-left: 20px"
+  >
+    <mat-icon class="material-symbols-outlined">file_download</mat-icon>
+    <!-- <span class="material-symbols-outlined">
             download
         </span> -->
-    </button>
-    <button mat-icon-button (click)="DownloadSyllabusXLSX()" matTooltip="Descargar syllabus XLSX" style="margin-left: 20px;">
-        <mat-icon class="material-symbols-outlined">file_download</mat-icon>
-    </button>
-    <button mat-icon-button (click)="EditSyllabus()" mat-dialog-close *ngIf="Syllabus.syllabus_actual && canEdit" matTooltip="Editar syllabus">
+  </button>
+  <button
+    mat-icon-button
+    (click)="DownloadSyllabusXLSX()"
+    matTooltip="Descargar syllabus XLSX"
+    style="margin-left: 20px"
+  >
+    <mat-icon class="material-symbols-outlined">file_download</mat-icon>
+  </button>
+  <!-- <button mat-icon-button (click)="EditSyllabus()" mat-dialog-close *ngIf="Syllabus.syllabus_actual && canEdit" matTooltip="Editar syllabus">
         <mat-icon  fontIcon="edit document"></mat-icon>
-    </button>
-    <button mat-button mat-dialog-close style="background-color: var(--primary);color: white; position: absolute;
-    margin-left: calc( 80vw/2 - 30px);" matTooltip="Cerrar visualizador">Cerrar</button>
+    </button> -->
+  <button
+    mat-button
+    mat-dialog-close
+    style="
+      background-color: var(--primary);
+      color: white;
+      position: absolute;
+      margin-left: calc(80vw / 2 - 30px);
+    "
+    matTooltip="Cerrar visualizador"
+  >
+    Cerrar
+  </button>
 </mat-dialog-actions>

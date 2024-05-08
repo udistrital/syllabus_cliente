@@ -11,6 +11,8 @@ import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
 import { ListarSyllabusComponent } from '../listar-syllabus/listar-syllabus.component';
 import { LocalStorageService } from 'src/app/@core/utils/local_storage.service';
 import Swal from 'sweetalert2';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-buscar-syllabus',
@@ -18,6 +20,10 @@ import Swal from 'sweetalert2';
   styleUrls: ['./buscar-syllabus.component.scss'],
 })
 export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
+  opcionesFiltradasFacultades!: Observable<Facultad[]>;
+  opcionesFiltradasProyectosCurriculares!: Observable<ProyectoAcademico[]>;
+  opcionesFiltradasPlanesEstudio!: Observable<PlanEstudio[]>;
+  opcionesFiltradasEspaciosAcademicos!: Observable<EspacioAcademico[]>;
   mostrartabla: boolean = false;
   facultades: Facultad[] = [];
   proyectos_curriculares: ProyectoAcademico[] = [];
@@ -141,6 +147,69 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     )
       ? JSON.parse(this.localStorage.getData('dependencias_persona_id')!)
       : [];
+
+    this.opcionesFiltradasFacultades = this.formFacultad.controls[
+      'facultadCtrl'
+    ].valueChanges.pipe(
+      startWith(''),
+      map((value) => (typeof value === 'string' ? value : value.Nombre)),
+      map((nombre) =>
+        nombre
+          ? this.facultades.filter((facultad) =>
+              facultad.Nombre.toLowerCase().includes(nombre.toLowerCase())
+            )
+          : this.facultades.slice()
+      )
+    );
+
+    this.opcionesFiltradasProyectosCurriculares =
+      this.formProyectoCurricular.controls[
+        'proyectoCurricularCtrl'
+      ].valueChanges.pipe(
+        startWith(''),
+        map((value) => (typeof value === 'string' ? value : value.Nombre)),
+        map((nombre) =>
+          nombre
+            ? this.proyectos_curriculares.filter((proyecto) =>
+                proyecto.Nombre.toLowerCase().includes(nombre.toLowerCase())
+              )
+            : this.proyectos_curriculares.slice()
+        )
+      );
+
+    this.opcionesFiltradasPlanesEstudio = this.formPlanEstudios.controls[
+      'planEstudiosCtrl'
+    ].valueChanges.pipe(
+      startWith(''),
+      map((value) => (typeof value === 'string' ? value : value.cra_nombre)),
+      map((nombre) =>
+        nombre
+          ? this.planes_estudio.filter(
+              (plan) =>
+                plan.cra_nombre.toLowerCase().includes(nombre.toLowerCase()) ||
+                plan.pen_nro
+                  .toString()
+                  .toLowerCase()
+                  .includes(nombre.toLowerCase())
+            )
+          : this.planes_estudio.slice()
+      )
+    );
+
+    this.opcionesFiltradasEspaciosAcademicos =
+      this.formEspaciosAcademicos.controls[
+        'espaciosAcademicosCtrl'
+      ].valueChanges.pipe(
+        startWith(''),
+        map((value) => (typeof value === 'string' ? value : value.asi_nombre)),
+        map((nombre) =>
+          nombre
+            ? this.espacios_academicos.filter((espacio) =>
+                espacio.asi_nombre.toLowerCase().includes(nombre.toLowerCase())
+              )
+            : this.espacios_academicos.slice()
+        )
+      );
   }
 
   ngAfterViewInit() {
@@ -151,6 +220,20 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
       });
       this.MostrarTabla();
     }
+  }
+
+  displayFn(object: any): string {
+    return object && object.Nombre ? object.Nombre : '';
+  }
+
+  displayFnPlanesEstudio(object: any): string {
+    return object && object.pen_nro && object.cra_nombre
+      ? `${object.cra_nombre} , PLAN DE ESTUDIO #${object.pen_nro}`
+      : '';
+  }
+
+  displayFnEspaciosAcademicos(object: any): string {
+    return object && object.asi_nombre ? object.asi_nombre : '';
   }
 
   MostrarTabla() {
@@ -345,5 +428,25 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
 
   compareEspacioAcademico(ea1: EspacioAcademico, ea2: EspacioAcademico) {
     return ea1.asi_nombre === ea2.asi_nombre && ea1.asi_cod === ea2.asi_cod;
+  }
+
+  onFocusFacultad() {
+    this.formFacultad.controls['facultadCtrl'].updateValueAndValidity();
+  }
+
+  onFocusProyectoCurricular() {
+    this.formProyectoCurricular.controls[
+      'proyectoCurricularCtrl'
+    ].updateValueAndValidity();
+  }
+
+  onFocusPlanEstudios() {
+    this.formPlanEstudios.controls['planEstudiosCtrl'].updateValueAndValidity();
+  }
+
+  onFocusEspaciosAcademicos() {
+    this.formEspaciosAcademicos.controls[
+      'espaciosAcademicosCtrl'
+    ].updateValueAndValidity();
   }
 }

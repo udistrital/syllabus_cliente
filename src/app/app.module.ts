@@ -42,7 +42,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule, } from '@angular/material-moment-adapter';
 import { AlertComponent } from './components/alert/alert.component';
-
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -57,6 +57,7 @@ import { AlertComponent } from './components/alert/alert.component';
     AlertComponent
   ],
   imports: [
+    MatAutocompleteModule,
     BrowserAnimationsModule,
     BrowserModule,
     MatGridListModule,
