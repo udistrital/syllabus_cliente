@@ -41,6 +41,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule, } from '@angular/material-moment-adapter';
+import { AlertComponent } from './components/alert/alert.component';
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPT
     DashboardComponent,
     VersionesSyllabusComponent,
     VisualizarSyllabusComponent,
-    SafeURL
+    SafeURL,
+    AlertComponent
   ],
   imports: [
     BrowserAnimationsModule,
