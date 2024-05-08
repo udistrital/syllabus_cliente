@@ -1,0 +1,26 @@
+.alert {
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  padding: 12px 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  //   font-size: 16px;
+  //   line-height: 24px;
+  color: #000;
+}
+
+.icon {
+  font-size: 24px; /* Tamaño del ícono */
+  margin-right: 10px;
+}
+
+.success {
+  background-color: var(--success-main);
+  border-color: var(--success-base);
+}
+
+.warning {
+  background-color: var(--warning-main);
+  border-color: var(--warning-base);
+}
