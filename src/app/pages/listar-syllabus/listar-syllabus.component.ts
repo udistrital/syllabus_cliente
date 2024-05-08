@@ -12,7 +12,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { VersionesSyllabusComponent } from '../versiones-syllabus/versiones-syllabus.component';
 import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
-import Swal from 'sweetalert2';
+// @ts-ignore
+import Swal from 'sweetalert2/dist/sweetalert2';
 
 @Component({
   selector: 'app-listar-syllabus',
@@ -87,7 +88,7 @@ export class ListarSyllabusComponent implements OnInit {
                 title: 'Sin syllabus',
                 text: 'No se encontraron syllabus para este espacio académico.',
               }).then(() => {
-                this.scrollFormBuscar();
+                this.scrollToTable();
               });
             } else {
               this.filterSyllabusByProjectPlan();
@@ -102,6 +103,7 @@ export class ListarSyllabusComponent implements OnInit {
                 });
                 this.formatDataSyllabusForTable();
               }
+              this.scrollToTable();
             }
             //this.scrollTablaResultados();
           }
@@ -219,11 +221,16 @@ export class ListarSyllabusComponent implements OnInit {
     formBusqueda?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  scrollToTable() {
+    const formBusqueda = document.getElementById('tablaResultados');
+    formBusqueda?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   FormCrearSyllabus(event: Event) {
     if (this.syllabus.length == 0 && this.canEdit) {
       event.preventDefault();
       const formBusqueda = document.getElementById('workspace');
-      formBusqueda?.scrollIntoView({ behavior: 'instant', block: 'start' });
+      formBusqueda?.scrollIntoView({ behavior: 'instant', block: 'center' });
       this.syllabusService.setisNew(true);
       this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
     } else {
@@ -324,7 +331,7 @@ export class ListarSyllabusComponent implements OnInit {
       showConfirmButton: true,
       showCancelButton: true,
       cancelButtonText: 'Cancelar',
-    }).then((result) => {
+    }).then((result:any) => {
       if (result.isConfirmed) {
         let pen_cra_cod = Number(this.PlanEstudio.pen_cra_cod);
         let pen_nro = Number(this.PlanEstudio.pen_nro);
@@ -364,21 +371,36 @@ export class ListarSyllabusComponent implements OnInit {
       showConfirmButton: true,
       showCancelButton: true,
       cancelButtonText: 'Cancelar',
-    }).then((result) => {
+    }).then((result:any) => {
       if (result.isConfirmed) {
         let pen_cra_cod = Number(this.PlanEstudio.pen_cra_cod);
         let pen_nro = Number(this.PlanEstudio.pen_nro);
         const syllabus: Syllabus = this.syllabus[row];
 
-        if (
-          syllabus.plan_estudios_ids == undefined ||
-          syllabus.plan_estudios_ids.length == 0
-        ) {
-        } else if (syllabus.plan_estudios_ids.includes(pen_nro)) {
+        // Eliminación del plan de estudios
+        if (syllabus.plan_estudios_ids.includes(pen_nro)) {
           syllabus.plan_estudios_ids = syllabus.plan_estudios_ids.filter(
             (pe_id) => pe_id !== pen_nro
           );
+
+          // Verificar si hay otros planes en el mismo proyecto curricular
+          let otherPlansInProject = syllabus.plan_estudios_ids.some((pid) => {
+            return this.syllabus.find(
+              (s) =>
+                s.proyecto_curricular_ids.includes(pen_cra_cod) &&
+                s.plan_estudios_ids.includes(pid)
+            );
+          });
+
+          // Eliminación del proyecto si no hay otros planes asociados al mismo proyecto
+          if (!otherPlansInProject) {
+            syllabus.proyecto_curricular_ids =
+              syllabus.proyecto_curricular_ids.filter(
+                (p_id) => p_id !== pen_cra_cod
+              );
+          }
         }
+
         this.updateVersionSyllabus(syllabus);
       }
     });
@@ -417,7 +439,7 @@ export class ListarSyllabusComponent implements OnInit {
         showConfirmButton: true,
         showCancelButton: true,
         cancelButtonText: 'Cancelar',
-      }).then((result) => {
+      }).then((result:any) => {
         if (result.isConfirmed) {
           this.router.navigate(['/crear_syllabus'], {
             skipLocationChange: true,
