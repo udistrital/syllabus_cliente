@@ -88,6 +88,8 @@ export class VisualizarSyllabusComponent implements OnInit{
 
   DownloadSyllabusXLSX(){
     const body:any={
+      proyectoId: Number(this.PlanEstudio.pen_cra_cod),
+      planId: Number(this.PlanEstudio.pen_nro),
       syllabusCode:this.Syllabus.syllabus_code,
       format: "xlsx"
     }
@@ -114,11 +116,11 @@ export class VisualizarSyllabusComponent implements OnInit{
     })
   }
 
-  EditSyllabus(){
-    const formBusqueda = document.getElementById("workspace");
-    formBusqueda?.scrollIntoView({ behavior: 'instant', block: 'start' });
-    this.syllabusService.setisNew(false);
-    this.syllabusService.setSyllabus(this.Syllabus);
-    this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
-  }
+  // EditSyllabus(){
+  //   const formBusqueda = document.getElementById("workspace");
+  //   formBusqueda?.scrollIntoView({ behavior: 'instant', block: 'start' });
+  //   this.syllabusService.setisNew(false);
+  //   this.syllabusService.setSyllabus(this.Syllabus);
+  //   this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
+  // }
 }
