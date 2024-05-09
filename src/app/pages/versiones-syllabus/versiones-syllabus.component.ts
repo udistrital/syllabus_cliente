@@ -11,7 +11,8 @@ import { Syllabus} from '../../@core/models/syllabus';
 import { MatDialog } from '@angular/material/dialog';
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
-import Swal from 'sweetalert2';
+// @ts-ignore
+import Swal from 'sweetalert2/dist/sweetalert2';
 
 @Component({
   selector: 'app-versiones-syllabus',
