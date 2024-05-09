@@ -12,7 +12,8 @@ import { Estrategia, Evaluaciones, Syllabus, Tema, PFA, ObjetivoEspecifico } fro
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { Documento } from 'src/app/@core/models/documento';
 import  {EmptySpaceValidator } from '../../@core/validators/emptyValue.validator'
-import Swal from 'sweetalert2';
+// @ts-ignore
+import Swal from 'sweetalert2/dist/sweetalert2';
 
 @Component({
   selector: 'app-crear-syllabus',
@@ -478,77 +479,104 @@ export class CrearSyllabusComponent implements OnInit {
     //console.log(this.dataSourceFormBiblioPag);
   }
 
+  createNewVersionSyllabus(){
+    const syllabus: Syllabus = new Syllabus();
+
+    Swal.fire({
+      title: this.isNew?'Creando Syllabus':'Editando Syllabus',
+      html: `Por favor espere`,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      willOpen: () => {
+        Swal.showLoading();
+      },
+    })
+    this.uploadActa().subscribe({
+      next: (respuesta: any) => {
+        let pen_cra_cod = Number(this.PlanEstudio.pen_cra_cod);
+        let pen_nro = Number(this.PlanEstudio.pen_nro);
+
+        syllabus.espacio_academico_id = Number(this.EspacioAcademico.asi_cod);
+        syllabus.tercero_id = Number(localStorage.getItem('persona_id'));
+        if(this.Syllabus.syllabus_code && !this.isNew){
+          syllabus.syllabus_code=this.Syllabus.syllabus_code;
+        }
+
+        if(this.Syllabus.proyecto_curricular_ids == undefined || this.Syllabus.proyecto_curricular_ids.length == 0){
+          syllabus.proyecto_curricular_ids = [pen_cra_cod];
+        } else if(this.Syllabus.proyecto_curricular_ids.includes(pen_cra_cod)){
+          syllabus.proyecto_curricular_ids = this.Syllabus.proyecto_curricular_ids;
+        }else{
+          syllabus.proyecto_curricular_ids = this.Syllabus.proyecto_curricular_ids;
+          syllabus.proyecto_curricular_ids.push(pen_cra_cod);
+        }
+
+        if(this.Syllabus.plan_estudios_ids == undefined || this.Syllabus.plan_estudios_ids.length == 0){
+          syllabus.plan_estudios_ids = [pen_nro];
+        } else if(this.Syllabus.plan_estudios_ids.includes(pen_nro)){
+          syllabus.plan_estudios_ids = this.Syllabus.plan_estudios_ids;
+        }else{
+          syllabus.plan_estudios_ids = this.Syllabus.plan_estudios_ids;
+          syllabus.plan_estudios_ids.push(pen_nro);
+        }
+
+        syllabus.idioma_espacio_id = this.formIdiomas.get('idioma_espacio_id')?.value;
+        syllabus.sugerencias = this.formSaberesPrevios.get('saberesPrevios')?.value;
+        syllabus.justificacion = this.formJustificacion.get('justificacion')?.value;
+        syllabus.objetivo_general = this.formObjetivos.get('objetivoGeneral')?.value;
+        syllabus.objetivos_especificos = this.objetivosEspecificos.value;
+        // this.objetivosEspecificos.controls.forEach(obj_esp => {
+        //   syllabus.objetivos_especificos.push(obj_esp.get('objetivo')?.value);
+        // });
+        syllabus.resultados_aprendizaje = this.pfa.value;
+        syllabus.contenido = this.formContenidosTematicos.value;
+        syllabus.estrategias = this.estrategias.value;
+        syllabus.evaluacion = this.formEvaluacion.value;
+        syllabus.recursos_educativos = this.formMedios.get('medios')?.value;
+        syllabus.practicas_academicas = this.formPracticasAcademicas.get('practicasAcademicas')?.value;
+        syllabus.bibliografia = this.formBibliografia.value;
+        syllabus.seguimiento = this.formSeguimiento.value;
+        syllabus.seguimiento.archivo = respuesta.res.Enlace
+        syllabus.vigencia = this.formVigencia.value;
+        //console.log(syllabus);
+        this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
+          next: (respuesta: any) => {
+            console.log("=========================================");
+            
+            console.log(respuesta);
+            Swal.close();
+            Swal.fire({
+              icon: 'success',
+              title: this.isNew?'Creación exitosa':'Edición exitosa',
+            })
+            this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
+          },
+          error: (error) => {
+            Swal.close();
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: this.isNew?'Fallo la creación del syllabus':'Fallo la edición del syllabus',
+            })
+          }
+        })
+      },
+      error: (error: Error) => {
+        //console.error(error)
+        Swal.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Fallo la carga de los documentos',
+        })
+      }
+    });
+  }
 
   SubmitSyllabus() {
-    const syllabus: Syllabus = new Syllabus();
     console.log(this.validateForms());
     if (this.validateForms()) {
-      Swal.fire({
-        title: this.isNew?'Creando Syllabus':'Editando Syllabus',
-        html: `Por favor espere`,
-        showConfirmButton: false,
-        allowOutsideClick: false,
-        willOpen: () => {
-          Swal.showLoading();
-        },
-      })
-      this.uploadActa().subscribe({
-        next: (respuesta: any) => {
-          syllabus.espacio_academico_id = Number(this.EspacioAcademico.asi_cod);
-          syllabus.proyecto_curricular_id = Number(this.PlanEstudio.pen_cra_cod);
-          syllabus.plan_estudios_id = Number(this.PlanEstudio.pen_nro);
-          if(this.Syllabus.syllabus_code && !this.isNew){
-            syllabus.syllabus_code=this.Syllabus.syllabus_code;
-          }
-          syllabus.idioma_espacio_id = this.formIdiomas.get('idioma_espacio_id')?.value;
-          syllabus.sugerencias = this.formSaberesPrevios.get('saberesPrevios')?.value;
-          syllabus.justificacion = this.formJustificacion.get('justificacion')?.value;
-          syllabus.objetivo_general = this.formObjetivos.get('objetivoGeneral')?.value;
-          syllabus.objetivos_especificos = this.objetivosEspecificos.value;
-          // this.objetivosEspecificos.controls.forEach(obj_esp => {
-          //   syllabus.objetivos_especificos.push(obj_esp.get('objetivo')?.value);
-          // });
-          syllabus.resultados_aprendizaje = this.pfa.value;
-          syllabus.contenido = this.formContenidosTematicos.value;
-          syllabus.estrategias = this.estrategias.value;
-          syllabus.evaluacion = this.formEvaluacion.value;
-          syllabus.recursos_educativos = this.formMedios.get('medios')?.value;
-          syllabus.practicas_academicas = this.formPracticasAcademicas.get('practicasAcademicas')?.value;
-          syllabus.bibliografia = this.formBibliografia.value;
-          syllabus.seguimiento = this.formSeguimiento.value;
-          syllabus.seguimiento.archivo = respuesta.res.Enlace
-          syllabus.vigencia = this.formVigencia.value;
-          //console.log(syllabus);
-          this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
-            next: (respuesta: any) => {
-              //console.log(respuesta);
-              Swal.close();
-              Swal.fire({
-                icon: 'success',
-                title: this.isNew?'Creación exitosa':'Edición exitosa',
-              })
-              this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
-            },
-            error: (error) => {
-              Swal.close();
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: this.isNew?'Fallo la creación del syllabus':'Fallo la edición del syllabus',
-              })
-            }
-          })
-        },
-        error: (error: Error) => {
-          //console.error(error)
-          Swal.close();
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Fallo la carga de los documentos',
-          })
-        }
-      });
+      this.createNewVersionSyllabus();
     }else{
       Swal.fire({
         icon: 'warning',

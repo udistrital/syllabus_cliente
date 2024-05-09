@@ -7,7 +7,8 @@ import { Router } from '@angular/router';
 import { RequestManager } from '../services/requestManager';
 import { environment } from '../../../environments/environment';
 import { Syllabus} from '../../@core/models/syllabus'
-import Swal from 'sweetalert2';
+// @ts-ignore
+import Swal from 'sweetalert2/dist/sweetalert2';
 
 @Component({
   selector: 'app-visualizar-syllabus',
@@ -48,8 +49,12 @@ export class VisualizarSyllabusComponent implements OnInit{
   }
 
   getSyllabusDocument(){
+    let pen_cra_cod = Number(this.PlanEstudio.pen_cra_cod);
+    let pen_nro = Number(this.PlanEstudio.pen_nro);
     const body:any={
-      syllabusCode:this.Syllabus.syllabus_code
+      syllabusCode:this.Syllabus.syllabus_code,
+      proyectoId:pen_cra_cod,
+      planId:pen_nro
     }
     this.Syllabus.syllabus_actual?null:body.version=this.Syllabus.version;
     this.request.post(environment.SGA_MID,'espacios_academicos/syllabus_template',body).subscribe({
@@ -84,6 +89,8 @@ export class VisualizarSyllabusComponent implements OnInit{
 
   DownloadSyllabusXLSX(){
     const body:any={
+      proyectoId: Number(this.PlanEstudio.pen_cra_cod),
+      planId: Number(this.PlanEstudio.pen_nro),
       syllabusCode:this.Syllabus.syllabus_code,
       format: "xlsx"
     }
@@ -110,11 +117,11 @@ export class VisualizarSyllabusComponent implements OnInit{
     })
   }
 
-  EditSyllabus(){
-    const formBusqueda = document.getElementById("workspace");
-    formBusqueda?.scrollIntoView({ behavior: 'instant', block: 'start' });
-    this.syllabusService.setisNew(false);
-    this.syllabusService.setSyllabus(this.Syllabus);
-    this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
-  }
+  // EditSyllabus(){
+  //   const formBusqueda = document.getElementById("workspace");
+  //   formBusqueda?.scrollIntoView({ behavior: 'instant', block: 'start' });
+  //   this.syllabusService.setisNew(false);
+  //   this.syllabusService.setSyllabus(this.Syllabus);
+  //   this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
+  // }
 }
