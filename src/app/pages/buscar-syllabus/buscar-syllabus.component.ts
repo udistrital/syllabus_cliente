@@ -12,8 +12,7 @@ import { ListarSyllabusComponent } from '../listar-syllabus/listar-syllabus.comp
 import { LocalStorageService } from 'src/app/@core/utils/local_storage.service';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-buscar-syllabus',
@@ -21,10 +20,16 @@ import { map, startWith } from 'rxjs/operators';
   styleUrls: ['./buscar-syllabus.component.scss'],
 })
 export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
-  opcionesFiltradasFacultades!: Observable<Facultad[]>;
-  opcionesFiltradasProyectosCurriculares!: Observable<ProyectoAcademico[]>;
-  opcionesFiltradasPlanesEstudio!: Observable<PlanEstudio[]>;
-  opcionesFiltradasEspaciosAcademicos!: Observable<EspacioAcademico[]>;
+  private _onDestroy = new Subject<void>();
+  public filterFacultades: ReplaySubject<Facultad[]> = new ReplaySubject<
+    Facultad[]
+  >(1);
+  public filterProyectoCurricular: ReplaySubject<ProyectoAcademico[]> =
+    new ReplaySubject<ProyectoAcademico[]>(1);
+  public filterPlanesDeEstudio: ReplaySubject<PlanEstudio[]> =
+    new ReplaySubject<PlanEstudio[]>(1);
+  public filterEspaciosAcademicos: ReplaySubject<EspacioAcademico[]> =
+    new ReplaySubject<EspacioAcademico[]>(1);
   mostrartabla: boolean = false;
   facultades: Facultad[] = [];
   proyectos_curriculares: ProyectoAcademico[] = [];
@@ -60,15 +65,19 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     this.loadFacultades();
     this.formFacultad = this._formBuilder.group({
       facultadCtrl: ['', Validators.required],
+      facultadFilterCtrl: [''],
     });
     this.formProyectoCurricular = this._formBuilder.group({
       proyectoCurricularCtrl: ['', Validators.required],
+      proyectoCurricularFilterCtrl: [''],
     });
     this.formPlanEstudios = this._formBuilder.group({
       planEstudiosCtrl: ['', Validators.required],
+      planEstudiosFilterCtrl: [''],
     });
     this.formEspaciosAcademicos = this._formBuilder.group({
       espaciosAcademicosCtrl: ['', Validators.required],
+      espaciosAcademicosFilterCtrl: [''],
     });
 
     this.syllabusService.facultad$.subscribe((facultad) => {
@@ -78,6 +87,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
         this.facultadSelectedName = facultad.Nombre;
       }
     });
+
     this.syllabusService.proyectoAcademico$.subscribe((proyectoAcademico) => {
       this.proyectoCurricularSelected = proyectoAcademico;
       if (Object.keys(this.proyectoCurricularSelected).length != 0) {
@@ -87,6 +97,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
         this.proyectoCurricularSelectedName = proyectoAcademico.Nombre;
       }
     });
+
     this.syllabusService.planEstudios$.subscribe((planEstudio) => {
       this.planEstudiosSelected = planEstudio;
       if (Object.keys(this.planEstudiosSelected).length != 0) {
@@ -97,6 +108,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
           planEstudio.cra_nombre + ', plan de estudio:' + planEstudio.pen_nro;
       }
     });
+
     this.syllabusService.espacioAcademico$.subscribe((espacioAcademico) => {
       this.espacioAcademicoSelected = espacioAcademico;
       if (Object.keys(this.espacioAcademicoSelected).length != 0) {
@@ -105,9 +117,6 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
           ?.setValue(this.espacioAcademicoSelected);
         this.espacioAcademicoSelectedName = espacioAcademico.asi_nombre;
         this.previousSearch = true;
-        // this.myStepper.steps.forEach((step)=> {
-        //   step.completed=true;
-        // })
       } else {
         this.previousSearch = false;
       }
@@ -116,7 +125,6 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     this.syllabusService.proyectosAcademicos$.subscribe(
       (proyectos_academicos) => {
         if (proyectos_academicos.length !== 0) {
-          //consol.log("proyectos academicos", proyectos_academicos)
           this.proyectos_curriculares = proyectos_academicos;
         }
       }
@@ -135,13 +143,6 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
         }
       }
     );
-    // console.log('playload', this.implictToken.getPayload());
-    // this.implictToken.getRole().then((roleSystem:string[]) => {
-    //   if (typeof roleSystem !== 'undefined' && roleSystem !== null) {
-    //     console.log('roles',roleSystem);
-    //     this.roles=roleSystem;
-    //   }
-    // })
 
     this.dependenciasId = JSON.parse(
       this.localStorage.getData('dependencias_persona_id')!
@@ -149,72 +150,53 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
       ? JSON.parse(this.localStorage.getData('dependencias_persona_id')!)
       : [];
 
-    this.opcionesFiltradasFacultades = this.formFacultad.controls[
-      'facultadCtrl'
-    ].valueChanges.pipe(
-      startWith(''),
-      map((value) => (typeof value === 'string' ? value : value.Nombre)),
-      map((nombre) =>
-        nombre
-          ? this.facultades.filter((facultad) =>
-              facultad.Nombre.toLowerCase().includes(nombre.toLowerCase())
-            )
-          : this.facultades.slice()
-      )
-    );
+    this.formFacultad
+      .get('facultadFilterCtrl')
+      ?.valueChanges.pipe(takeUntil(this._onDestroy))
+      .subscribe((value) => {
+        this.filterFacultades.next(
+          this.facultades.filter((facultad) =>
+            facultad.Nombre.toLowerCase().includes(value.toLowerCase())
+          )
+        );
+      });
 
-    this.opcionesFiltradasProyectosCurriculares =
-      this.formProyectoCurricular.controls[
-        'proyectoCurricularCtrl'
-      ].valueChanges.pipe(
-        startWith(''),
-        map((value) => (typeof value === 'string' ? value : value.Nombre)),
-        map((nombre) =>
-          nombre
-            ? this.proyectos_curriculares.filter((proyecto) =>
-                proyecto.Nombre.toLowerCase().includes(nombre.toLowerCase())
-              )
-            : this.proyectos_curriculares.slice()
+    this.formProyectoCurricular
+      .get('proyectoCurricularFilterCtrl')
+      ?.valueChanges.pipe(takeUntil(this._onDestroy))
+      .subscribe((value) => {
+        this.filterProyectoCurricular.next(
+          this.proyectos_curriculares.filter((proyecto) =>
+            proyecto.Nombre.toLowerCase().includes(value.toLowerCase())
+          )
+        );
+      });
+
+    this.formPlanEstudios
+    .get('planEstudiosFilterCtrl')
+    ?.valueChanges.pipe(takeUntil(this._onDestroy))
+    .subscribe((value) => {
+      this.filterPlanesDeEstudio.next(
+        this.planes_estudio.filter((plan) =>
+          plan.cra_nombre.toLowerCase().includes(value.toLowerCase()) ||
+          plan.pen_nro.toString().includes(value.toLowerCase())
         )
       );
+    });
 
-    this.opcionesFiltradasPlanesEstudio = this.formPlanEstudios.controls[
-      'planEstudiosCtrl'
-    ].valueChanges.pipe(
-      startWith(''),
-      map((value) => (typeof value === 'string' ? value : value.cra_nombre)),
-      map((nombre) =>
-        nombre
-          ? this.planes_estudio.filter(
-              (plan) =>
-                plan.cra_nombre.toLowerCase().includes(nombre.toLowerCase()) ||
-                plan.pen_nro
-                  .toString()
-                  .toLowerCase()
-                  .includes(nombre.toLowerCase())
-            )
-          : this.planes_estudio.slice()
-      )
-    );
-
-    this.opcionesFiltradasEspaciosAcademicos =
-      this.formEspaciosAcademicos.controls[
-        'espaciosAcademicosCtrl'
-      ].valueChanges.pipe(
-        startWith(''),
-        map((value) => (typeof value === 'string' ? value : value.asi_nombre)),
-        map((nombre) =>
-          nombre
-            ? this.espacios_academicos.filter((espacio) =>
-                espacio.asi_nombre.toLowerCase().includes(nombre.toLowerCase())
-              )
-            : this.espacios_academicos.slice()
+    this.formEspaciosAcademicos
+    .get('espaciosAcademicosFilterCtrl')
+    ?.valueChanges.pipe(takeUntil(this._onDestroy))
+    .subscribe((value) => {
+      this.filterEspaciosAcademicos.next(
+        this.espacios_academicos.filter((espacio) =>
+          espacio.asi_nombre.toLowerCase().includes(value.toLowerCase())
         )
       );
+    });
   }
 
   ngAfterViewInit() {
-    //consol.log(this.myStepper);
     if (this.previousSearch) {
       this.myStepper.steps.forEach((step) => {
         step.completed = true;
@@ -223,23 +205,8 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     }
   }
 
-  displayFn(object: any): string {
-    return object && object.Nombre ? object.Nombre : '';
-  }
-
-  displayFnPlanesEstudio(object: any): string {
-    return object && object.pen_nro && object.cra_nombre
-      ? `${object.cra_nombre} , PLAN DE ESTUDIO #${object.pen_nro}`
-      : '';
-  }
-
-  displayFnEspaciosAcademicos(object: any): string {
-    return object && object.asi_nombre ? object.asi_nombre : '';
-  }
-
   MostrarTabla() {
     this.mostrartabla = true;
-    //if (this.tablaResultados) this.tablaResultados.scrollTablaResultados();
   }
 
   loadFacultades() {
@@ -251,6 +218,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
       .subscribe((dataFacultades: any) => {
         if (dataFacultades) {
           this.facultades = dataFacultades;
+          this.filterFacultades.next(this.facultades);
         }
       });
   }
@@ -265,6 +233,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
         next: (dataProyectosCurriculares: any) => {
           if (dataProyectosCurriculares) {
             this.proyectos_curriculares = dataProyectosCurriculares;
+            this.filterProyectoCurricular.next(this.proyectos_curriculares);
             this.filtrarDependencias();
           }
         },
@@ -301,6 +270,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
                     this.planes_estudio =
                       dataPlanEstudio.planes_estudio.plan_estudio;
                     this.syllabusService.setPlanesEstudio(this.planes_estudio);
+                    this.filterPlanesDeEstudio.next(this.planes_estudio);
                   }
                 },
                 error: (error) => {
@@ -344,6 +314,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
             this.syllabusService.setEspaciosAcademicos(
               this.espacios_academicos
             );
+            this.filterEspaciosAcademicos.next(this.espacios_academicos);
           }
         },
         error: () => {
@@ -399,6 +370,8 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
         this.dependenciasId.includes(proyecto.Id)
       );
       this.proyectos_curriculares = aux_proy;
+      console.log('filtrado', aux_proy);
+      this.filterProyectoCurricular.next(this.proyectos_curriculares);
 
       if (this.proyectos_curriculares.length == 0) {
         Swal.fire({
@@ -430,23 +403,8 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     return ea1.asi_nombre === ea2.asi_nombre && ea1.asi_cod === ea2.asi_cod;
   }
 
-  onFocusFacultad() {
-    this.formFacultad.controls['facultadCtrl'].updateValueAndValidity();
-  }
-
-  onFocusProyectoCurricular() {
-    this.formProyectoCurricular.controls[
-      'proyectoCurricularCtrl'
-    ].updateValueAndValidity();
-  }
-
-  onFocusPlanEstudios() {
-    this.formPlanEstudios.controls['planEstudiosCtrl'].updateValueAndValidity();
-  }
-
-  onFocusEspaciosAcademicos() {
-    this.formEspaciosAcademicos.controls[
-      'espaciosAcademicosCtrl'
-    ].updateValueAndValidity();
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
   }
 }

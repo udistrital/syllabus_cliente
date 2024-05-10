@@ -39,25 +39,27 @@
               >
               <mat-form-field appearance="fill" [style.width.%]="100">
                 <mat-label>Facultad</mat-label>
-                <input
-                  type="text"
-                  matInput
-                  [formControl]="formFacultad.controls['facultadCtrl']"
-                  [matAutocomplete]="autoFacultades"
-                  (focus)="onFocusFacultad()"
-                />
-                <mat-autocomplete
-                  #autoFacultades="matAutocomplete"
-                  [displayWith]="displayFn"
-                  (optionSelected)="onChangeFacultad($event.option.value)"
+                <mat-select
+                  (selectionChange)="onChangeFacultad($event.value)"
+                  [compareWith]="compareFacultad"
+                  formControlName="facultadCtrl"
+                  placeholder="Facultad"
+                  #facultadSelect
                 >
+                  <mat-option>
+                    <ngx-mat-select-search
+                      formControlName="facultadFilterCtrl"
+                      [placeholderLabel]="'Buscar Facultad'"
+                    >
+                    </ngx-mat-select-search>
+                  </mat-option>
                   <mat-option
-                    *ngFor="let facultad of opcionesFiltradasFacultades | async"
+                    *ngFor="let facultad of filterFacultades | async"
                     [value]="facultad"
                   >
                     {{ facultad.Nombre }}
                   </mat-option>
-                </mat-autocomplete>
+                </mat-select>
               </mat-form-field>
             </form>
           </mat-step>
@@ -69,32 +71,30 @@
               >
               <mat-form-field appearance="fill" [style.width.%]="100">
                 <mat-label>Proyecto / Programa Curricular</mat-label>
-                <input
-                  type="text"
-                  matInput
-                  [formControl]="
-                    formProyectoCurricular.controls['proyectoCurricularCtrl']
-                  "
-                  [matAutocomplete]="autoProyectosCurriculares"
-                  (focus)="onFocusProyectoCurricular()"
-                />
-                <mat-autocomplete
-                  #autoProyectosCurriculares="matAutocomplete"
-                  [displayWith]="displayFn"
-                  (optionSelected)="
-                    onChangeProyectoCurricular($event.option.value)
-                  "
+                <mat-select
+                  (selectionChange)="onChangeProyectoCurricular($event.value)"
+                  [compareWith]="compareProyectoAcademico"
+                  formControlName="proyectoCurricularCtrl"
+                  placeholder="Proyecto Curricular"
+                  #proyectoCurricularSelect
                 >
+                  <mat-option>
+                    <ngx-mat-select-search
+                      formControlName="proyectoCurricularFilterCtrl"
+                      [placeholderLabel]="'Buscar proyecto curricular'"
+                    >
+                    </ngx-mat-select-search>
+                  </mat-option>
                   <mat-option
                     *ngFor="
-                      let proyecto_curricular of opcionesFiltradasProyectosCurriculares
+                      let proyecto_curricular of filterProyectoCurricular
                         | async
                     "
                     [value]="proyecto_curricular"
                   >
                     {{ proyecto_curricular.Nombre }}
                   </mat-option>
-                </mat-autocomplete>
+                </mat-select>
               </mat-form-field>
             </form>
           </mat-step>
@@ -106,30 +106,29 @@
 
               <mat-form-field appearance="fill" [style.width.%]="100">
                 <mat-label>Plan de estudios</mat-label>
-                <input
-                  type="text"
-                  matInput
-                  [formControl]="formPlanEstudios.controls['planEstudiosCtrl']"
-                  [matAutocomplete]="autoPlanesEstudios"
-                  (focus)="onFocusPlanEstudios()"
-                />
-                <mat-autocomplete
-                  #autoPlanesEstudios="matAutocomplete"
-                  [displayWith]="displayFnPlanesEstudio"
-                  (optionSelected)="onChangePlanEstudios($event.option.value)"
+                <mat-select
+                  (selectionChange)="onChangePlanEstudios($event.value)"
+                  formControlName="planEstudiosCtrl"
+                  [compareWith]="comparePlanEstudio"
+                  placeholder="Plan de estudios"
+                  #planEstudiosSelect
                 >
+                  <mat-option>
+                    <ngx-mat-select-search
+                      formControlName="planEstudiosFilterCtrl"
+                      [placeholderLabel]="'Buscar plan de estudios'"
+                    >
+                    </ngx-mat-select-search>
+                  </mat-option>
                   <mat-option
-                    *ngFor="
-                      let plan_estudios of opcionesFiltradasPlanesEstudio
-                        | async
-                    "
+                    *ngFor="let plan_estudios of filterPlanesDeEstudio | async"
                     [value]="plan_estudios"
                   >
-                    {{ plan_estudios.cra_nombre }}, PLAN DE ESTUDIO #{{
+                    {{ plan_estudios.cra_nombre }}, plan de estudio:{{
                       plan_estudios.pen_nro
                     }}
                   </mat-option>
-                </mat-autocomplete>
+                </mat-select>
               </mat-form-field>
             </form>
           </mat-step>
@@ -141,25 +140,27 @@
               >
               <mat-form-field appearance="fill" [style.width.%]="100">
                 <mat-label>Espacio Académico</mat-label>
-                <input
-                    type="text"
-                    matInput
-                    [formControl]="formEspaciosAcademicos.controls['espaciosAcademicosCtrl']"
-                    [matAutocomplete]="autoEspaciosAcademicos"
-                    (focus)="onFocusEspaciosAcademicos()"
-                />
-                <mat-autocomplete
-                    #autoEspaciosAcademicos="matAutocomplete"
-                    [displayWith]="displayFnEspaciosAcademicos"
-                    (optionSelected)="onChangeEspacioAcademico($event.option.value)"
+                <mat-select
+                  (selectionChange)="onChangeEspacioAcademico($event.value)"
+                  formControlName="espaciosAcademicosCtrl"
+                  [compareWith]="compareEspacioAcademico"
+                  placeholder="Espacio Académico"
+                  #espaciosAcademicosSelect
                 >
-                    <mat-option
-                        *ngFor="let espacio_academico of opcionesFiltradasEspaciosAcademicos | async"
-                        [value]="espacio_academico"
+                  <mat-option>
+                    <ngx-mat-select-search
+                      formControlName="espaciosAcademicosFilterCtrl"
+                      [placeholderLabel]="'Buscar espacio académico'"
                     >
-                        {{ espacio_academico.asi_nombre }}
-                    </mat-option>
-                </mat-autocomplete>
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option
+                    *ngFor="let espacio_academico of filterEspaciosAcademicos | async"
+                    [value]="espacio_academico"
+                  >
+                    {{ espacio_academico.asi_nombre }}
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
             </form>
           </mat-step>
