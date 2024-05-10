@@ -398,7 +398,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
         this.dependenciasId.includes(proyecto.Id)
       );
       this.proyectos_curriculares = aux_proy;
-      console.log('filtrado', aux_proy);
+      //console.log('filtrado', aux_proy);
       this.filterProyectoCurricular.next(this.proyectos_curriculares);
 
       if (this.proyectos_curriculares.length == 0) {

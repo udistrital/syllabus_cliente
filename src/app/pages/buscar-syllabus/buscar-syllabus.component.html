@@ -10,23 +10,13 @@
       <h3 style="margin: 0%; font-weight: bold">Gestión de syllabus</h3>
     </mat-card-content>
   </mat-card>
-  <mat-card
-    style="
-      max-width: 75%;
-      background-color: #ffff66;
-      border-radius: 15px;
-      margin: 10px;
+  <app-alert
+    style="width: calc(100% - 60px)"
+    [type]="'info'"
+    [message]="
+      'Bienvenido al módulo de gestión de Syllabus. Aquí puedes consultar, editar y asignar syllabus a cursos fácilmente. Solo indica las variables iniciales para empezar.'
     "
-    MatCardAppearance="outlined"
-  >
-    <mat-card-content>
-      <p style="margin: 0%; text-align: justify; text-align-last: center">
-        Usuario, en el actual módulo usted podrá realizar las consultas que
-        requiera del o los Syllabus de interés; para ello debera indicar unas
-        variables iniciales que le facilitarán la Búsqueda.
-      </p>
-    </mat-card-content>
-  </mat-card>
+  ></app-alert>
   <mat-card style="width: calc(100% - 60px)">
     <mat-card-content>
       <div class="container-border">
@@ -159,7 +149,9 @@
                     </ngx-mat-select-search>
                   </mat-option>
                   <mat-option
-                    *ngFor="let espacio_academico of filterEspaciosAcademicos | async"
+                    *ngFor="
+                      let espacio_academico of filterEspaciosAcademicos | async
+                    "
                     [value]="espacio_academico"
                   >
                     {{ espacio_academico.asi_nombre }}

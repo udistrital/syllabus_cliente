@@ -12,7 +12,8 @@ export class AlertComponent {
   get icon() {
     const icons = {
       success: 'check_circle',
-      warning: 'warning'
+      warning: 'warning',
+      info: 'info',
     }
     return icons[this.type];
   }

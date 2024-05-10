@@ -122,14 +122,14 @@ export class ListarSyllabusComponent implements OnInit {
   filterSyllabusByProjectPlan() {
     const pen_cra_cod: number = Number(this.PlanEstudio.pen_cra_cod);
     const pen_nro: number = Number(this.PlanEstudio.pen_nro);
-    console.log('pen_cra_cod', pen_cra_cod);
-    console.log('pen_nro', pen_nro);
+    //console.log('pen_cra_cod', pen_cra_cod);
+    //console.log('pen_nro', pen_nro);
 
     let filteredSyllabus: Syllabus[] = [];
     let proyecto_ids;
     let plan_ids;
     this.syllabus.forEach((value) => {
-      console.log(value);
+      //console.log(value);
       proyecto_ids = value.proyecto_curricular_ids;
       plan_ids = value.plan_estudios_ids;
       if (
@@ -292,7 +292,7 @@ export class ListarSyllabusComponent implements OnInit {
       .put(environment.SYLLABUS_CRUD, 'syllabus', syllabus, syllabus._id)
       .subscribe({
         next: (respuesta: any) => {
-          console.log(respuesta);
+          //console.log(respuesta);
           Swal.close();
           Swal.fire({
             icon: 'success',
