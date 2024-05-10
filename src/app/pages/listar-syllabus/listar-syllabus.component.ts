@@ -182,15 +182,24 @@ export class ListarSyllabusComponent implements OnInit {
 
   openSyllabusVisualizarSyllabusDocument(row: number) {
     try {
+      // Abrir el diálogo para visualizar el Syllabus
       const dialogRefViewDocument = this.dialog.open(
         VisualizarSyllabusComponent,
         {
-          width: '80vw', // Set width to 60 percent of view port width
-          height: '90vh',
+          width: '80vw', // Set width to 80 percent of view port width
+          height: '90vh', // Set height to 90 percent of view port height
         }
       );
+
+      // Pasar datos al componente del diálogo
       dialogRefViewDocument.componentInstance.Syllabus = this.syllabus[row];
+
+      // Suscribirse al evento afterClosed del diálogo
       dialogRefViewDocument.afterClosed().subscribe((result) => {
+        // Cerrar Swal de carga cuando el diálogo se cierre
+        Swal.close();
+
+        // Manejar casos en los que el syllabus no está asignado
         if (!this.hasSyllabusByProjectPlan) {
           Swal.fire({
             icon: 'warning',
@@ -207,7 +216,9 @@ export class ListarSyllabusComponent implements OnInit {
         }
       });
     } catch (error) {
-      //console.log(error);
+      console.error(error);
+      // Cerrar Swal en caso de error
+      Swal.close();
     }
   }
 
@@ -331,7 +342,7 @@ export class ListarSyllabusComponent implements OnInit {
       showConfirmButton: true,
       showCancelButton: true,
       cancelButtonText: 'Cancelar',
-    }).then((result:any) => {
+    }).then((result: any) => {
       if (result.isConfirmed) {
         let pen_cra_cod = Number(this.PlanEstudio.pen_cra_cod);
         let pen_nro = Number(this.PlanEstudio.pen_nro);
@@ -371,7 +382,7 @@ export class ListarSyllabusComponent implements OnInit {
       showConfirmButton: true,
       showCancelButton: true,
       cancelButtonText: 'Cancelar',
-    }).then((result:any) => {
+    }).then((result: any) => {
       if (result.isConfirmed) {
         let pen_cra_cod = Number(this.PlanEstudio.pen_cra_cod);
         let pen_nro = Number(this.PlanEstudio.pen_nro);
@@ -439,7 +450,7 @@ export class ListarSyllabusComponent implements OnInit {
         showConfirmButton: true,
         showCancelButton: true,
         cancelButtonText: 'Cancelar',
-      }).then((result:any) => {
+      }).then((result: any) => {
         if (result.isConfirmed) {
           this.router.navigate(['/crear_syllabus'], {
             skipLocationChange: true,
