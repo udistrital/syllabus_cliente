@@ -32,3 +32,9 @@
   ); /* Color de fondo para alertas de advertencia */
   border: 1px solid var(--warning-base); /* Borde sutil para destacar la alerta */
 }
+
+.info {
+  background-color: var(--color300); /* Color de fondo para alertas de información */
+  border: 1px solid var(--color500); /* Borde sutil para destacar la alerta */
+}
+

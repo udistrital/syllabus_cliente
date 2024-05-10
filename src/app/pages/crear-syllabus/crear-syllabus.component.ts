@@ -442,7 +442,7 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   updateViewTableBiblioBas() {
-    console.log('basicas',this.basicas);
+    //console.log('basicas',this.basicas);
     this.dataSourceFormBiblioBas.next(this.basicas.controls);
     //console.log(this.dataSourceFormBiblioBas);
   }
@@ -541,9 +541,9 @@ export class CrearSyllabusComponent implements OnInit {
         //console.log(syllabus);
         this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
           next: (respuesta: any) => {
-            console.log("=========================================");
+            //console.log("=========================================");
             
-            console.log(respuesta);
+            //console.log(respuesta);
             Swal.close();
             Swal.fire({
               icon: 'success',
@@ -574,7 +574,7 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   SubmitSyllabus() {
-    console.log(this.validateForms());
+    //console.log(this.validateForms());
     if (this.validateForms()) {
       this.createNewVersionSyllabus();
     }else{
