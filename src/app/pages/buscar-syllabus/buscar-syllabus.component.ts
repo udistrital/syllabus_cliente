@@ -156,7 +156,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
       .subscribe((value) => {
         this.filterFacultades.next(
           this.facultades.filter((facultad) =>
-            facultad.Nombre.toLowerCase().includes(value.toLowerCase())
+            facultad.Nombre.toLowerCase().includes(value ? value.toLowerCase(): '')
           )
         );
       });
@@ -167,33 +167,34 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
       .subscribe((value) => {
         this.filterProyectoCurricular.next(
           this.proyectos_curriculares.filter((proyecto) =>
-            proyecto.Nombre.toLowerCase().includes(value.toLowerCase())
+            proyecto.Nombre.toLowerCase().includes(value ? value.toLowerCase() : '')
           )
         );
       });
 
     this.formPlanEstudios
-    .get('planEstudiosFilterCtrl')
-    ?.valueChanges.pipe(takeUntil(this._onDestroy))
-    .subscribe((value) => {
-      this.filterPlanesDeEstudio.next(
-        this.planes_estudio.filter((plan) =>
-          plan.cra_nombre.toLowerCase().includes(value.toLowerCase()) ||
-          plan.pen_nro.toString().includes(value.toLowerCase())
-        )
-      );
-    });
+      .get('planEstudiosFilterCtrl')
+      ?.valueChanges.pipe(takeUntil(this._onDestroy))
+      .subscribe((value) => {
+        this.filterPlanesDeEstudio.next(
+          this.planes_estudio.filter(
+            (plan) =>
+              plan.cra_nombre.toLowerCase().includes(value ? value.toLowerCase(): '') ||
+              plan.pen_nro.toString().includes(value ? value.toLowerCase() : '')
+          )
+        );
+      });
 
     this.formEspaciosAcademicos
-    .get('espaciosAcademicosFilterCtrl')
-    ?.valueChanges.pipe(takeUntil(this._onDestroy))
-    .subscribe((value) => {
-      this.filterEspaciosAcademicos.next(
-        this.espacios_academicos.filter((espacio) =>
-          espacio.asi_nombre.toLowerCase().includes(value.toLowerCase())
-        )
-      );
-    });
+      .get('espaciosAcademicosFilterCtrl')
+      ?.valueChanges.pipe(takeUntil(this._onDestroy))
+      .subscribe((value) => {
+        this.filterEspaciosAcademicos.next(
+          this.espacios_academicos.filter((espacio) =>
+            espacio.asi_nombre.toLowerCase().includes(value ? value.toLowerCase() : '')
+          )
+        );
+      });
   }
 
   ngAfterViewInit() {
@@ -332,9 +333,22 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
   onChangeFacultad(facultad: any) {
     this.syllabusService.setFacultad(facultad);
     this.facultadSelectedName = facultad.Nombre;
+
+    // Reset proyecto curricular
     this.proyectoCurricularSelectedName = '';
+    this.formProyectoCurricular.reset();
+    this.filterProyectoCurricular.next([]);
+
+    // Reset plan de estudios
     this.planEstudiosSelectedName = '';
+    this.formPlanEstudios.reset();
+    this.filterPlanesDeEstudio.next([]);
+
+    // Reset espacios académicos
     this.espacioAcademicoSelectedName = '';
+    this.formEspaciosAcademicos.reset();
+    this.filterEspaciosAcademicos.next([]);
+
     this.loadProyectosCurriculares();
     this.myStepper.next();
   }
@@ -342,8 +356,17 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
   onChangeProyectoCurricular(proyectoCurricular: any) {
     this.syllabusService.setProyectoAcademico(proyectoCurricular);
     this.proyectoCurricularSelectedName = proyectoCurricular.Nombre;
+
+    // Reset plan de estudios
     this.planEstudiosSelectedName = '';
+    this.formPlanEstudios.reset();
+    this.filterPlanesDeEstudio.next([]);
+
+    // Reset espacios académicos
     this.espacioAcademicoSelectedName = '';
+    this.formEspaciosAcademicos.reset();
+    this.filterEspaciosAcademicos.next([]);
+
     this.loadPlanEstudios();
     this.myStepper.next();
   }
@@ -352,7 +375,12 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     this.syllabusService.setPlanEstudios(planEstudio);
     this.planEstudiosSelectedName =
       planEstudio.cra_nombre + ', plan de estudio:' + planEstudio.pen_nro;
+
+    // Reset espacios académicos
     this.espacioAcademicoSelectedName = '';
+    this.formEspaciosAcademicos.reset();
+    this.filterEspaciosAcademicos.next([]);
+
     this.loadEspaciosAcademicos();
     this.myStepper.next();
   }
@@ -388,18 +416,30 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
   }
 
   compareFacultad(f1: Facultad, f2: Facultad): boolean {
+    if (!f1 || !f2) {
+      return false;
+    }
     return f1.Nombre === f2.Nombre && f1.Id === f2.Id;
   }
 
   compareProyectoAcademico(pa1: ProyectoAcademico, pa2: ProyectoAcademico) {
+    if (!pa1 || !pa2) {
+      return false;
+    }
     return pa1.Nombre === pa2.Nombre && pa1.Id === pa2.Id;
   }
 
   comparePlanEstudio(pe1: PlanEstudio, pe2: PlanEstudio) {
+    if (!pe1 || !pe2) {
+      return false;
+    }
     return pe1.pen_cra_cod === pe2.cra_nombre && pe1.pen_nro === pe2.pen_nro;
   }
 
   compareEspacioAcademico(ea1: EspacioAcademico, ea2: EspacioAcademico) {
+    if (!ea1 || !ea2) {
+      return false;
+    }
     return ea1.asi_nombre === ea2.asi_nombre && ea1.asi_cod === ea2.asi_cod;
   }
 
