@@ -57,11 +57,11 @@
           <mat-step [stepControl]="formProyectoCurricular">
             <form [formGroup]="formProyectoCurricular">
               <ng-template matStepLabel
-                >Proyecto / Programa Curricular
+                >Proyecto curricular / programa académico
                 {{ proyectoCurricularSelectedName }}</ng-template
               >
               <mat-form-field appearance="fill" [style.width.%]="100">
-                <mat-label>Proyecto / Programa Curricular</mat-label>
+                <mat-label>Proyecto curricular / programa académico</mat-label>
                 <mat-select
                   (selectionChange)="onChangeProyectoCurricular($event.value)"
                   [compareWith]="compareProyectoAcademico"
