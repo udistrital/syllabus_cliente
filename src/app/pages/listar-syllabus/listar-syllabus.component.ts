@@ -98,7 +98,7 @@ export class ListarSyllabusComponent implements OnInit {
                 Swal.fire({
                   icon: 'warning',
                   title:
-                    'El Proyecto / Programa Curricular o Plan de estudios no tiene syllabus asignado',
+                    'El Proyecto curricular / programa académico o Plan de estudios no tiene syllabus asignado',
                   text: 'El espacio académico tiene Syllabus, asignelo al Proyecto y/o plan de estudios.',
                 });
                 this.formatDataSyllabusForTable();
