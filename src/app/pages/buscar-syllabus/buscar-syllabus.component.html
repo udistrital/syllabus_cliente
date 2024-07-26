@@ -1,90 +1,168 @@
-<div style="display: flex;
-flex-direction: column;
-align-items: center;" id="formBusqueda">
-    <mat-card style="background-color: #03678F; color:white; border-radius: 10px;" MatCardAppearance='outlined'>
-        <mat-card-content>
-            <h3 style="margin: 0%;font-weight: bold;">Gestión de syllabus</h3>
-        </mat-card-content>
+<div
+  style="display: flex; flex-direction: column; align-items: center"
+  id="formBusqueda"
+>
+  <mat-card
+    style="background-color: #03678f; color: white; border-radius: 10px"
+    MatCardAppearance="outlined"
+  >
+    <mat-card-content>
+      <h3 style="margin: 0%; font-weight: bold">Gestión de syllabus</h3>
+    </mat-card-content>
+  </mat-card>
+  <app-alert
+    style="width: calc(100% - 60px)"
+    [type]="'info'"
+    [message]="
+      'Bienvenido al módulo de gestión de Syllabus. Aquí puedes consultar, editar y asignar syllabus a cursos fácilmente. Solo indica las variables iniciales para empezar.'
+    "
+  ></app-alert>
+  <mat-card style="width: calc(100% - 60px)">
+    <mat-card-content>
+      <div class="container-border">
+        <h4>Variables de inicio</h4>
+        <mat-vertical-stepper linear #stepper>
+          <mat-step [stepControl]="formFacultad">
+            <form [formGroup]="formFacultad">
+              <ng-template matStepLabel
+                >Facultad {{ facultadSelectedName }}</ng-template
+              >
+              <mat-form-field appearance="fill" [style.width.%]="100">
+                <mat-label>Facultad</mat-label>
+                <mat-select
+                  (selectionChange)="onChangeFacultad($event.value)"
+                  [compareWith]="compareFacultad"
+                  formControlName="facultadCtrl"
+                  placeholder="Facultad"
+                  #facultadSelect
+                >
+                  <mat-option>
+                    <ngx-mat-select-search
+                      formControlName="facultadFilterCtrl"
+                      [placeholderLabel]="'Buscar Facultad'"
+                      noEntriesFoundLabel="'No se encontraron Facultades'"
+                    >
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option
+                    *ngFor="let facultad of filterFacultades | async"
+                    [value]="facultad"
+                  >
+                    {{ facultad.Nombre }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </form>
+          </mat-step>
+          <mat-step [stepControl]="formProyectoCurricular">
+            <form [formGroup]="formProyectoCurricular">
+              <ng-template matStepLabel
+                >Proyecto curricular / programa académico
+                {{ proyectoCurricularSelectedName }}</ng-template
+              >
+              <mat-form-field appearance="fill" [style.width.%]="100">
+                <mat-label>Proyecto curricular / programa académico</mat-label>
+                <mat-select
+                  (selectionChange)="onChangeProyectoCurricular($event.value)"
+                  [compareWith]="compareProyectoAcademico"
+                  formControlName="proyectoCurricularCtrl"
+                  placeholder="Proyecto Curricular"
+                  #proyectoCurricularSelect
+                >
+                  <mat-option>
+                    <ngx-mat-select-search
+                      formControlName="proyectoCurricularFilterCtrl"
+                      [placeholderLabel]="'Buscar proyecto curricular'"
+                      noEntriesFoundLabel="'No se encontraron Proyectos Curriculares'"
+                    >
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option
+                    *ngFor="
+                      let proyecto_curricular of filterProyectoCurricular
+                        | async
+                    "
+                    [value]="proyecto_curricular"
+                  >
+                    {{ proyecto_curricular.Nombre }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </form>
+          </mat-step>
+          <mat-step [stepControl]="formPlanEstudios">
+            <form [formGroup]="formPlanEstudios">
+              <ng-template matStepLabel
+                >Plan de estudios {{ planEstudiosSelectedName }}</ng-template
+              >
 
-    </mat-card>
-    <mat-card style="max-width: 75%;background-color: #FFFF66; border-radius: 15px; margin: 10px;"
-        MatCardAppearance='outlined'>
-        <mat-card-content>
-            <p style="margin: 0%;text-align: justify;text-align-last: center;">
-                Usuario, en el actual módulo usted podrá realizar las consultas que requiera del o los Syllabus de
-                interés; para ello debera indicar unas variables iniciales que le facilitarán la Búsqueda.
-            </p>
-        </mat-card-content>
-
-    </mat-card>
-    <mat-card style="width:calc(100% - 60px); " >
-        <mat-card-content>
-            <div class="container-border">
-                <h4>Variables de inicio</h4>
-                <mat-vertical-stepper linear #stepper>
-                    <mat-step [stepControl]="formFacultad">
-                        <form [formGroup]="formFacultad">
-                            <ng-template matStepLabel>Facultad {{facultadSelectedName}}</ng-template>
-                            <mat-form-field appearance="fill" [style.width.%]="80">
-                                <mat-label>Facultad</mat-label>
-                                <mat-select (selectionChange)="onChangeFacultad($event.value)"
-                                    formControlName="facultadCtrl" [compareWith]="compareFacultad">
-                                    <mat-option *ngFor="let facultad of facultades" [value]="facultad">
-                                        {{facultad.Nombre}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </form>
-                    </mat-step>
-                    <mat-step [stepControl]="formProyectoCurricular">
-                        <form [formGroup]="formProyectoCurricular">
-                            <ng-template matStepLabel>Proyecto / Programa Curricular {{proyectoCurricularSelectedName}}</ng-template>
-                            <mat-form-field appearance="fill" [style.width.%]="80">
-                                <mat-label>Proyecto / Programa Curricular</mat-label>
-                                <mat-select (selectionChange)="onChangeProyectoCurricular($event.value)" formControlName="proyectoCurricularCtrl" [compareWith]="compareProyectoAcademico">
-                                    <mat-option *ngFor="let proyecto_curricular of proyectos_curriculares"
-                                        [value]="proyecto_curricular">
-                                        {{proyecto_curricular.Nombre}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </form>
-                    </mat-step>
-                    <mat-step [stepControl]="formPlanEstudios">
-                        <form [formGroup]="formPlanEstudios">
-                            <ng-template matStepLabel>Plan de estudios {{planEstudiosSelectedName}}</ng-template>
-                            <mat-form-field appearance="fill" [style.width.%]="80">
-                                <mat-label>Plan de estudios</mat-label>
-                                <mat-select (selectionChange)="onChangePlanEstudios($event.value)" formControlName="planEstudiosCtrl" [compareWith]="comparePlanEstudio">
-                                    <mat-option *ngFor="let plan_estudios of planes_estudio"
-                                        [value]="plan_estudios">
-                                        {{plan_estudios.cra_nombre}}, plan de estudio:{{plan_estudios.pen_nro}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </form>
-                    </mat-step>
-                    <mat-step [stepControl]="formEspaciosAcademicos">
-                        <form [formGroup]="formEspaciosAcademicos">
-                            <ng-template matStepLabel>Espacio Académico {{espacioAcademicoSelectedName}}</ng-template>
-                            <mat-form-field appearance="fill" [style.width.%]="80">
-                                <mat-label>Espacio Académico</mat-label>
-                                <mat-select (selectionChange)="onChangeEspacioAcademico($event.value)" formControlName="espaciosAcademicosCtrl" [compareWith]="compareEspacioAcademico">
-                                    <mat-option *ngFor="let espacio_academico of espacios_academicos"
-                                        [value]="espacio_academico">
-                                        {{espacio_academico.asi_nombre}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </form>
-                    </mat-step>
-                </mat-vertical-stepper>
-                <!-- <div style="display: flex; justify-content: center; align-items: center;">
-                    <button mat-raised-button style="background-color: #03678F;color: white;"
-                        (click)="MostrarTabla()" #btnRef>Consultar</button>
-                </div> -->
-            </div>
-        </mat-card-content>
-    </mat-card>
-    <app-listar-syllabus *ngIf="mostrartabla"></app-listar-syllabus>
+              <mat-form-field appearance="fill" [style.width.%]="100">
+                <mat-label>Plan de estudios</mat-label>
+                <mat-select
+                  (selectionChange)="onChangePlanEstudios($event.value)"
+                  formControlName="planEstudiosCtrl"
+                  [compareWith]="comparePlanEstudio"
+                  placeholder="Plan de estudios"
+                  #planEstudiosSelect
+                >
+                  <mat-option>
+                    <ngx-mat-select-search
+                      formControlName="planEstudiosFilterCtrl"
+                      [placeholderLabel]="'Buscar plan de estudios'"
+                      noEntriesFoundLabel="'No se encontraron Planes de Estudio'"
+                    >
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option
+                    *ngFor="let plan_estudios of filterPlanesDeEstudio | async"
+                    [value]="plan_estudios"
+                  >
+                    {{ plan_estudios.cra_nombre }}, plan de estudio:{{
+                      plan_estudios.pen_nro
+                    }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </form>
+          </mat-step>
+          <mat-step [stepControl]="formEspaciosAcademicos">
+            <form [formGroup]="formEspaciosAcademicos">
+              <ng-template matStepLabel
+                >Espacio Académico
+                {{ espacioAcademicoSelectedName }}</ng-template
+              >
+              <mat-form-field appearance="fill" [style.width.%]="100">
+                <mat-label>Espacio Académico</mat-label>
+                <mat-select
+                  (selectionChange)="onChangeEspacioAcademico($event.value)"
+                  formControlName="espaciosAcademicosCtrl"
+                  [compareWith]="compareEspacioAcademico"
+                  placeholder="Espacio Académico"
+                  #espaciosAcademicosSelect
+                >
+                  <mat-option>
+                    <ngx-mat-select-search
+                      formControlName="espaciosAcademicosFilterCtrl"
+                      [placeholderLabel]="'Buscar espacio académico'"
+                      noEntriesFoundLabel="'No se encontraron Espacios Académicos'"
+                    >
+                    </ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option
+                    *ngFor="
+                      let espacio_academico of filterEspaciosAcademicos | async
+                    "
+                    [value]="espacio_academico"
+                  >
+                    {{ espacio_academico.asi_nombre }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </form>
+          </mat-step>
+        </mat-vertical-stepper>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <app-listar-syllabus *ngIf="mostrartabla"></app-listar-syllabus>
 </div>

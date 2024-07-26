@@ -8,10 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { LocalStorageService } from './@core/utils/local_storage.service';
 import { WindowRefService } from './@core/utils/windowref.service';
-import { RequestManager } from './pages/services/requestManager';
-import { UserService } from './pages/services/userService';
 import { SyllabusService } from './pages/services/syllabus.service';
-import { GestorDocumentalService } from './pages/services/gestor_documental.service';
 import { HttpClientModule } from '@angular/common/http';
 import { BuscarSyllabusComponent } from './pages/buscar-syllabus/buscar-syllabus.component';
 import { ListarSyllabusComponent } from './pages/listar-syllabus/listar-syllabus.component';
@@ -41,7 +38,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule, } from '@angular/material-moment-adapter';
-
+import { AlertComponent } from './components/alert/alert.component';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @NgModule({
   declarations: [
@@ -52,9 +50,11 @@ import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPT
     DashboardComponent,
     VersionesSyllabusComponent,
     VisualizarSyllabusComponent,
-    SafeURL
+    SafeURL,
+    AlertComponent
   ],
   imports: [
+    NgxMatSelectSearchModule,
     BrowserAnimationsModule,
     BrowserModule,
     MatGridListModule,
@@ -83,11 +83,8 @@ import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPT
     SweetAlert2Module.forRoot()
   ],
   providers: [
-    //ImplicitAutenticationService,
     LocalStorageService,
     WindowRefService,
-    //RequestManager,
-    //UserService,
     SyllabusService,
     PercentPipe,
     { provide: MAT_DATE_LOCALE, useValue: 'es-CO' },

@@ -261,7 +261,7 @@ export class UserService {
           resolve(roles);
         },
         error:(error) =>{
-          console.log(error);
+          //console.log(error);
           reject([])
         }
       });

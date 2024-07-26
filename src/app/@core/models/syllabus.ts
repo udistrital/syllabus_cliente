@@ -4,8 +4,8 @@ export class Syllabus {
   version: number
   syllabus_actual: boolean
   espacio_academico_id: number
-  proyecto_curricular_id: number
-  plan_estudios_id: number
+  proyecto_curricular_ids: number[]
+  plan_estudios_ids: number[]
   idioma_espacio_id:number[]
   justificacion: string
   objetivo_general: string
@@ -21,6 +21,7 @@ export class Syllabus {
   recursos_educativos: any
   practicas_academicas: any
   vigencia:Vigencia
+  tercero_id: number
   activo: boolean
   fecha_creacion: Date
   fecha_modificacion: Date
@@ -78,14 +79,14 @@ export class Bibliografia {
 
 export class Seguimiento {
   elaboracion: string
-  fechaRevisionConsejo: string
-  fechaAprobacionConsejo: string
+  fechaRevisionConsejo: string | null
+  fechaAprobacionConsejo: string | null
   numeroActa: string
-  archivo: string
+  archivo: string | null
 }
 
 export class Vigencia {
-  fechaInicio: string
-  fechaFin: string
+  fechaInicio: string | null
+  fechaFin: string | null
 
 }

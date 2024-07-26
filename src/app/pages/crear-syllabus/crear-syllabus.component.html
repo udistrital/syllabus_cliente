@@ -10,7 +10,7 @@ align-items: center;
                     style="width:calc(100% - 60px); border: 1px #666666 solid; border-radius: 15px;background-color: #F5F5F5; margin: auto;">
                     <mat-card-content>
                         <p>
-                            <label for=""><strong>Proyecto / Programa curricular:</strong> {{Proyecto.Nombre}}
+                            <label for=""><strong>Proyecto curricular / programa académico:</strong> {{Proyecto.Nombre}}
                             </label>
 
                         </p>
@@ -913,7 +913,7 @@ align-items: center;
                                                 justify-content: center;
                                                 align-items: center;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>{{!isNew?Syllabus.seguimiento.fechaRevisionConsejo.split('T')[0]:'Fecha
+                                                        <mat-label>{{!isNew?ver('Fecha')+': '+formatDate(Syllabus.seguimiento.fechaRevisionConsejo):'Fecha
                                                             de revisión'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaRevisionConsejo"
                                                             formControlName="fechaRevisionConsejo">
@@ -933,7 +933,7 @@ align-items: center;
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>{{!isNew?Syllabus.seguimiento.fechaAprobacionConsejo.split('T')[0]:'Fecha
+                                                        <mat-label>{{!isNew?ver('Fecha')+': '+formatDate(Syllabus.seguimiento.fechaAprobacionConsejo):'Fecha
                                                             aprobación'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaAprobacionConsejo"
                                                             formControlName="fechaAprobacionConsejo">
@@ -950,22 +950,29 @@ align-items: center;
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%; border-top: 1px var(--primary) solid;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>{{!isNew?Syllabus.seguimiento.numeroActa:'Número de
+                                                        <mat-label>{{!isNew?ver('Número acta')+': '+Syllabus.seguimiento.numeroActa:'Número de
                                                             acta'}}</mat-label>
                                                         <input matInput type="text" formControlName="numeroActa">
                                                     </mat-form-field>
                                                 </div>
                                             </div>
                                             <div style="border: 1px var(--primary) solid;display: flex;">
-                                                <mat-form-field style="width: 100%;" (click)="f_input.click()">
+                                                <mat-form-field style="width: 90%;">
                                                     <mat-label>Acta</mat-label>
-                                                    <button mat-icon-button matPrefix>
+                                                    <button mat-icon-button matPrefix (click)="f_input.click()" matTooltip="Cargar documento">
                                                         <mat-icon>attach_file</mat-icon>
                                                     </button>
                                                     <input type="text" readonly matInput formControlName="archivo" />
                                                     <input type="file" hidden #f_input
                                                         (change)="handleFileInputActaChange($event)" />
                                                     <mat-error>Ingrese un archivo en formato pdf</mat-error>
+                                                </mat-form-field>
+                                                <mat-form-field style="width: 10%;">
+                                                    <button mat-icon-button matSuffix [disabled]="existFile()"
+                                                        (click)="previewFile()" matTooltip="Descargar documento">
+                                                        <mat-icon>file_download</mat-icon>
+                                                    </button>
+                                                        <input matInput type="text" readonly>
                                                 </mat-form-field>
                                             </div>
                                         </div>
@@ -999,7 +1006,7 @@ align-items: center;
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>{{!isNew?Syllabus.vigencia.fechaInicio.split('T')[0]:'Fecha
+                                                        <mat-label>{{!isNew?ver('Fecha')+': '+formatDate(Syllabus.vigencia.fechaInicio):'Fecha
                                                             Inicio'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaInicio"
                                                             formControlName="fechaInicio">
@@ -1015,7 +1022,7 @@ align-items: center;
                                                 <div
                                                     style="padding: 0px;text-align: center;vertical-align: middle;width: 25%;">
                                                     <mat-form-field style="width: 100%;">
-                                                        <mat-label>{{!isNew?Syllabus.vigencia.fechaFin.split('T')[0]:'Fecha
+                                                        <mat-label>{{!isNew?ver('Fecha')+': '+formatDate(Syllabus.vigencia.fechaFin):'Fecha
                                                             Fin'}}</mat-label>
                                                         <input matInput [matDatepicker]="fechaFin"
                                                             formControlName="fechaFin">

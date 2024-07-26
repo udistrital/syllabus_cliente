@@ -11,7 +11,8 @@ import { Syllabus} from '../../@core/models/syllabus';
 import { MatDialog } from '@angular/material/dialog';
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
-import Swal from 'sweetalert2';
+// @ts-ignore
+import Swal from 'sweetalert2/dist/sweetalert2';
 
 @Component({
   selector: 'app-versiones-syllabus',
@@ -84,22 +85,30 @@ export class VersionesSyllabusComponent implements  OnInit{
       },
     })
     const syllabus=this.syllabusVersions[row]
-    this.gestorDoc.getByUUID(syllabus.seguimiento.archivo).subscribe({
-      next:(document)=>{
-        //console.log(document)
-        Swal.close();
-        window.open(document);
-        
-      },
-      error:()=>{
-        Swal.close();
-        Swal.fire({
-          icon:'error',
-          title:'Error',
-          text:'ocurrió un error al cargar el documento'
-        })
-      }
-    });
+    if (syllabus.seguimiento.archivo) {
+      this.gestorDoc.getByUUID(syllabus.seguimiento.archivo).subscribe({
+        next:(document)=>{
+          //console.log(document)
+          Swal.close();
+          window.open(document);
+          
+        },
+        error:()=>{
+          Swal.close();
+          Swal.fire({
+            icon:'error',
+            title:'Error',
+            text:'ocurrió un error al cargar el documento'
+          })
+        }
+      });
+    } else {
+      Swal.fire({
+        icon:'info',
+        title:'Sin documento',
+        text:'documento no cargado'
+      })
+    }
   }
 
   EditSyllabus(){
