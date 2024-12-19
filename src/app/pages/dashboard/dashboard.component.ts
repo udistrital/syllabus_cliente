@@ -10,7 +10,7 @@ import { SyllabusService } from '../services/syllabus.service';
 })
 export class DashboardComponent {
   isValidRol:boolean=false;
-  ValidRols:string[]=['ASESOR_VICE','VICERRECTOR','JEFE_DEPENDENCIA','COORDINADOR'];
+  ValidRols:string[]=['ASESOR_VICE','VICERRECTOR','JEFE_DEPENDENCIA','COORDINADOR','DECANO','DOCENTE'];
   constructor( private router: Router,private userService:UserService,private syllabusService:SyllabusService){
     userService.user$.subscribe({
       next:(data:any) => {
