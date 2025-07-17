@@ -27,10 +27,15 @@ export class Syllabus {
   fecha_modificacion: Date
 }
 
+export class ResultadoAprendizaje {
+  id: string;
+  dominio: string;
+  resultado_detallado: string;
+}
+
 export class PFA {
-  pfa_programa: string
-  pfa_asignatura: string
-  competencias: string
+  competencia: string;
+  resultados: ResultadoAprendizaje[];
 }
 
 export class Contenido {

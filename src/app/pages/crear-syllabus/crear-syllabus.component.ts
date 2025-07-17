@@ -32,6 +32,7 @@ export class CrearSyllabusComponent implements OnInit {
   formObjetivos: FormGroup;
   formPFA: FormGroup;
   dataSourceFormPFA = new BehaviorSubject<AbstractControl[]>([]);
+  dataSourceResultados = new BehaviorSubject<{[key: number]: AbstractControl[]}>({});
   formContenidosTematicos: FormGroup;
   formEstrategias: FormGroup;
   formEvaluacion: FormGroup;
@@ -65,6 +66,10 @@ export class CrearSyllabusComponent implements OnInit {
 
   get pfa() {
     return this.formPFA.get('pfa') as FormArray;
+  }
+
+  resultados(i: number): FormArray {
+    return (this.pfa.at(i) as FormGroup).get('resultados') as FormArray;
   }
 
   get temas() {
@@ -147,11 +152,8 @@ export class CrearSyllabusComponent implements OnInit {
     this.formularios.controls.push(this.formObjetivos);
 
     this.formPFA = this._formBuilder.group({
-      pfa: this._formBuilder.array([
-
-      ], [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed])
+      pfa: this._formBuilder.array([], [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed])
     });
-
     this.formularios.controls.push(this.formPFA);
 
     this.formContenidosTematicos = this._formBuilder.group({
@@ -241,8 +243,7 @@ export class CrearSyllabusComponent implements OnInit {
     this.formularios.controls.push(this.formIdiomas);
 
     if (this.isNew) {
-      this.agregarObjetivoEspecifico();
-      this.agregarPFA(undefined, false);
+      this.agregarCompetencia();
       this.agregarTema();
       this.agregarEstrategia(undefined);
       this.agregarEvalucion(undefined);
@@ -255,9 +256,9 @@ export class CrearSyllabusComponent implements OnInit {
       this.Syllabus.objetivos_especificos?.forEach((obj_esp) => {
         this.agregarObjetivoEspecifico(obj_esp);
       })
-      this.Syllabus.resultados_aprendizaje?.forEach((pfa) => {
-        this.agregarPFA(pfa, true);
-      })
+      this.Syllabus.resultados_aprendizaje?.forEach((pfa, idx) => {
+        this.agregarCompetencia(pfa, true);
+      });
       this.updateViewTablePFA();
       this.Syllabus.contenido?.temas?.forEach((tema) => {
         this.agregarTema(tema);
@@ -347,27 +348,62 @@ export class CrearSyllabusComponent implements OnInit {
     this.objetivosEspecificos.removeAt(index);
   }
 
-  agregarPFA(d?: PFA, noUpdate?: boolean) {
-    const rowPFA = this._formBuilder.group({
-      pfa_programa: [d && d.pfa_programa ? d.pfa_programa : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      pfa_asignatura: [d && d.pfa_asignatura ? d.pfa_asignatura : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      competencias: [d && d.competencias ? d.competencias : '']
-    })
-    this.pfa.push(rowPFA);
-    if (!noUpdate) { this.updateViewTablePFA(); }
+  agregarCompetencia(data?: any, noUpdate?: boolean) {
+    const competenciaGroup = this._formBuilder.group({
+      competencia: [data?.competencia || '', [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed]],
+      resultados: this._formBuilder.array([])
+    });
+    this.pfa.push(competenciaGroup);
+    if (data?.resultados) {
+      data.resultados.forEach((res: any) => {
+        this.agregarResultado(this.pfa.length - 1, res, true);
+      });
+    } else {
+      this.agregarResultado(this.pfa.length - 1, undefined, true);
+    }
+    this.reasignarIdsResultados();
+    if (!noUpdate) this.updateViewTablePFA();
   }
 
-  eliminarPFA(index: number) {
-    //console.log(index);
-    //console.log(this.pfa)
+  eliminarCompetencia(index: number) {
     this.pfa.removeAt(index);
-    //console.log(this.pfa)
+    this.reasignarIdsResultados();
     this.updateViewTablePFA();
   }
 
-  updateViewTablePFA() {
-    this.dataSourceFormPFA.next(this.pfa.controls);
-    //console.log(this.dataSourceFormPFA);
+  agregarResultado(idxCompetencia: number, data?: any, skipReasignar?: boolean) {
+    const resultadoGroup = this._formBuilder.group({
+      id: [{ value: data?.id || '', disabled: true }],
+      dominio: [data?.dominio || '', [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed]],
+      resultado_detallado: [data?.resultado_detallado || '', [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed]]
+    });
+    this.resultados(idxCompetencia).push(resultadoGroup);
+    if (!skipReasignar) this.reasignarIdsResultados();
+    this.updateViewResultados(idxCompetencia);
+  }
+
+  eliminarResultado(idxCompetencia: number, idxResultado: number) {
+    this.resultados(idxCompetencia).removeAt(idxResultado);
+    this.reasignarIdsResultados();
+    this.updateViewResultados(idxCompetencia);
+  }
+
+  reasignarIdsResultados() {
+    let id = 1;
+    for (let i = 0; i < this.pfa.length; i++) {
+      const resultadosArr = this.resultados(i);
+      for (let j = 0; j < resultadosArr.length; j++) {
+        const idValue = id.toString().padStart(2, '0');
+        resultadosArr.at(j).get('id')?.setValue(idValue);
+        id++;
+      }
+    }
+  }
+
+  updateViewResultados(idxCompetencia: number) {
+    const resultadosMap = this.dataSourceResultados.value;
+    resultadosMap[idxCompetencia] = this.resultados(idxCompetencia).controls;
+    this.dataSourceResultados.next({...resultadosMap});
   }
 
   agregarTema(tema?: Tema) {
@@ -479,6 +515,16 @@ export class CrearSyllabusComponent implements OnInit {
     //console.log(this.dataSourceFormBiblioPag);
   }
 
+  updateViewTablePFA() {
+    this.dataSourceFormPFA.next(this.pfa.controls);
+    // Actualiza los resultados para cada competencia
+    const resultadosMap: {[key: number]: AbstractControl[]} = {};
+    this.pfa.controls.forEach((ctrl, idx) => {
+      resultadosMap[idx] = (ctrl.get('resultados') as FormArray).controls;
+    });
+    this.dataSourceResultados.next(resultadosMap);
+  }
+
   createNewVersionSyllabus(){
     const syllabus: Syllabus = new Syllabus();
 
@@ -528,7 +574,14 @@ export class CrearSyllabusComponent implements OnInit {
         // this.objetivosEspecificos.controls.forEach(obj_esp => {
         //   syllabus.objetivos_especificos.push(obj_esp.get('objetivo')?.value);
         // });
-        syllabus.resultados_aprendizaje = this.pfa.value;
+        syllabus.resultados_aprendizaje = this.pfa.value.map((comp: any, idx: number) => ({
+          competencia: comp.competencia,
+          resultados: comp.resultados.map((res: any) => ({
+            id: res.id || res.id?.value,
+            dominio: res.dominio,
+            resultado_detallado: res.resultado_detallado
+          }))
+        }));
         syllabus.contenido = this.formContenidosTematicos.value;
         syllabus.estrategias = this.estrategias.value;
         syllabus.evaluacion = this.formEvaluacion.value;
