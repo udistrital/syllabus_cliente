@@ -522,73 +522,37 @@ align-items: center;
                                         </mat-step>
                                         <!-- TODO: MODIFICAR FORMULARIO ESTRATEGIAS -->
                                         <mat-step [stepControl]="formEstrategias">
-                                            <form [formGroup]="formEstrategias">
-                                                <ng-template matStepLabel>Estrategias de enseñanza que favorecen el
-                                                    aprendizaje</ng-template>
+                                            <form [formGroup]="formEstrategias" style="width: 100%;">
+                                                <ng-template matStepLabel>
+                                                    Estrategias de enseñanza que favorecen el aprendizaje
+                                                </ng-template>
                                                 <ng-template matStepContent>
-
-                                                    <ng-container formArrayName="estrategias">
-                                                        <ng-container
-                                                            *ngFor="let estrategia of estrategias.controls;let i=index">
-                                                            <div style="width: 100%" [formGroupName]="i">
-                                                                <div style="display: flex;">
-                                                                    <h3>Estrategia {{i+1}}</h3>
-                                                                    <mat-icon matTooltip="Agregar estrategia"
-                                                                        (click)="agregarEstrategia();" fontIcon="add"
-                                                                        style="color: white;
-                                                                    background-color: var(--primary);
-                                                                    border-radius: 32px;
-                                                                    margin-left: auto;" *ngIf="i==0"></mat-icon>
-                                                                    <mat-icon matTooltip="Eliminar estrategia"
-                                                                        fontIcon="delete" style="color: white;
-                                                                        background-color: var(--primary);
-                                                                        border-radius: 32px;
-                                                                        height: 25px;
-                                                                        width: 25px;
-                                                                        padding: 0px;
-                                                                        margin-left: auto;" *ngIf="i!=0" matSuffix
-                                                                        (click)="eliminarEstrategia(i)">
-                                                                    </mat-icon>
-                                                                </div>
-                                                                <div style="display:flex;width: 100%;
-                                                                gap: 5px;">
-                                                                    <!-- <mat-form-field style="width: 25%;">
-                                                                        <mat-label
-                                                                            for="estra-nombre-{{i}}">Nombre</mat-label>
-                                                                        <textarea id="estra-nombre-{{i}}" matInput
-                                                                            formControlName="nombre"></textarea>
-                                                                    </mat-form-field> -->
-                                                                    <mat-form-field style="width: 100%;">
-                                                                        <mat-label
-                                                                            for="estra-desc-{{i}}">Descripcion</mat-label>
-                                                                        <textarea id="estra-desc-{{i}}" matInput
-                                                                            formControlName="descripcion"></textarea>
-                                                                    </mat-form-field>
-                                                                    <!-- <mat-form-field style="width: 25%;">
-                                                                        <mat-label
-                                                                            for="estra-pertinecia-{{i}}">Pertinencia</mat-label>
-                                                                        <textarea id="estra-pertinecia-{{i}}" matInput
-                                                                            formControlName="pertinencia"></textarea>
-                                                                    </mat-form-field>
-                                                                    <mat-form-field style="width: 25%;">
-                                                                        <mat-label
-                                                                            for="estra-arti-{{i}}">Articulacion</mat-label>
-                                                                        <textarea id="estra-arti-{{i}}" matInput
-                                                                            formControlName="articulacion_ra"></textarea>
-                                                                    </mat-form-field> -->
-                                                                </div>
-                                                                <mat-divider
-                                                                    style="background: var(--primary);"></mat-divider>
-                                                            </div>
-                                                        </ng-container>
-
-                                                    </ng-container>
-
-                                                    <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious mat-raised-button
-                                                        style="background-color: var(--primary);color: white;">Anterior</button>
-                                                    <button mat-button matStepperNext mat-raised-button
-                                                        style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
+                                                    <div style="width: 100%; padding: 40px 48px;">
+                                                        <h2 style="text-align: left; margin-bottom: 8px;">Seleccione las estrategias utilizadas</h2>
+                                                        <p style="text-align: left; color: #666; margin-bottom: 32px;">
+                                                            Marque todas las estrategias de enseñanza que aplican para este espacio académico.
+                                                        </p>
+                                                        <div formGroupName="estrategias"
+                                                             style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px 48px; width: 100%;">
+                                                            <mat-checkbox formControlName="tradicional">Enseñanza tradicional</mat-checkbox>
+                                                            <mat-checkbox formControlName="basado_problemas">Aprendizaje basado en problemas</mat-checkbox>
+                                                            <mat-checkbox formControlName="aprendizaje_activo">Aprendizaje activo</mat-checkbox>
+                                                            <mat-checkbox formControlName="basado_proyectos">Aprendizaje basado en proyectos</mat-checkbox>
+                                                            <mat-checkbox formControlName="colaborativo">Aprendizaje colaborativo</mat-checkbox>
+                                                            <mat-checkbox formControlName="autodirigido">Aprendizaje autodirigido</mat-checkbox>
+                                                            <mat-checkbox formControlName="basado_tecnologia">Aprendizaje basado en tecnología</mat-checkbox>
+                                                            <mat-checkbox formControlName="basado_experiencias">Aprendizaje basado en experiencias</mat-checkbox>
+                                                            <mat-checkbox formControlName="centrado_estudiante">Aprendizaje centrado en el estudiante</mat-checkbox>
+                                                        </div>
+                                                    </div>
+                                                    <div style="margin-top: 32px; width: 100%; display: flex; justify-content: space-between;">
+                                                        <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">
+                                                            Anterior
+                                                        </button>
+                                                        <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white;">
+                                                            Siguiente
+                                                        </button>
+                                                    </div>
                                                 </ng-template>
                                             </form>
                                         </mat-step>

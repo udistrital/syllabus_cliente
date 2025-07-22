@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { RequestManager } from '../services/requestManager';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
-import { Estrategia, Evaluaciones, Syllabus, Tema, PFA, ObjetivoEspecifico } from 'src/app/@core/models/syllabus';
+import { Evaluaciones, Syllabus, Tema, PFA, ObjetivoEspecifico } from 'src/app/@core/models/syllabus';
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { Documento } from 'src/app/@core/models/documento';
 import  {EmptySpaceValidator } from '../../@core/validators/emptyValue.validator'
@@ -81,7 +81,7 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   get estrategias() {
-    return this.formEstrategias.get('estrategias') as FormArray;
+    return this.formEstrategias.get('estrategias') as FormGroup;
   }
 
   get evaluaciones() {
@@ -167,16 +167,18 @@ export class CrearSyllabusComponent implements OnInit {
 
 
     this.formEstrategias = this._formBuilder.group({
-      estrategias: this._formBuilder.array([
-        // this._formBuilder.group({
-        //   nombre: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-        //   descripcion: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-        //   pertinencia: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-        //   articulacion_ra: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
-        // })
-      ])
+      estrategias: this._formBuilder.group({
+        tradicional: [this.Syllabus.estrategias?.tradicional ?? false],
+        basado_problemas: [this.Syllabus.estrategias?.basado_problemas ?? false],
+        aprendizaje_activo: [this.Syllabus.estrategias?.aprendizaje_activo ?? false],
+        basado_proyectos: [this.Syllabus.estrategias?.basado_proyectos ?? false],
+        colaborativo: [this.Syllabus.estrategias?.colaborativo ?? false],
+        autodirigido: [this.Syllabus.estrategias?.autodirigido ?? false],
+        basado_tecnologia: [this.Syllabus.estrategias?.basado_tecnologia ?? false],
+        basado_experiencias: [this.Syllabus.estrategias?.basado_experiencias ?? false],
+        centrado_estudiante: [this.Syllabus.estrategias?.centrado_estudiante ?? false],
+      })
     });
-
     this.formularios.controls.push(this.formEstrategias);
 
     this.formEvaluacion = this._formBuilder.group({
@@ -245,7 +247,6 @@ export class CrearSyllabusComponent implements OnInit {
     if (this.isNew) {
       this.agregarCompetencia();
       this.agregarTema();
-      this.agregarEstrategia(undefined);
       this.agregarEvalucion(undefined);
       this.agregarBibliografiaBasica(undefined, false);
       this.agregarBibliografiaComplementaria(undefined, false);
@@ -263,9 +264,7 @@ export class CrearSyllabusComponent implements OnInit {
       this.Syllabus.contenido?.temas?.forEach((tema) => {
         this.agregarTema(tema);
       })
-      this.Syllabus.estrategias?.forEach((estrategia) => {
-        this.agregarEstrategia(estrategia);
-      })
+      this.Syllabus.estrategias = this.formEstrategias.get('estrategias')?.value;
       this.Syllabus.evaluacion?.evaluaciones?.forEach((evaluacion) => {
         this.agregarEvalucion(evaluacion);
       })
@@ -438,20 +437,6 @@ export class CrearSyllabusComponent implements OnInit {
     this.subtemas(indexTema).removeAt(indexSubTema);
   }
 
-  agregarEstrategia(d?: Estrategia) {
-    const formestrategia = this._formBuilder.group({
-      //nombre: [d ? d.nombre : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      descripcion: [d ? d.descripcion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      //pertinencia: [d ? d.pertinencia : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      //articulacion_ra: [d ? d.articulacion_ra : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
-    })
-    this.estrategias.push(formestrategia);
-  }
-
-  eliminarEstrategia(index: number) {
-    this.estrategias.removeAt(index);
-  }
-
   agregarEvalucion(d?: Evaluaciones) {
     const formEvaluacion = this._formBuilder.group({
       nombre: [d ? d.nombre : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
@@ -583,7 +568,7 @@ export class CrearSyllabusComponent implements OnInit {
           }))
         }));
         syllabus.contenido = this.formContenidosTematicos.value;
-        syllabus.estrategias = this.estrategias.value;
+        syllabus.estrategias = this.formEstrategias.get('estrategias')?.value;
         syllabus.evaluacion = this.formEvaluacion.value;
         syllabus.recursos_educativos = this.formMedios.get('medios')?.value;
         syllabus.practicas_academicas = this.formPracticasAcademicas.get('practicasAcademicas')?.value;

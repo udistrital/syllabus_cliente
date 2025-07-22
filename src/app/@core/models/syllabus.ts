@@ -13,7 +13,17 @@ export class Syllabus {
   resultados_aprendizaje: PFA[]
   articulacion_resultados_aprendizaje: string
   contenido: Contenido
-  estrategias: Estrategia[]
+  estrategias: {
+    tradicional: boolean;
+    basado_problemas: boolean;
+    aprendizaje_activo: boolean;
+    basado_proyectos: boolean;
+    colaborativo: boolean;
+    autodirigido: boolean;
+    basado_tecnologia: boolean;
+    basado_experiencias: boolean;
+    centrado_estudiante: boolean;
+  };
   evaluacion: Evaluacion
   bibliografia: Bibliografia
   seguimiento: Seguimiento
@@ -50,14 +60,6 @@ export class ObjetivoEspecifico{
 export class Tema {
   nombre: string
   subtemas: string[]
-}
-
-export class Estrategia {
-  //nombre: string
-  descripcion: string
-  //pertinencia: string
-  //articulacion_ra: string
-
 }
 
 export class Evaluacion {
