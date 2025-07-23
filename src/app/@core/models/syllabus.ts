@@ -63,17 +63,16 @@ export class Tema {
 }
 
 export class Evaluacion {
-  descripcion: string
-  evaluaciones: Evaluaciones[]
-
+  tipos_evaluacion: TipoEvaluacion[]
 }
 
-export class Evaluaciones {
+export class TipoEvaluacion {
   nombre: string
-  estrategia: string
-  momento: string
+  tipo_evaluacion: string
   porcentaje: number
-
+  trabajo_tipo: string
+  tipo_nota: string
+  resultados_aprendizaje_asociados: string[]
 }
 
 export class Bibliografia {

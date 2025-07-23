@@ -371,7 +371,7 @@ align-items: center;
                                                 </ng-template>
                                             </form>
                                         </mat-step>
-                                        <!-- TODO: MODIFICAR FORMULARIO PFA -->
+
                                         <mat-step [stepControl]="formPFA">
                                             <form [formGroup]="formPFA">
                                                 <ng-template matStepLabel>Propósitos de formación y de aprendizaje (PFA) del espacio académico</ng-template>
@@ -383,7 +383,10 @@ align-items: center;
                                                                     <mat-label>Competencia</mat-label>
                                                                     <input matInput formControlName="competencia" required>
                                                                 </mat-form-field>
-                                                                <button mat-icon-button color="warn" *ngIf="pfa.length > 1" (click)="eliminarCompetencia(i)" matTooltip="Eliminar competencia" style="margin-top: 4px;">
+                                                                <button mat-icon-button 
+                                                                        matTooltip="Eliminar competencia"
+                                                                        (click)="eliminarCompetencia(i)" 
+                                                                        class="delete-button">
                                                                     <mat-icon>delete</mat-icon>
                                                                 </button>
                                                             </div>
@@ -404,7 +407,11 @@ align-items: center;
                                                                             <mat-label>Dominio</mat-label>
                                                                             <input matInput formControlName="dominio" required>
                                                                         </mat-form-field>
-                                                                        <button mat-icon-button color="warn" *ngIf="resultados(i).length > 1" (click)="eliminarResultado(i, j)" matTooltip="Eliminar resultado" style="align-self: center;">
+                                                                        <button mat-icon-button 
+                                                                                *ngIf="resultados(i).length > 1" 
+                                                                                (click)="eliminarResultado(i, j)" 
+                                                                                matTooltip="Eliminar resultado" 
+                                                                                class="delete-button">
                                                                             <mat-icon>delete</mat-icon>
                                                                         </button>
                                                                     </div>
@@ -423,9 +430,11 @@ align-items: center;
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <div style="margin-top: 24px; display: flex; justify-content: space-between;">
-                                                        <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">Anterior</button>
-                                                        <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
+                                                    <div class="form-actions">
+                                                        <button mat-button matStepperPrevious mat-raised-button
+                                                        style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button
+                                                        style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                     </div>
                                                 </ng-template>
                                             </form>
@@ -520,7 +529,7 @@ align-items: center;
                                                 </ng-template>
                                             </form>
                                         </mat-step>
-                                        <!-- TODO: MODIFICAR FORMULARIO ESTRATEGIAS -->
+
                                         <mat-step [stepControl]="formEstrategias">
                                             <form [formGroup]="formEstrategias" style="width: 100%;">
                                                 <ng-template matStepLabel>
@@ -545,81 +554,124 @@ align-items: center;
                                                             <mat-checkbox formControlName="centrado_estudiante">Aprendizaje centrado en el estudiante</mat-checkbox>
                                                         </div>
                                                     </div>
-                                                    <div style="margin-top: 32px; width: 100%; display: flex; justify-content: space-between;">
-                                                        <button mat-button matStepperPrevious mat-raised-button style="background-color: var(--primary);color: white;">
-                                                            Anterior
-                                                        </button>
-                                                        <button mat-button matStepperNext mat-raised-button style="background-color: var(--primary);color: white;">
-                                                            Siguiente
-                                                        </button>
+                                                    <div class="form-actions">
+                                                        <button mat-button matStepperPrevious mat-raised-button
+                                                        style="background-color: var(--primary);color: white;">Anterior</button>
+                                                    <button mat-button matStepperNext mat-raised-button
+                                                        style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
                                                     </div>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
-                                        <!-- TODO: MODIFICAR FORMULARIO EVALUACION -->
                                         <mat-step [stepControl]="formEvaluacion">
                                             <form [formGroup]="formEvaluacion">
                                                 <ng-template matStepLabel>Evaluación</ng-template>
                                                 <ng-template matStepContent>
 
-                                                    <mat-form-field style="width: 100%">
-                                                        <mat-label>Descripcion</mat-label>
-                                                        <textarea matInput formControlName="descripcion"></textarea>
-                                                    </mat-form-field>
-                                                    <ng-container formArrayName="evaluaciones">
-                                                        <ng-container
-                                                            *ngFor="let evalucion of evaluaciones.controls;let i=index">
-                                                            <div style="display: flex;">
-                                                                <h3>Evaluación {{i+1}}</h3>
-                                                                <mat-icon matTooltip="Agregar evaluación"
-                                                                    (click)="agregarEvalucion();" fontIcon="add" style="color: white;
-                                                                    background-color: var(--primary);
-                                                                    border-radius: 32px;
-                                                                    margin-left: auto;" *ngIf="i==0">
-                                                                </mat-icon>
-                                                                <mat-icon matTooltip="Eliminar evaluación"
-                                                                    fontIcon="delete" style="color: white;
-                                                                        background-color: var(--primary);
-                                                                        border-radius: 32px;
-                                                                        height: 25px;
-                                                                        width: 25px;
-                                                                        padding: 0px;
-                                                                        margin-left: auto;" *ngIf="i!=0" matSuffix
-                                                                    color="primary" (click)="eliminarEvaluacion(i)">
-                                                                </mat-icon>
-                                                            </div>
-                                                            <div [formGroupName]="i" style="display: flex; gap:5px;">
-                                                                <mat-form-field style="width: 25%;">
-                                                                    <mat-label>Nombre</mat-label>
-                                                                    <input matInput formControlName="nombre">
-                                                                </mat-form-field>
-                                                                <mat-form-field style="width: 25%;">
-                                                                    <mat-label>Estrategia</mat-label>
-                                                                    <input matInput formControlName="estrategia">
-                                                                </mat-form-field>
-                                                                <mat-form-field style="width: 25%;">
-                                                                    <mat-label>Momento</mat-label>
-                                                                    <input matInput formControlName="momento">
-                                                                </mat-form-field>
-                                                                <mat-form-field style="width: 25%;">
-                                                                    <mat-label>Porcentaje</mat-label>
-                                                                    <input matInput type="number"
-                                                                        formControlName="porcentaje">
-                                                                </mat-form-field>
 
 
+                                                    <div class="evaluacion-container">
+                                                        <div class="form-actions" style="margin-bottom: 16px;">
+                                                            <h3 style="margin: 0;">Tipos de Evaluación</h3>
+                                                            <button mat-icon-button 
+                                                                    matTooltip="Agregar tipo de evaluación"
+                                                                    (click)="agregarTipoEvaluacion()" 
+                                                                    class="add-button"
+                                                                    style="margin-right: 12px; margin-top: 8px;">
+                                                                <mat-icon>add</mat-icon>
+                                                            </button>
+                                                        </div>
 
-                                                                <mat-divider
-                                                                    style="background: var(--primary);"></mat-divider>
+                                                        <ng-container formArrayName="tipos_evaluacion">
+                                                            <div *ngFor="let tipoEvaluacion of tiposEvaluacion.controls; let i = index" 
+                                                                 [formGroupName]="i" 
+                                                                 class="tipo-evaluacion-card">
+                                                                <!-- <ng-container *ngIf="i > 0">
+                                                                    <mat-divider style="margin: 32px 0 24px 0;"></mat-divider>
+                                                                </ng-container> -->
+                                                                <div class="form-actions" style="margin-top: 24px;">
+                                                                    <h4 style="margin: 0 0 16px 0;">Tipo de Evaluación {{i+1}}</h4>
+                                                                    <button mat-icon-button 
+                                                                            matTooltip="Eliminar tipo de evaluación"
+                                                                            (click)="eliminarTipoEvaluacion(i)" 
+                                                                            class="delete-button">
+                                                                        <mat-icon>delete</mat-icon>
+                                                                    </button>
+                                                                </div>
+
+                                                                <div class="grid-form">
+                                                                    <mat-form-field>
+                                                                        <mat-label>Nombre del tipo de evaluación</mat-label>
+                                                                        <input matInput formControlName="nombre" 
+                                                                               placeholder="Ej: Actividades Entregables, Talleres, Parciales...">
+                                                                    </mat-form-field>
+
+                                                                                                                                         <mat-form-field>
+                                                                         <mat-label>Tipo de evaluación</mat-label>
+                                                                         <mat-select formControlName="tipo_evaluacion">
+                                                                             <mat-option value="EHP">Evaluación de habilidades prácticas</mat-option>
+                                                                             <mat-option value="EBP">Evaluación basada en proyectos</mat-option>
+                                                                             <mat-option value="EOP">Evaluación oral o presentaciones</mat-option>
+                                                                             <mat-option value="EE">Evaluación escrita</mat-option>
+                                                                             <mat-option value="EF">Evaluación formativa</mat-option>
+                                                                             <mat-option value="ED">Evaluación de desempeño</mat-option>
+                                                                         </mat-select>
+                                                                     </mat-form-field>
+
+                                                                    <mat-form-field>
+                                                                        <mat-label>Porcentaje (%)</mat-label>
+                                                                        <input matInput type="number" formControlName="porcentaje" 
+                                                                               min="0" max="100" placeholder="0-100">
+                                                                    </mat-form-field>
+
+                                                                    <mat-form-field>
+                                                                        <mat-label>Tipo de trabajo</mat-label>
+                                                                        <mat-select formControlName="trabajo_tipo">
+                                                                            <mat-option value="I">Individual</mat-option>
+                                                                            <mat-option value="G">Grupal</mat-option>
+                                                                            <mat-option value="IG">Individual y Grupal</mat-option>
+                                                                        </mat-select>
+                                                                    </mat-form-field>
+
+                                                                    <mat-form-field>
+                                                                        <mat-label>Tipo de nota</mat-label>
+                                                                        <mat-select formControlName="tipo_nota">
+                                                                            <mat-option value="0-5">0-5</mat-option>
+                                                                            <mat-option value="0-10">0-10</mat-option>
+                                                                            <mat-option value="0-100">0-100</mat-option>
+                                                                            <mat-option value="Aprobado/Reprobado">Aprobado/Reprobado</mat-option>
+                                                                        </mat-select>
+                                                                    </mat-form-field>
+                                                                </div>
+
+                                                                <!-- Resultados de aprendizaje asociados -->
+                                                                <div class="resultados-aprendizaje" style="margin-top: 16px;">
+                                                                    <div class="form-actions">
+                                                                        <!-- <h5 style="margin: 0; color: #666;">Resultados de aprendizaje asociados</h5> -->
+                                                                        <div class="ra-checkbox-row-centered">
+                                                                            <h5 style="margin: 0; color: #666;">Resultados de aprendizaje asociados</h5>
+                                                                            <div class="ra-checkbox-list">
+                                                                                <mat-checkbox *ngFor="let ra of resultadosAprendizajeDisponibles"
+                                                                                              [formControl]="tipoEvaluacion.get('resultados_aprendizaje_asociados').get(ra.id)"
+                                                                                              color="primary">
+                                                                                    <span class="ra-label" [matTooltip]="ra.resultado_detallado">
+                                                                                        {{ra.id}} - {{ra.resultado_detallado ? (ra.resultado_detallado.length > 40 ? (ra.resultado_detallado | slice:0:40) + '...' : ra.resultado_detallado) : ''}}
+                                                                                    </span>
+                                                                                </mat-checkbox>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </ng-container>
-                                                    </ng-container>
+                                                    </div>
 
-                                                    <!-- <button mat-button matStepperPrevious>Guardar</button> -->
-                                                    <button mat-button matStepperPrevious mat-raised-button
+                                                    <div class="form-actions">
+                                                        <button mat-button matStepperPrevious mat-raised-button
                                                         style="background-color: var(--primary);color: white;">Anterior</button>
                                                     <button mat-button matStepperNext mat-raised-button
                                                         style="background-color: var(--primary);color: white; margin-left: 10px;">Siguiente</button>
+                                                    </div>
                                                 </ng-template>
                                             </form>
                                         </mat-step>
