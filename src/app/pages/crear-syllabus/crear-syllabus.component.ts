@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl, FormControl } from '@angular/forms'
 import { SyllabusService } from '../services/syllabus.service';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
@@ -7,8 +7,8 @@ import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
 import { Router } from '@angular/router';
 import { RequestManager } from '../services/requestManager';
 import { environment } from '../../../environments/environment';
-import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
-import { Estrategia, Evaluaciones, Syllabus, Tema, PFA, ObjetivoEspecifico } from 'src/app/@core/models/syllabus';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { TipoEvaluacion, Syllabus, Tema, PFA, ObjetivoEspecifico } from 'src/app/@core/models/syllabus';
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { Documento } from 'src/app/@core/models/documento';
 import  {EmptySpaceValidator } from '../../@core/validators/emptyValue.validator'
@@ -20,7 +20,7 @@ import Swal from 'sweetalert2/dist/sweetalert2';
   templateUrl: './crear-syllabus.component.html',
   styleUrls: ['./crear-syllabus.component.scss']
 })
-export class CrearSyllabusComponent implements OnInit {
+export class CrearSyllabusComponent implements OnInit, OnDestroy {
   Proyecto: ProyectoAcademico;
   PlanEstudio: PlanEstudio;
   EspacioAcademico: EspacioAcademico;
@@ -31,7 +31,6 @@ export class CrearSyllabusComponent implements OnInit {
   formJustificacion: FormGroup;
   formObjetivos: FormGroup;
   formPFA: FormGroup;
-  dataSourceFormPFA = new BehaviorSubject<AbstractControl[]>([]);
   formContenidosTematicos: FormGroup;
   formEstrategias: FormGroup;
   formEvaluacion: FormGroup;
@@ -48,10 +47,9 @@ export class CrearSyllabusComponent implements OnInit {
   idiomas: any[];
   filteredIdiomas: any[];
   actaPrevia: { uid: string | null, url: string | null } = { uid: null, url: null };
+  private resultadoSubscriptions: any[] = [];
 
   formularios: FormArray = this._formBuilder.array([]);
-
-  displayedColumnsFormPFA: string[] = ['numero', 'pfaPrograma', 'pfaAsignatura', 'competencias']
 
   displayedColumnsBibliografiaBasica: string[] = ['basicas']
   displayedColumnsBibliografiaComplementaria: string[] = ['complementarias']
@@ -67,6 +65,10 @@ export class CrearSyllabusComponent implements OnInit {
     return this.formPFA.get('pfa') as FormArray;
   }
 
+  resultados(i: number): FormArray {
+    return (this.pfa.at(i) as FormGroup).get('resultados') as FormArray;
+  }
+
   get temas() {
     return this.formContenidosTematicos.get('temas') as FormArray;
   }
@@ -76,11 +78,11 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   get estrategias() {
-    return this.formEstrategias.get('estrategias') as FormArray;
+    return this.formEstrategias.get('estrategias') as FormGroup;
   }
 
-  get evaluaciones() {
-    return this.formEvaluacion.get('evaluaciones') as FormArray;
+  get tiposEvaluacion() {
+    return this.formEvaluacion.get('tipos_evaluacion') as FormArray;
   }
 
   get basicas() {
@@ -93,6 +95,50 @@ export class CrearSyllabusComponent implements OnInit {
 
   get paginasWeb() {
     return this.formBibliografia.get('paginasWeb') as FormArray
+  }
+
+  resultadosAprendizajeDisponibles: {id: string, resultado_detallado: string}[] = [];
+
+  updateResultadosAprendizajeDisponibles() {
+    const resultados: {id: string, resultado_detallado: string}[] = [];
+    this.pfa.controls.forEach((comp: AbstractControl) => {
+      const resArr = (comp.get('resultados') as FormArray).controls;
+      resArr.forEach((resCtrl: AbstractControl) => {
+        const id = resCtrl.get('id')?.value;
+        const resultado_detallado = resCtrl.get('resultado_detallado')?.value;
+        // Solo agregar si ambos valores están presentes
+        if (id && resultado_detallado) {
+          resultados.push({
+            id: id,
+            resultado_detallado: resultado_detallado
+          });
+        }
+      });
+    });
+    // Filtrar duplicados por id
+    this.resultadosAprendizajeDisponibles = resultados.filter((ra, idx, arr) => arr.findIndex(r => r.id === ra.id) === idx);
+    
+    // Actualizar los tipos de evaluación existentes con los nuevos resultados disponibles
+    this.updateTiposEvaluacionConNuevosResultados();
+  }
+
+  updateTiposEvaluacionConNuevosResultados() {
+    this.tiposEvaluacion.controls.forEach((tipoEvaluacionCtrl: AbstractControl) => {
+      const raGroup = tipoEvaluacionCtrl.get('resultados_aprendizaje_asociados') as FormGroup;
+      if (raGroup) {
+        // Obtener los valores actuales seleccionados
+        const valoresActuales = Object.keys(raGroup.controls).filter(id => raGroup.get(id)?.value);
+        
+        // Crear un nuevo FormGroup con todos los resultados disponibles
+        const nuevoRaGroup: {[key: string]: FormControl} = {};
+        this.resultadosAprendizajeDisponibles.forEach(ra => {
+          nuevoRaGroup[ra.id] = this._formBuilder.control(valoresActuales.includes(ra.id));
+        });
+        
+        // Reemplazar el FormGroup existente
+        (tipoEvaluacionCtrl as FormGroup).setControl('resultados_aprendizaje_asociados', this._formBuilder.group(nuevoRaGroup));
+      }
+    });
   }
 
   constructor(private _formBuilder: FormBuilder, private syllabusService: SyllabusService, private router: Router, private request: RequestManager, private gestorService: GestorDocumentalService) {
@@ -114,13 +160,13 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //console.log(this.Proyecto, this.PlanEstudio, this.EspacioAcademico);
     if (Object.keys(this.Proyecto).length === 0 || Object.keys(this.PlanEstudio).length === 0 || Object.keys(this.EspacioAcademico).length === 0) {
       this.router.navigate(['/buscar_syllabus'],{ skipLocationChange: true })
     } else {
       this.loadInfoIdentificacionEspacioAcademico();
       this.loadIdiomas();
       this.initForms();
+      this.updateResultadosAprendizajeDisponibles();
     }
   }
 
@@ -147,11 +193,8 @@ export class CrearSyllabusComponent implements OnInit {
     this.formularios.controls.push(this.formObjetivos);
 
     this.formPFA = this._formBuilder.group({
-      pfa: this._formBuilder.array([
-
-      ], [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed])
+      pfa: this._formBuilder.array([], [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed])
     });
-
     this.formularios.controls.push(this.formPFA);
 
     this.formContenidosTematicos = this._formBuilder.group({
@@ -165,28 +208,22 @@ export class CrearSyllabusComponent implements OnInit {
 
 
     this.formEstrategias = this._formBuilder.group({
-      estrategias: this._formBuilder.array([
-        // this._formBuilder.group({
-        //   nombre: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-        //   descripcion: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-        //   pertinencia: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-        //   articulacion_ra: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
-        // })
-      ])
+      estrategias: this._formBuilder.group({
+        tradicional: [this.Syllabus.estrategias?.tradicional ?? false],
+        basado_problemas: [this.Syllabus.estrategias?.basado_problemas ?? false],
+        aprendizaje_activo: [this.Syllabus.estrategias?.aprendizaje_activo ?? false],
+        basado_proyectos: [this.Syllabus.estrategias?.basado_proyectos ?? false],
+        colaborativo: [this.Syllabus.estrategias?.colaborativo ?? false],
+        autodirigido: [this.Syllabus.estrategias?.autodirigido ?? false],
+        basado_tecnologia: [this.Syllabus.estrategias?.basado_tecnologia ?? false],
+        basado_experiencias: [this.Syllabus.estrategias?.basado_experiencias ?? false],
+        centrado_estudiante: [this.Syllabus.estrategias?.centrado_estudiante ?? false],
+      })
     });
-
     this.formularios.controls.push(this.formEstrategias);
 
     this.formEvaluacion = this._formBuilder.group({
-      descripcion: [this.Syllabus.evaluacion && !this.isNew ? this.Syllabus.evaluacion.descripcion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      evaluaciones: this._formBuilder.array([
-        // this._formBuilder.group({
-        //   nombre: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-        //   estrategia: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-        //   momento: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-        //   porcentaje: [0, [[Validators.required,EmptySpaceValidator.noEmptySpaceAllowed], Validators.min(0), Validators.max(100)]]
-        // })
-      ])
+      tipos_evaluacion: this._formBuilder.array([])
     })
 
     this.formularios.controls.push(this.formEvaluacion);
@@ -205,15 +242,9 @@ export class CrearSyllabusComponent implements OnInit {
 
     this.formBibliografia = this._formBuilder.group({
 
-      basicas: this._formBuilder.array([
-        //['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
-      ]),
-      complementarias: this._formBuilder.array([
-        //['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
-      ]),
-      paginasWeb: this._formBuilder.array([
-        //['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
-      ])
+      basicas: this._formBuilder.array([]),
+      complementarias: this._formBuilder.array([]),
+      paginasWeb: this._formBuilder.array([])
     })
 
     this.formularios.controls.push(this.formBibliografia);
@@ -222,7 +253,7 @@ export class CrearSyllabusComponent implements OnInit {
       fechaRevisionConsejo: [!this.isNew ? this.Syllabus.seguimiento.fechaRevisionConsejo : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
       fechaAprobacionConsejo: [!this.isNew ? this.Syllabus.seguimiento.fechaAprobacionConsejo : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
       numeroActa: [!this.isNew ? this.Syllabus.seguimiento.numeroActa : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      archivo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]] // loaded in handleFileInputActaChange()
+      archivo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
     })
 
     this.formularios.controls.push(this.formSeguimiento);
@@ -241,11 +272,9 @@ export class CrearSyllabusComponent implements OnInit {
     this.formularios.controls.push(this.formIdiomas);
 
     if (this.isNew) {
-      this.agregarObjetivoEspecifico();
-      this.agregarPFA(undefined, false);
+      this.agregarCompetencia();
       this.agregarTema();
-      this.agregarEstrategia(undefined);
-      this.agregarEvalucion(undefined);
+      this.agregarTipoEvaluacion(undefined);
       this.agregarBibliografiaBasica(undefined, false);
       this.agregarBibliografiaComplementaria(undefined, false);
       this.agregarBibliografiaPaginaWeb(undefined, false);
@@ -255,18 +284,15 @@ export class CrearSyllabusComponent implements OnInit {
       this.Syllabus.objetivos_especificos?.forEach((obj_esp) => {
         this.agregarObjetivoEspecifico(obj_esp);
       })
-      this.Syllabus.resultados_aprendizaje?.forEach((pfa) => {
-        this.agregarPFA(pfa, true);
-      })
-      this.updateViewTablePFA();
+      this.Syllabus.resultados_aprendizaje?.forEach((pfa, idx) => {
+        this.agregarCompetencia(pfa, true);
+      });
       this.Syllabus.contenido?.temas?.forEach((tema) => {
         this.agregarTema(tema);
       })
-      this.Syllabus.estrategias?.forEach((estrategia) => {
-        this.agregarEstrategia(estrategia);
-      })
-      this.Syllabus.evaluacion?.evaluaciones?.forEach((evaluacion) => {
-        this.agregarEvalucion(evaluacion);
+      this.Syllabus.estrategias = this.formEstrategias.get('estrategias')?.value;
+      this.Syllabus.evaluacion?.tipos_evaluacion?.forEach((tipoEvaluacion) => {
+        this.agregarTipoEvaluacion(tipoEvaluacion);
       })
       this.Syllabus.bibliografia?.basicas?.forEach((basica) => {
         this.agregarBibliografiaBasica(basica, true);
@@ -301,6 +327,11 @@ export class CrearSyllabusComponent implements OnInit {
       } else {
         this.actaPrevia = {uid: null, url: null};
       }
+      
+      // Actualizar resultados disponibles después de cargar todos los datos
+      setTimeout(() => {
+        this.updateResultadosAprendizajeDisponibles();
+      }, 100);
     }
   }
 
@@ -318,7 +349,6 @@ export class CrearSyllabusComponent implements OnInit {
   loadInfoIdentificacionEspacioAcademico() {
     this.request.get(environment.ACADEMICA_JBPM_SERVICE, 'detalle_espacio_academico/' + this.PlanEstudio.pen_nro + '/' + this.PlanEstudio.pen_cra_cod + '/' + this.EspacioAcademico.asi_cod).subscribe((dataDetalleEspacioAcademico) => {
       if (dataDetalleEspacioAcademico) {
-        //console.log(dataDetalleEspacioAcademico);
         this.detalle_espacio_academico = dataDetalleEspacioAcademico.espacios_academicos.espacio_academico[0];
       }
     })
@@ -347,27 +377,80 @@ export class CrearSyllabusComponent implements OnInit {
     this.objetivosEspecificos.removeAt(index);
   }
 
-  agregarPFA(d?: PFA, noUpdate?: boolean) {
-    const rowPFA = this._formBuilder.group({
-      pfa_programa: [d && d.pfa_programa ? d.pfa_programa : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      pfa_asignatura: [d && d.pfa_asignatura ? d.pfa_asignatura : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      competencias: [d && d.competencias ? d.competencias : '']
-    })
-    this.pfa.push(rowPFA);
-    if (!noUpdate) { this.updateViewTablePFA(); }
+  agregarCompetencia(data?: any, noUpdate?: boolean) {
+    const competenciaGroup = this._formBuilder.group({
+      competencia: [data?.competencia || '', [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed]],
+      resultados: this._formBuilder.array([])
+    });
+    this.pfa.push(competenciaGroup);
+    if (data?.resultados) {
+      data.resultados.forEach((res: any) => {
+        this.agregarResultado(this.pfa.length - 1, res, true);
+      });
+    } else {
+      this.agregarResultado(this.pfa.length - 1, undefined, true);
+    }
+    this.reasignarIdsResultados();
+    // Usar setTimeout para asegurar que los controles estén completamente inicializados
+    setTimeout(() => {
+      this.updateResultadosAprendizajeDisponibles();
+    }, 0);
   }
 
-  eliminarPFA(index: number) {
-    //console.log(index);
-    //console.log(this.pfa)
+  eliminarCompetencia(index: number) {
     this.pfa.removeAt(index);
-    //console.log(this.pfa)
-    this.updateViewTablePFA();
+    this.reasignarIdsResultados();
+    // Usar setTimeout para asegurar que los controles estén completamente inicializados
+    setTimeout(() => {
+      this.updateResultadosAprendizajeDisponibles();
+    }, 0);
   }
 
-  updateViewTablePFA() {
-    this.dataSourceFormPFA.next(this.pfa.controls);
-    //console.log(this.dataSourceFormPFA);
+  agregarResultado(idxCompetencia: number, data?: any, skipReasignar?: boolean) {
+    const resultadoGroup = this._formBuilder.group({
+      id: [{ value: data?.id || '', disabled: true }],
+      dominio: [data?.dominio || '', [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed]],
+      resultado_detallado: [data?.resultado_detallado || '', [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed]]
+    });
+    
+    // Agregar listener para cambios en resultado_detallado
+    const subscription = resultadoGroup.get('resultado_detallado')?.valueChanges.subscribe(() => {
+      setTimeout(() => {
+        this.updateResultadosAprendizajeDisponibles();
+      }, 100);
+    });
+    
+    if (subscription) {
+      this.resultadoSubscriptions.push(subscription);
+    }
+    
+    this.resultados(idxCompetencia).push(resultadoGroup);
+    if (!skipReasignar) this.reasignarIdsResultados();
+    // Usar setTimeout para asegurar que los controles estén completamente inicializados
+    setTimeout(() => {
+      this.updateResultadosAprendizajeDisponibles();
+    }, 0);
+  }
+
+  eliminarResultado(idxCompetencia: number, idxResultado: number) {
+    this.resultados(idxCompetencia).removeAt(idxResultado);
+    this.reasignarIdsResultados();
+    // Usar setTimeout para asegurar que los controles estén completamente inicializados
+    setTimeout(() => {
+      this.updateResultadosAprendizajeDisponibles();
+    }, 0);
+  }
+
+  reasignarIdsResultados() {
+    let id = 1;
+    for (let i = 0; i < this.pfa.length; i++) {
+      const resultadosArr = this.resultados(i);
+      for (let j = 0; j < resultadosArr.length; j++) {
+        const idValue = id.toString().padStart(2, '0');
+        resultadosArr.at(j).get('id')?.setValue(idValue);
+        id++;
+      }
+    }
   }
 
   agregarTema(tema?: Tema) {
@@ -385,8 +468,6 @@ export class CrearSyllabusComponent implements OnInit {
     } else {
       this.agregarSubTema(this.temas.length - 1);
     }
-    //console.log(this.subtemas(0));
-    //console.log(this.formContenidosTematicos);
   }
 
   eliminarTema(index: number) {
@@ -402,32 +483,25 @@ export class CrearSyllabusComponent implements OnInit {
     this.subtemas(indexTema).removeAt(indexSubTema);
   }
 
-  agregarEstrategia(d?: Estrategia) {
-    const formestrategia = this._formBuilder.group({
-      //nombre: [d ? d.nombre : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      descripcion: [d ? d.descripcion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      //pertinencia: [d ? d.pertinencia : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      //articulacion_ra: [d ? d.articulacion_ra : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
-    })
-    this.estrategias.push(formestrategia);
-  }
-
-  eliminarEstrategia(index: number) {
-    this.estrategias.removeAt(index);
-  }
-
-  agregarEvalucion(d?: Evaluaciones) {
-    const formEvaluacion = this._formBuilder.group({
+  // Cambia agregarTipoEvaluacion para inicializar resultados_aprendizaje_asociados como un FormGroup de checkboxes
+  agregarTipoEvaluacion(d?: TipoEvaluacion) {
+    const raGroup: {[key: string]: FormControl} = {};
+    this.resultadosAprendizajeDisponibles.forEach(ra => {
+      raGroup[ra.id] = this._formBuilder.control(d ? (d.resultados_aprendizaje_asociados?.includes(ra.id) ?? false) : false);
+    });
+    const formTipoEvaluacion = this._formBuilder.group({
       nombre: [d ? d.nombre : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      estrategia: [d ? d.estrategia : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      momento: [d ? d.momento : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      porcentaje: [d ? d.porcentaje : 0, [Validators.required, Validators.min(0), Validators.max(100),EmptySpaceValidator.noEmptySpaceAllowed]]
-    })
-    this.evaluaciones.push(formEvaluacion);
+      tipo_evaluacion: [d ? d.tipo_evaluacion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
+      porcentaje: [d ? d.porcentaje : 0, [Validators.required, Validators.min(0), Validators.max(100),EmptySpaceValidator.noEmptySpaceAllowed]],
+      trabajo_tipo: [d ? d.trabajo_tipo : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
+      tipo_nota: [d ? d.tipo_nota : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
+      resultados_aprendizaje_asociados: this._formBuilder.group(raGroup)
+    });
+    this.tiposEvaluacion.push(formTipoEvaluacion);
   }
 
-  eliminarEvaluacion(index: number) {
-    this.evaluaciones.removeAt(index);
+  eliminarTipoEvaluacion(index: number) {
+    this.tiposEvaluacion.removeAt(index);
   }
 
   agregarBibliografiaBasica(d?: string, noUpdate?: boolean) {
@@ -442,9 +516,7 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   updateViewTableBiblioBas() {
-    //console.log('basicas',this.basicas);
     this.dataSourceFormBiblioBas.next(this.basicas.controls);
-    //console.log(this.dataSourceFormBiblioBas);
   }
 
   agregarBibliografiaComplementaria(d?: string, noUpdate?: boolean) {
@@ -460,7 +532,6 @@ export class CrearSyllabusComponent implements OnInit {
 
   updateViewTableBiblioCom() {
     this.dataSourceFormBiblioCom.next(this.complementarias.controls);
-    //console.log(this.dataSourceFormBiblioCom);
   }
 
   agregarBibliografiaPaginaWeb(d?: string, noUpdate?: boolean) {
@@ -476,7 +547,6 @@ export class CrearSyllabusComponent implements OnInit {
 
   updateViewTableBiblioPag() {
     this.dataSourceFormBiblioPag.next(this.paginasWeb.controls);
-    //console.log(this.dataSourceFormBiblioPag);
   }
 
   createNewVersionSyllabus(){
@@ -525,25 +595,38 @@ export class CrearSyllabusComponent implements OnInit {
         syllabus.justificacion = this.formJustificacion.get('justificacion')?.value;
         syllabus.objetivo_general = this.formObjetivos.get('objetivoGeneral')?.value;
         syllabus.objetivos_especificos = this.objetivosEspecificos.value;
-        // this.objetivosEspecificos.controls.forEach(obj_esp => {
-        //   syllabus.objetivos_especificos.push(obj_esp.get('objetivo')?.value);
-        // });
-        syllabus.resultados_aprendizaje = this.pfa.value;
+        syllabus.resultados_aprendizaje = this.pfa.getRawValue().map((comp: any, idx: number) => ({
+          competencia: comp.competencia,
+          resultados: comp.resultados.map((res: any) => ({
+            id: res.id || '',
+            dominio: res.dominio,
+            resultado_detallado: res.resultado_detallado
+          }))
+        }));
         syllabus.contenido = this.formContenidosTematicos.value;
-        syllabus.estrategias = this.estrategias.value;
-        syllabus.evaluacion = this.formEvaluacion.value;
+        syllabus.estrategias = this.formEstrategias.get('estrategias')?.value;
+        // Transformar resultados_aprendizaje_asociados de FormGroup a array
+        const evaluacionData = this.formEvaluacion.value;
+        evaluacionData.tipos_evaluacion = evaluacionData.tipos_evaluacion.map((tipoEvaluacion: any) => {
+          if (tipoEvaluacion.resultados_aprendizaje_asociados && typeof tipoEvaluacion.resultados_aprendizaje_asociados === 'object') {
+            const seleccionados = Object.keys(tipoEvaluacion.resultados_aprendizaje_asociados)
+              .filter(id => tipoEvaluacion.resultados_aprendizaje_asociados[id]);
+            return {
+              ...tipoEvaluacion,
+              resultados_aprendizaje_asociados: seleccionados
+            };
+          }
+          return tipoEvaluacion;
+        });
+        syllabus.evaluacion = evaluacionData;
         syllabus.recursos_educativos = this.formMedios.get('medios')?.value;
         syllabus.practicas_academicas = this.formPracticasAcademicas.get('practicasAcademicas')?.value;
         syllabus.bibliografia = this.formBibliografia.value;
         syllabus.seguimiento = this.formSeguimiento.value;
         syllabus.seguimiento.archivo = respuesta.res.Enlace
         syllabus.vigencia = this.formVigencia.value;
-        //console.log(syllabus);
         this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
           next: (respuesta: any) => {
-            //console.log("=========================================");
-            
-            //console.log(respuesta);
             Swal.close();
             Swal.fire({
               icon: 'success',
@@ -562,7 +645,6 @@ export class CrearSyllabusComponent implements OnInit {
         })
       },
       error: (error: Error) => {
-        //console.error(error)
         Swal.close();
         Swal.fire({
           icon: 'error',
@@ -574,7 +656,6 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   SubmitSyllabus() {
-    //console.log(this.validateForms());
     if (this.validateForms()) {
       this.createNewVersionSyllabus();
     }else{
@@ -632,7 +713,6 @@ export class CrearSyllabusComponent implements OnInit {
 
   loadIdiomas() {
     this.request.get(environment.IDIOMAS_CRUD, 'idioma?query=Id.in:1|2|49|72|53|130|32').subscribe((dataidiomas) => {
-      //console.log(dataidiomas)
       this.idiomas = dataidiomas;
       this.filteredIdiomas = dataidiomas;
     })
@@ -655,8 +735,6 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   onChangeIdioma(idioma_id: any) {
-    //console.log(idioma_id);
-    //console.log(this.formIdiomas.get('idioma_espacio_id')?.value)
   }
 
   ver(text: string): string {
@@ -687,5 +765,9 @@ export class CrearSyllabusComponent implements OnInit {
 
   existFile() {
     return !(this.actaFile || this.actaPrevia.url);
+  }
+
+  ngOnDestroy(): void {
+    this.resultadoSubscriptions.forEach(subscription => subscription.unsubscribe());
   }
 }

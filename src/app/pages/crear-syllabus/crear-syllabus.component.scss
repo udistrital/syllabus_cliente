@@ -29,3 +29,131 @@ mat-panel-title{
     border-radius: 5px;
     background-color: #F5F5F5;
 }
+
+/* Estilos para el formulario de evaluación */
+.evaluacion-container {
+    .tipo-evaluacion-card {
+        transition: all 0.3s ease;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 24px 16px 16px 16px;
+        margin-bottom: 16px;
+        background: #fafbfc;
+        
+        &:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    }
+    
+    .resultados-aprendizaje {
+        .resultado-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            
+            mat-form-field {
+                flex: 1;
+                max-width: 150px;
+            }
+        }
+    }
+    
+    .grid-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .add-button {
+        background-color: var(--primary);
+        color: white;
+        margin-right: 12px;
+        margin-top: 8px;
+        
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+    
+    .delete-button {
+        color: #f44336;
+        
+        &:hover {
+            background-color: rgba(244, 67, 54, 0.1);
+        }
+    }
+}
+
+.delete-button {
+    color: #f44336;
+    
+    &:hover {
+        background-color: rgba(244, 67, 54, 0.1);
+    }
+}
+
+.ra-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.ra-checkbox-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.ra-checkbox-title {
+  font-weight: 500;
+  color: #666;
+  text-align: center;
+  margin-bottom: 8px;
+  min-width: unset;
+}
+
+.ra-checkbox-row-centered {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 16px;
+  width: auto;
+}
+
+.ra-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 0;
+  align-items: flex-start;
+}
+
+.ra-label {
+  display: inline-block;
+  max-width: 350px;
+  min-width: 350px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .evaluacion-container .grid-form {
+        grid-template-columns: 1fr;
+    }
+}
