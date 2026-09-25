@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { APP_BASE_HREF, HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { ExtraOptions, RouterModule, Routes } from '@angular/router';
+import { getSingleSpaExtraProviders } from 'single-spa-angular';
+import { environment } from 'src/environments/environment';
 import { BuscarSyllabusComponent } from './pages/buscar-syllabus/buscar-syllabus.component';
 import { ListarSyllabusComponent } from './pages/listar-syllabus/listar-syllabus.component';
 import { CrearSyllabusComponent } from './pages/crear-syllabus/crear-syllabus.component';
@@ -13,13 +16,18 @@ const routes: Routes = [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     { path: '**', redirectTo: 'dashboard'}
   ];
-  
+
+const isMicrofrontend = environment.microfrontend === true;
+
+const routerOptions: ExtraOptions = isMicrofrontend
+  ? { useHash: false }
+  : { useHash: true, initialNavigation: 'disabled' };
+
   @NgModule({
-    imports: [ RouterModule.forRoot(routes, {
-      useHash: true,
-      //enableTracing: true,
-      initialNavigation: 'disabled'
-    }) ],
-    exports: [ RouterModule ]
+    imports: [ RouterModule.forRoot(routes, routerOptions) ],
+    exports: [ RouterModule ],
+    providers: isMicrofrontend
+      ? [ getSingleSpaExtraProviders(), { provide: APP_BASE_HREF, useValue: '/syllabus/' } ]
+      : [ { provide: LocationStrategy, useClass: HashLocationStrategy } ]
   })
   export class AppRoutingModule {}
