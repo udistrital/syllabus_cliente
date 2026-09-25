@@ -1,67 +1,51 @@
-<mat-dialog-content class="mat-typography">
-  <div
-    style="display: flex; flex-direction: column; align-items: center"
-    id="formBusqueda"
-  >
-    <mat-card
-      style="
-        background-color: #03678f;
-        color: white;
-        border-radius: 10px;
-        margin-bottom: 20px;
-      "
-      MatCardAppearance="outlined"
+<section class="sga-modal-shell">
+  <header class="sga-modal-header">
+    <div class="sga-modal-heading">
+      <h2 mat-dialog-title>Historial de versiones</h2>
+      <p class="sga-modal-subtitle">
+        Consulta las versiones registradas y sus documentos asociados.
+      </p>
+    </div>
+    <button
+      mat-icon-button
+      class="sga-modal-close"
+      type="button"
+      mat-dialog-close
+      aria-label="Cerrar"
     >
-      <mat-card-content>
-        <h3 style="margin: 0%; font-weight: bold">Historial de versiones</h3>
-      </mat-card-content>
-    </mat-card>
-    <mat-card
-      style="
-        width: calc(100% - 90px);
-        border: 1px #666666 solid;
-        border-radius: 15px;
-        background-color: #f5f5f5;
-        margin: auto;
-      "
-    >
+      <mat-icon fontIcon="close"></mat-icon>
+    </button>
+  </header>
+
+  <mat-dialog-content class="sga-modal-content">
+    <mat-card class="sga-modal-section">
       <mat-card-content>
         <p>
-          <label
-            ><strong>Proyecto curricular / programa académico:</strong>
-            {{ Proyecto.Nombre }}
-          </label>
+          <strong>Proyecto curricular / programa académico:</strong>
+          {{ Proyecto.Nombre }}
         </p>
         <p>
-          <label
-            ><strong>Plan de estudios:</strong> {{ PlanEstudio.cra_nombre }},
-            plan de estudio:{{ PlanEstudio.pen_nro }}</label
-          >
+          <strong>Plan de estudios:</strong> {{ PlanEstudio.cra_nombre }}, plan
+          de estudio: {{ PlanEstudio.pen_nro }}
         </p>
         <p>
-          <label for=""
-            ><strong>Espacio académico:</strong>
-            {{ EspacioAcademico.asi_nombre }}</label
-          >
+          <strong>Espacio académico:</strong> {{ EspacioAcademico.asi_nombre }}
         </p>
         <p>
-          <label
-            ><strong>Periodo académico:</strong> {{ EspacioAcademico.pen_sem }}
-          </label>
+          <strong>Periodo académico:</strong> {{ EspacioAcademico.pen_sem }}
         </p>
       </mat-card-content>
     </mat-card>
-    <mat-card style="width: calc(100% - 60px); margin-top: 15px">
+
+    <mat-card class="sga-modal-flat-card margin-y">
       <mat-card-content>
-        <div class="container-border">
-          <h4>Historico</h4>
+        <div class="table">
           <table mat-table [dataSource]="dataSource">
             <ng-container matColumnDef="version">
               <th mat-header-cell *matHeaderCellDef>Version</th>
               <td mat-cell *matCellDef="let element">{{ element.version }}</td>
-              <td mat-footer-cell *matFooterCellDef class="footer"></td>
             </ng-container>
-            <!-- Fecha Inicio -->
+
             <ng-container matColumnDef="fecha_inicio">
               <th mat-header-cell *matHeaderCellDef>Fecha Inicio</th>
               <td mat-cell *matCellDef="let element">
@@ -71,7 +55,6 @@
                     : "No especificado"
                 }}
               </td>
-              <td mat-footer-cell *matFooterCellDef class="footer"></td>
             </ng-container>
 
             <ng-container matColumnDef="fecha_fin">
@@ -79,7 +62,6 @@
               <td mat-cell *matCellDef="let element">
                 {{ element.fecha_fin == null ? element.fecha_fin : "No especificado" }}
               </td>
-              <td mat-footer-cell *matFooterCellDef class="footer"></td>
             </ng-container>
 
             <ng-container matColumnDef="acciones_buttons">
@@ -87,7 +69,6 @@
               <td
                 mat-cell
                 *matCellDef="let element; let row = index"
-                style="text-align: center"
               >
                 <button
                   mat-icon-button
@@ -97,14 +78,13 @@
                   <mat-icon>attach_file</mat-icon>
                 </button>
               </td>
-              <td mat-footer-cell *matFooterCellDef class="footer"></td>
             </ng-container>
+
             <ng-container matColumnDef="syllabus_template">
               <th mat-header-cell *matHeaderCellDef>Syllabus</th>
               <td
                 mat-cell
                 *matCellDef="let element; let row = index"
-                style="text-align: center"
               >
                 <button
                   mat-icon-button
@@ -115,16 +95,7 @@
                   <mat-icon fontIcon="visibility"></mat-icon>
                 </button>
               </td>
-              <td mat-footer-cell *matFooterCellDef class="footer"></td>
             </ng-container>
-            <!-- Headers -->
-            <!-- <ng-container matColumnDef="resultadosConsulta">
-                            <th id="col-combinado" mat-header-cell *matHeaderCellDef [attr.colspan]="5">Resultados
-                                consulta</th>
-                        </ng-container>
-                        <ng-container matColumnDef="acciones">
-                            <th id="col-combinado" mat-header-cell *matHeaderCellDef [attr.colspan]="1">Acciones</th>
-                        </ng-container> -->
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
@@ -132,23 +103,18 @@
         </div>
       </mat-card-content>
     </mat-card>
-  </div>
-</mat-dialog-content>
-<mat-dialog-actions align="center">
-  <button
-    mat-button
-    mat-dialog-close
-    style="background-color: var(--primary); color: white"
-    (click)="EditSyllabus()"
-    *ngIf="canEdit"
-  >
-    Editar
-  </button>
-  <button
-    mat-button
-    mat-dialog-close
-    style="background-color: var(--primary); color: white"
-  >
-    Cerrar
-  </button>
-</mat-dialog-actions>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="sga-modal-actions">
+    <button
+      mat-flat-button
+      color="primary"
+      mat-dialog-close
+      (click)="EditSyllabus()"
+      *ngIf="canEdit"
+    >
+      Editar
+    </button>
+    <button mat-flat-button mat-dialog-close>Cerrar</button>
+  </mat-dialog-actions>
+</section>

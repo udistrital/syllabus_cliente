@@ -122,8 +122,11 @@ export class VersionesSyllabusComponent implements  OnInit{
   openSyllabusVisualizarSyllabusDocument(row: number) {
     try {
       const dialogRefViewDocument = this.dialog.open(VisualizarSyllabusComponent, {
-        width: '80vw',   // Set width to 60 percent of view port width
+        width: '80vw',
         height: '90vh',
+        maxWidth: '96vw',
+        maxHeight: '94vh',
+        panelClass: 'sga-modal-panel',
       });
       dialogRefViewDocument.componentInstance.Syllabus=this.syllabusVersions[row];
       dialogRefViewDocument.afterClosed().subscribe(result => {
