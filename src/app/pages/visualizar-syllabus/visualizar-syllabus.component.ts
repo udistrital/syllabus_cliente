@@ -62,7 +62,8 @@ export class VisualizarSyllabusComponent implements OnInit {
       ? null
       : (body.version = this.Syllabus.version);
     this.request
-      .post(environment.SGA_MID, 'espacios_academicos/syllabus_template', body)
+    .post(environment.SGA_MID, 'syllabus/syllabus_template', body)
+      // .post(environment.SGA_MID, 'espacios_academicos/syllabus_template', body)
       .subscribe({
         next: (syllabus_document) => {
           if (syllabus_document && syllabus_document.Data.document) {
@@ -108,7 +109,8 @@ export class VisualizarSyllabusComponent implements OnInit {
       ? null
       : (body.version = this.Syllabus.version);
     this.request
-      .post(environment.SGA_MID, 'espacios_academicos/syllabus_template', body)
+    .post(environment.SGA_MID, 'syllabus/syllabus_template', body) 
+      // .post(environment.SGA_MID, 'espacios_academicos/syllabus_template', body)
       .subscribe({
         next: (syllabus_document) => {
           if (syllabus_document) {
