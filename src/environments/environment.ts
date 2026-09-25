@@ -4,6 +4,8 @@
 
 export const environment = {
   production: false,
+  microfrontend: false,
+  apiUrl: 'http://localhost:4200/',
   entorno: 'test',
   autenticacion: true,
   notificaciones: false,
