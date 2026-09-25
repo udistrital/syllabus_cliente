@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { fromEvent } from 'rxjs';
@@ -19,12 +19,32 @@ declare let gtag: Function;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'syllabus_cliente';
   environment = environment;
   loadRouting = false;
   loaded: boolean = false;
+  isMicrofrontend = (window as any).__MICROFRONTEND__ === true;
   whatLang$ = fromEvent(window, 'lang');
+
+  @ViewChild('oasElement') oasElement?: ElementRef<HTMLElement>;
+
+  private readonly onOasUser = (event: any) => {
+    if (event.detail) {
+      this.onAuthenticated();
+    }
+  };
+
+  private readonly onOasOption = (event: any) => {
+    if (event.detail) {
+      setTimeout(() => this.router.navigate([event.detail.Url], { skipLocationChange: true }), 50);
+    }
+  };
+
+  private readonly onOasLogout = (event: any) => {
+    if (event.detail) {
+    }
+  };
 
   constructor(
     private router: Router,
@@ -68,27 +88,52 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.validateLang();
 
-    const oas = document.querySelector('ng-uui-oas');
+    // El layout OAS y su respaldo de menú solo aplican en modo standalone.
+    if (this.isMicrofrontend) {
+      return;
+    }
+  }
 
-    oas?.addEventListener('user', (event: any) => {
-      if (event.detail) {
-        this.loaded = true;
-        this.userService.updateAuth();
-        this.router.navigate(['/dashboard'], { skipLocationChange: true })
-      }
-    });
+  ngAfterViewInit(): void {
+    if (this.isMicrofrontend) {
+      return;
+    }
 
-    oas?.addEventListener('option', (event: any) => {
-      if (event.detail) {
-        setTimeout(() => (this.router.navigate([event.detail.Url],{ skipLocationChange: true })), 50)
-          ;
-      }
-    });
+    const oas = this.oasElement?.nativeElement;
+    if (!oas) {
+      return;
+    }
 
-    oas?.addEventListener('logout', (event: any) => {
-      if (event.detail) {
-      }
-    });
+    oas.addEventListener('user', this.onOasUser);
+    oas.addEventListener('option', this.onOasOption);
+    oas.addEventListener('logout', this.onOasLogout);
+
+    // El evento `user` del OAS es one-shot (take(1)): si ya hay sesión,
+    // no esperamos al evento para revelar el layout y navegar al dashboard.
+    if (this.hasSession()) {
+      this.onAuthenticated();
+    }
+  }
+
+  ngOnDestroy(): void {
+    const oas = this.oasElement?.nativeElement;
+    if (!oas) {
+      return;
+    }
+
+    oas.removeEventListener('user', this.onOasUser);
+    oas.removeEventListener('option', this.onOasOption);
+    oas.removeEventListener('logout', this.onOasLogout);
+  }
+
+  private hasSession(): boolean {
+    return !!localStorage.getItem('id_token');
+  }
+
+  private onAuthenticated(): void {
+    this.loaded = true;
+    this.userService.updateAuth();
+    this.router.navigate(['/dashboard'], { skipLocationChange: true });
   }
 
   validateLang() {
