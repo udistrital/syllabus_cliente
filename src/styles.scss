@@ -184,6 +184,25 @@ spinner-util .overlay {
   color: #ffffff;
 }
 
+// Acordeon (mat-expansion-panel): cabecera con tono primario claro para
+// destacar sobre el cuerpo blanco y mantener el texto oscuro legible.
+.mat-expansion-panel-header {
+  background-color: var(--md-primary-100) !important;
+}
+
+.mat-expansion-panel-header:not([aria-disabled='true']):hover,
+.mat-expansion-panel-header.mat-expanded,
+.mat-expansion-panel-header.mat-expanded:hover {
+  background-color: var(--md-primary-200) !important;
+}
+
+.mat-expansion-panel,
+.mat-expansion-panel-header {
+  --mat-expansion-header-text-color: var(--md-primary-900);
+  --mat-expansion-header-indicator-color: var(--md-primary-900);
+  --mat-expansion-header-description-color: var(--md-primary-700);
+}
+
 // ===== Base del proyecto =====
 
 html {
