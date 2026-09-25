@@ -1,0 +1,75 @@
+/* ESTILOS GLOBALES PARA MAGENES Y ESPACIADOS */
+.margin-y {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ESTILOS GLOBALES PARA CONTENDORES DE BOTONES */
+
+.container-bottons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ESTILOS GLOBALES PARA TABLAS */
+
+.table {
+  overflow-x: auto;
+}
+
+/* ESTILOS GLOBALES PARA LOS ALETS */
+
+/* Para crear una alerta con estos estilos --> */
+/* 
+  <div class="alert  type">
+    <mat-icon class="icon">{{ icon }}</mat-icon>
+    <span>{{ message }}</span>
+  </div> 
+*/
+
+.alert {
+  display: flex;
+  gap: 1rem; /* Mantiene un espacio entre elementos */
+  align-items: center; /* Alinea verticalmente los elementos dentro de la alerta */
+  border-radius: 4px; /* Esquinas redondeadas para un diseño moderno */
+  padding: 1rem 1.25rem; /* Usa unidades relativas para el padding */
+  margin: 1.25rem 0; /* Usa unidades relativas para el margen superior e inferior */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil para un efecto elevado */
+  color: #000; /* Color del texto */
+  font-size: 1rem; /* Tamaño de fuente responsive */
+}
+
+.alert .icon {
+  min-width: 32px; /* Establece un ancho mínimo para los íconos */
+  height: 32px; /* Asegura que el ícono tenga un tamaño adecuado */
+  font-size: 1.5rem; /* Ajusta el tamaño del ícono */
+  display: flex; /* Utiliza flexbox para centrar el contenido del ícono */
+  align-items: center; /* Centra verticalmente el ícono */
+  justify-content: center; /* Centra horizontalmente el ícono */
+}
+
+/* INICIO TYPES DE ALERTAS */
+
+.success {
+  background-color: var(
+    --success-main
+  ); /* Color de fondo para alertas de éxito */
+  border: 1px solid var(--success-base); /* Borde sutil para destacar la alerta */
+}
+
+.warning {
+  background-color: var(
+    --warning-main
+  ); /* Color de fondo para alertas de advertencia */
+  border: 1px solid var(--warning-base); /* Borde sutil para destacar la alerta */
+}
+
+.info {
+  background-color: var(
+    --color300
+  ); /* Color de fondo para alertas de información */
+  border: 1px solid var(--color500); /* Borde sutil para destacar la alerta */
+}
+
+/* FIN DE TYPES DE ALERTAS */
