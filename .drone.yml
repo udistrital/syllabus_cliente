@@ -22,6 +22,19 @@ steps:
     event:
     - push
 
+- name: nodejs_develop
+  image: node:18.14.0
+  commands:
+  - node --version
+  - npm i
+  - npm run build
+  when:
+    branch:
+    - feature/*
+    - develop
+    event:
+    - push
+
 - name: nodejs_release
   image: node:18.14.0
   commands:
