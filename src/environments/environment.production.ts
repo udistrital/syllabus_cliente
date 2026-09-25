@@ -5,8 +5,7 @@
  */
 
 export const environment = {
-  production: false,
-  microfrontend: false,
+  production: true,
   apiUrl: 'https://syllabus.portaloas.udistrital.edu.co/',
   entorno: 'prod',
   autenticacion: true,

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { APP_BASE_HREF, HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { getSingleSpaExtraProviders } from 'single-spa-angular';
-import { environment } from 'src/environments/environment';
 import { BuscarSyllabusComponent } from './pages/buscar-syllabus/buscar-syllabus.component';
 import { ListarSyllabusComponent } from './pages/listar-syllabus/listar-syllabus.component';
 import { CrearSyllabusComponent } from './pages/crear-syllabus/crear-syllabus.component';
@@ -17,7 +16,8 @@ const routes: Routes = [
     { path: '**', redirectTo: 'dashboard'}
   ];
 
-const isMicrofrontend = environment.microfrontend === true;
+// `main.single-spa.ts` marca esta bandera al arrancar como microfrontend.
+const isMicrofrontend = (window as any).__MICROFRONTEND__ === true;
 
 const routerOptions: ExtraOptions = isMicrofrontend
   ? { useHash: false }

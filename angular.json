@@ -55,11 +55,11 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "with": "src/environments/environment.production.ts"
                 }
               ]
             },
-            "test": {
+            "development": {
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -71,25 +71,18 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.test.ts"
+                  "with": "src/environments/environment.development.ts"
                 }
               ]
             },
-            "dev": {
-              "optimization": false,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
+            "local": {
               "buildOptimizer": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.dev.ts"
-                }
-              ]
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "outputHashing": "none"
             },
             "single-spa": {
               "main": "src/main.single-spa.ts",
@@ -110,11 +103,11 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.single-spa.ts"
+                  "with": "src/environments/environment.production.ts"
                 }
               ]
             },
-            "single-spa-dev": {
+            "single-spa-development": {
               "main": "src/main.single-spa.ts",
               "tsConfig": "tsconfig.app.single-spa.json",
               "optimization": true,
@@ -133,12 +126,12 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.single-spa-dev.ts"
+                  "with": "src/environments/environment.development.ts"
                 }
               ]
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "local"
         },
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
@@ -149,20 +142,20 @@
             "production": {
               "browserTarget": "syllabus_cliente:build:production"
             },
-            "test": {
-              "browserTarget": "syllabus_cliente:build:test"
+            "development": {
+              "browserTarget": "syllabus_cliente:build:development"
             },
-            "dev": {
-              "browserTarget": "syllabus_cliente:build:dev"
+            "local": {
+              "browserTarget": "syllabus_cliente:build:local"
             },
             "single-spa": {
               "browserTarget": "syllabus_cliente:build:single-spa"
             },
-            "single-spa-dev": {
-              "browserTarget": "syllabus_cliente:build:single-spa-dev"
+            "single-spa-development": {
+              "browserTarget": "syllabus_cliente:build:single-spa-development"
             }
           },
-          "defaultConfiguration": "dev"
+          "defaultConfiguration": "local"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

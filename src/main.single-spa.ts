@@ -9,6 +9,9 @@ import { environment } from './environments/environment';
 import { singleSpaPropsSubject } from './single-spa/single-spa-props';
 import { AppModule } from './app/app.module';
 
+// Marca el modo microfrontend para el enrutamiento condicional (ver app-routing.module.ts).
+(window as any).__MICROFRONTEND__ = true;
+
 if (environment.production) {
   enableProdMode();
 }

@@ -6,6 +6,7 @@
 
 export const environment = {
   production: false,
+  apiUrl: 'https://pruebassyllabus.portaloas.udistrital.edu.co/',
   entorno: 'test',
   autenticacion: true,
   notificaciones: false,
@@ -23,7 +24,7 @@ export const environment = {
   SGA_MID:'https://autenticacion.portaloas.udistrital.edu.co/apioas/sga_mid/v1/',
 
   CONFIGURACION_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/',
-  CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/', 
+  CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/',
   TOKEN: {
     AUTORIZATION_URL: 'https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize',
     CLIENTE_ID: 'SyAm2hZXYQh257Qq7g4X8bK7uSQa',
