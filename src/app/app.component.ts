@@ -1,11 +1,14 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { fromEvent } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { UserService } from './pages/services/userService';
 import { LocalStorageService } from './@core/utils/local_storage.service';
 import { WindowRefService } from './@core/utils/windowref.service';
 import { RequestManager } from './pages/services/requestManager';
+import { getCookie } from 'src/utils/cookie';
 
 declare let gtag: Function;
 
@@ -21,11 +24,13 @@ export class AppComponent implements OnInit {
   environment = environment;
   loadRouting = false;
   loaded: boolean = false;
+  whatLang$ = fromEvent(window, 'lang');
 
   constructor(
     private router: Router,
     private userService: UserService,
     private localStore: LocalStorageService,
+    private translate: TranslateService,
   ) {
     this.loaded=false;
     this.router.events.subscribe((event: any) => {
@@ -61,6 +66,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.validateLang();
+
     const oas = document.querySelector('ng-uui-oas');
 
     oas?.addEventListener('user', (event: any) => {
@@ -82,6 +89,15 @@ export class AppComponent implements OnInit {
       if (event.detail) {
       }
     });
+  }
+
+  validateLang() {
+    let lang = getCookie('lang') || 'es';
+    this.whatLang$.subscribe((x: any) => {
+      lang = x['detail']['answer'];
+      this.translate.use(lang);
+    });
+    this.translate.use(lang);
   }
 
 
