@@ -110,15 +110,6 @@
   margin-top: 16px;
 }
 
-.actions-row--bottom {
-  margin-bottom: 16px;
-}
-
-.actions-end {
-  margin-top: 16px;
-  text-align: right;
-}
-
 .section-heading {
   display: flex;
   align-items: center;
@@ -130,147 +121,29 @@
   margin-left: auto;
 }
 
-.row-actions {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.row-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.row-wrap {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-/* PFA y resultados */
-.pfa-item {
-  margin-bottom: 32px;
-  border: 1px solid var(--md-primary-500);
-  border-radius: 8px;
-  padding: 16px;
-  background: #fafbfc;
-}
-
-.pfa-resultado {
-  margin-top: 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  padding: 12px;
-  background: #fff;
-}
-
-.resultados-list {
-  margin-top: 16px;
-}
-
-.field-block {
-  margin-top: 8px;
-}
-
-.field-id {
-  width: 80px;
-  min-width: 80px;
-}
-
-.field-grow {
-  flex: 1;
-  min-width: 180px;
-}
-
-.resize-none {
-  resize: none;
-}
-
-/* Estrategias / evaluación */
-.step-block {
+/* PFA */
+.pfa-table {
   width: 100%;
-  padding: 40px 48px;
+  border: 1px solid var(--md-primary-500);
 }
 
-.step-title {
-  text-align: left;
-  margin-bottom: 8px;
+.pfa-index-cell {
+  text-align: center;
 }
 
-.step-subtitle {
-  text-align: left;
-  color: #666;
-  margin-bottom: 32px;
+/* Estrategias y evaluación */
+.evaluacion-descripcion {
+  margin: 0 0 1rem;
+  color: #333;
 }
 
-.evaluacion-container {
-  .tipo-evaluacion-card {
-    transition: all 0.3s ease;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 24px 16px 16px 16px;
-    margin-bottom: 16px;
-    background: #fafbfc;
-
-    &:hover {
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-  }
-
-  .form-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid #e0e0e0;
-  }
-
-  .add-button {
-    color: var(--md-primary-500);
-  }
+.evaluacion-table {
+  width: 100%;
 }
 
-.delete-button {
-  color: #f44336;
-
-  &:hover {
-    background-color: rgba(244, 67, 54, 0.1);
-  }
-}
-
-.ra-title {
-  margin: 0;
-  color: #666;
-}
-
-.ra-checkbox-row-centered {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 32px;
-  margin-top: 16px;
-  width: auto;
-}
-
-.ra-checkbox-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 0;
-  align-items: flex-start;
-}
-
-.ra-label {
-  display: inline-block;
-  max-width: 350px;
-  min-width: 350px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: middle;
+.evaluacion-table th.mat-mdc-header-cell,
+.evaluacion-table td.mat-mdc-cell {
+  text-align: center;
 }
 
 /* Bibliografía */
@@ -310,6 +183,7 @@
 .seguimiento-field {
   text-align: center;
   vertical-align: middle;
+  padding: 0.5rem;
 }
 
 .w-10 {
@@ -326,6 +200,14 @@
 
 .w-90 {
   width: 90%;
+}
+
+.delete-button {
+  color: #f44336;
+
+  &:hover {
+    background-color: rgba(244, 67, 54, 0.1);
+  }
 }
 
 .input-search {
@@ -345,10 +227,6 @@
 
 /* Responsive para móviles */
 @media (max-width: 768px) {
-  .step-block {
-    padding: 16px;
-  }
-
   .seguimiento-row {
     flex-direction: column;
   }

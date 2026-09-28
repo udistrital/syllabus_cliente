@@ -68,8 +68,12 @@ export class VersionesSyllabusComponent implements  OnInit{
     this.syllabusData=[];
     //console.log(this.syllabusVersions);
     this.syllabusVersions.forEach((value,index)=> {
-      //console.log(typeof value.vigencia.fechaFin)
-      this.syllabusData.push({version:value.version, fecha_inicio: String(value.vigencia.fechaInicio).split('T')[0], fecha_fin: String(value.vigencia.fechaFin).split('T')[0]})
+      const vigencia: any = value.vigencia || {};
+      this.syllabusData.push({
+        version: value.version,
+        fecha_inicio: vigencia.fechaInicio ? String(vigencia.fechaInicio).split('T')[0] : '',
+        fecha_fin: vigencia.fechaFin ? String(vigencia.fechaFin).split('T')[0] : ''
+      })
     })
     this.dataSource.data=this.syllabusData;
   }

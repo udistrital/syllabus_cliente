@@ -40,7 +40,6 @@ import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } f
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule, } from '@angular/material-moment-adapter';
 import { AlertComponent } from './components/alert/alert.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SpinnerUtilModule } from 'spinner-util';
@@ -86,7 +85,6 @@ export function createTranslateLoader(http: HttpClient) {
     MatDialogModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    MatCheckboxModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
