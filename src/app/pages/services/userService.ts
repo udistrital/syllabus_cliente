@@ -129,6 +129,7 @@ export class UserService {
               //this.user$.next(this.user);
               //console.log("finddoc",this.user)
               //this.userSubject.next(this.user);              // this.localstorage.saveData('ente', res[0].Ente);
+              this.localstorage.saveData('nombre_completo', this.user.NombreCompleto || '');
               this.localstorage.saveData('persona_id', this.user.Id);
               resolve(true);
             } else {
@@ -153,6 +154,7 @@ export class UserService {
               //this.user$.next(this.user);
               //consol.log("findemail",this.user)
               //this.userSubject.next(this.user);
+              this.localstorage.saveData('nombre_completo', this.user.NombreCompleto || '');
               this.localstorage.saveData('persona_id', this.user.Id);
               resolve(true);
             } else {
@@ -184,6 +186,10 @@ export class UserService {
 
   public getPersonaId(): number {
     return parseInt(this.localstorage.getData('persona_id')!, 10);
+  }
+
+  public getNombreCompleto(): string {
+    return this.user?.NombreCompleto || this.localstorage.getData('nombre_completo') || '';
   }
 
   public getPeriodo(): number {
