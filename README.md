@@ -161,6 +161,10 @@ npm run test
 | -- | -- | -- |
 | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/syllabus_cliente/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/syllabus_cliente) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/syllabus_cliente/status.svg?ref=refs/heads/release/0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/syllabus_cliente) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/syllabus_cliente/status.svg)](https://hubci.portaloas.udistrital.edu.co/udistrital/syllabus_cliente) |
 
+## Notas técnicas
+
+- **Doble `zone.js` en standalone**: el `layout-web-component.js` (OAS) incluye su propio `zone.js`, que convive con el `zone.js` del build. Esto deja `FileReader` doblemente parcheado y produce `Maximum call stack size exceeded` al leer archivos. Por eso la carga del acta **no usa `FileReader`** (ver `src/app/pages/services/gestor_documental.service.ts`). Al ejecutarse como microfrontend bajo root/core, el layout lo aporta el core y no se duplica.
+
 ## Licencia
 
 [This file is part of syllabus_cliente.](LICENSE)

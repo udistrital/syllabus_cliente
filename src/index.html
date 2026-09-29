@@ -20,6 +20,12 @@
 </head>
 <body class="mat-typography">
   <app-root></app-root>
+  <!--
+    Nota: el web component OAS incluye su propio zone.js. Al convivir con el
+    zone.js del build (polyfills), FileReader queda doblemente parcheado en modo
+    standalone y provoca "Maximum call stack size exceeded" al leer archivos.
+    Por eso la carga del acta evita FileReader (ver gestor_documental.service.ts).
+  -->
   <script src="https://pruebasassets.portaloas.udistrital.edu.co/layout-web-component.js" defer=""></script>  <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
 </html>
