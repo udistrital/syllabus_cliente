@@ -203,6 +203,19 @@ spinner-util .overlay {
   --mat-expansion-header-description-color: var(--md-primary-700);
 }
 
+// Encabezados de tablas Material: fondo primario claro y texto oscuro.
+// Necesario porque el oas.css remoto deja el texto blanco sobre fondo blanco.
+.mat-mdc-header-cell,
+mat-header-cell.mat-mdc-header-cell {
+  background-color: var(--md-primary-100) !important;
+  color: var(--md-primary-900) !important;
+}
+
+.mat-mdc-header-cell h3,
+.mat-mdc-header-cell h4 {
+  color: inherit;
+}
+
 // ===== Base del proyecto =====
 
 html {
