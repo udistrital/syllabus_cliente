@@ -188,7 +188,7 @@
             </mat-accordion>
 
             <mat-action-row class="actions-center">
-              <button mat-flat-button color="primary" (click)="nextStep()"
+              <button type="button" mat-flat-button color="primary" (click)="nextStep()"
                 [disabled]="formIdiomas.invalid">Continuar</button>
             </mat-action-row>
           </section>
@@ -226,7 +226,7 @@
                       <textarea matInput formControlName="saberesPrevios"></textarea>
                     </mat-form-field>
                     <div>
-                      <button mat-flat-button color="primary" matStepperNext>Siguiente</button>
+                      <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
                     </div>
                   </ng-template>
                 </form>
@@ -241,8 +241,8 @@
                       <textarea matInput formControlName="justificacion"></textarea>
                     </mat-form-field>
                     <div class="actions-row actions-row--top">
-                      <button mat-flat-button color="primary" matStepperPrevious>Anterior</button>
-                      <button mat-flat-button color="primary" matStepperNext>Siguiente</button>
+                      <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
+                      <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
                     </div>
                   </ng-template>
                 </form>
@@ -259,7 +259,7 @@
 
                     <div class="section-heading">
                       <h2 class="m-0">Objetivos específicos</h2>
-                      <button mat-mini-fab color="primary" type="button" matTooltip="Agregar objetivo específico"
+                      <button type="button" mat-mini-fab color="primary" type="button" matTooltip="Agregar objetivo específico"
                         (click)="agregarObjetivoEspecifico()">
                         <mat-icon>add</mat-icon>
                       </button>
@@ -271,7 +271,7 @@
                           <mat-form-field class="form-field">
                             <mat-label for="ObjEsp-{{ i }}">Objetivo Especifico {{ i + 1 }}</mat-label>
                             <textarea id="ObjEsp-{{ i }}" matInput formControlName="objetivo"></textarea>
-                            <button mat-icon-button matSuffix class="delete-button" *ngIf="i != 0"
+                            <button type="button" mat-icon-button matSuffix class="delete-button" *ngIf="i != 0"
                               matTooltip="Eliminar objetivo específico" (click)="eliminarObjetivoEspecifico(i)">
                               <mat-icon>delete</mat-icon>
                             </button>
@@ -281,8 +281,8 @@
                     </div>
 
                     <div class="actions-row actions-row--top">
-                      <button mat-flat-button color="primary" matStepperPrevious>Anterior</button>
-                      <button mat-flat-button color="primary" matStepperNext>Siguiente</button>
+                      <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
+                      <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
                     </div>
                   </ng-template>
                 </form>
@@ -296,14 +296,14 @@
                       <table mat-table class="pfa-table" [dataSource]="dataSourceFormPFA" formArrayName="pfa">
                         <ng-container matColumnDef="numero">
                           <th mat-header-cell *matHeaderCellDef>
-                            <button mat-mini-fab color="primary" type="button" matTooltip="Agregar PFA"
+                            <button type="button" mat-mini-fab color="primary" type="button" matTooltip="Agregar PFA"
                               (click)="agregarPFA(undefined, false)">
                               <mat-icon>add</mat-icon>
                             </button>
                           </th>
                           <td mat-cell *matCellDef="let row; let index = index" class="pfa-index-cell">
                             <span>{{ index + 1 }}</span>
-                            <button mat-icon-button class="delete-button" *ngIf="index != 0" matTooltip="Eliminar fila"
+                            <button type="button" mat-icon-button class="delete-button" *ngIf="index != 0" matTooltip="Eliminar fila"
                               (click)="eliminarPFA(index)">
                               <mat-icon>delete</mat-icon>
                             </button>
@@ -326,8 +326,8 @@
                     </div>
 
                     <div class="form-actions">
-                      <button mat-flat-button color="primary" matStepperPrevious>Anterior</button>
-                      <button mat-flat-button color="primary" matStepperNext>Siguiente</button>
+                      <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
+                      <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
                     </div>
                   </ng-template>
                 </form>
@@ -343,8 +343,8 @@
                     </mat-form-field>
 
                     <div class="actions-row actions-row--top">
-                      <button mat-flat-button color="primary" matStepperPrevious>Anterior</button>
-                      <button mat-flat-button color="primary" matStepperNext>Siguiente</button>
+                      <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
+                      <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
                     </div>
                   </ng-template>
                 </form>
@@ -372,8 +372,8 @@
                   </div>
 
                   <div class="form-actions">
-                    <button mat-flat-button color="primary" matStepperPrevious>Anterior</button>
-                    <button mat-flat-button color="primary" matStepperNext>Siguiente</button>
+                    <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
+                    <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
                   </div>
                 </ng-template>
               </mat-step>
@@ -387,8 +387,8 @@
                       <textarea matInput formControlName="medios"></textarea>
                     </mat-form-field>
                     <div class="actions-row actions-row--top">
-                      <button mat-flat-button color="primary" matStepperPrevious>Anterior</button>
-                      <button mat-flat-button color="primary" matStepperNext>Siguiente</button>
+                      <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
+                      <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
                     </div>
                   </ng-template>
                 </form>
@@ -403,8 +403,8 @@
                       <textarea matInput formControlName="practicasAcademicas"></textarea>
                     </mat-form-field>
                     <div class="actions-row actions-row--top">
-                      <button mat-flat-button color="primary" matStepperPrevious>Anterior</button>
-                      <button mat-flat-button color="primary" matStepperNext>Siguiente</button>
+                      <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
+                      <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
                     </div>
                   </ng-template>
                 </form>
@@ -423,7 +423,7 @@
                           <th mat-header-cell *matHeaderCellDef>
                             <div class="biblio-heading">
                               <h3 class="m-0">Documentos básicos</h3>
-                              <button mat-mini-fab color="primary" type="button" matTooltip="Agregar bibliografía"
+                              <button type="button" mat-mini-fab color="primary" type="button" matTooltip="Agregar bibliografía"
                                 (click)="agregarBibliografiaBasica('', false)">
                                 <mat-icon>add</mat-icon>
                               </button>
@@ -433,7 +433,7 @@
                             <mat-form-field class="form-field">
                               <mat-label>Básica {{ index + 1 }}</mat-label>
                               <input matInput [formControlName]="index">
-                              <button mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
+                              <button type="button" mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
                                 matTooltip="Eliminar" (click)="eliminarBibliografiaBasica(index)">
                                 <mat-icon>delete</mat-icon>
                               </button>
@@ -451,7 +451,7 @@
                           <th mat-header-cell *matHeaderCellDef>
                             <div class="biblio-heading">
                               <h3 class="m-0">Documentos complementarios</h3>
-                              <button mat-mini-fab color="primary" type="button" matTooltip="Agregar bibliografía"
+                              <button type="button" mat-mini-fab color="primary" type="button" matTooltip="Agregar bibliografía"
                                 (click)="agregarBibliografiaComplementaria('', false)">
                                 <mat-icon>add</mat-icon>
                               </button>
@@ -461,7 +461,7 @@
                             <mat-form-field class="form-field">
                               <mat-label>Complementaria {{ index + 1 }}</mat-label>
                               <input matInput [formControlName]="index">
-                              <button mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
+                              <button type="button" mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
                                 matTooltip="Eliminar bibliografía" (click)="eliminarBibliografiaComplementaria(index)">
                                 <mat-icon>delete</mat-icon>
                               </button>
@@ -478,7 +478,7 @@
                           <th mat-header-cell *matHeaderCellDef>
                             <div class="biblio-heading">
                               <h3 class="m-0">Bases de datos</h3>
-                              <button mat-mini-fab color="primary" type="button" matTooltip="Agregar base de datos"
+                              <button type="button" mat-mini-fab color="primary" type="button" matTooltip="Agregar base de datos"
                                 (click)="agregarBibliografiaBase('', false)">
                                 <mat-icon>add</mat-icon>
                               </button>
@@ -488,7 +488,7 @@
                             <mat-form-field class="form-field">
                               <mat-label>Base de datos {{ index + 1 }}</mat-label>
                               <input matInput [formControlName]="index">
-                              <button mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
+                              <button type="button" mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
                                 matTooltip="Eliminar base de datos" (click)="eliminarBibliografiaBase(index)">
                                 <mat-icon>delete</mat-icon>
                               </button>
@@ -505,7 +505,7 @@
                           <th mat-header-cell *matHeaderCellDef>
                             <div class="biblio-heading">
                               <h3 class="m-0">Páginas web</h3>
-                              <button mat-mini-fab color="primary" type="button" matTooltip="Agregar bibliografía"
+                              <button type="button" mat-mini-fab color="primary" type="button" matTooltip="Agregar bibliografía"
                                 (click)="agregarBibliografiaPaginaWeb('', false)">
                                 <mat-icon>add</mat-icon>
                               </button>
@@ -515,7 +515,7 @@
                             <mat-form-field class="form-field">
                               <mat-label>Página web {{ index + 1 }}</mat-label>
                               <input matInput [formControlName]="index">
-                              <button mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
+                              <button type="button" mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
                                 matTooltip="Eliminar bibliografía" (click)="eliminarBibliografiaPaginaWeb(index)">
                                 <mat-icon>delete</mat-icon>
                               </button>
@@ -526,7 +526,7 @@
                     </div>
 
                     <div class="actions-row actions-row--top">
-                      <button mat-flat-button color="primary" matStepperPrevious>Anterior</button>
+                      <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
                     </div>
                   </ng-template>
                 </form>
@@ -534,7 +534,7 @@
             </mat-stepper>
 
             <mat-action-row class="actions-center">
-              <button mat-flat-button color="primary" (click)="nextStep()">Continuar</button>
+              <button type="button" mat-flat-button color="primary" (click)="nextStep()">Continuar</button>
             </mat-action-row>
           </section>
         </mat-expansion-panel>
@@ -572,7 +572,7 @@
                 <div class="seguimiento-row">
                   <mat-form-field class="form-field w-90">
                     <mat-label>Acta</mat-label>
-                    <button mat-icon-button matPrefix type="button" (click)="f_input.click()" matTooltip="Cargar documento">
+                    <button type="button" mat-icon-button matPrefix type="button" (click)="f_input.click()" matTooltip="Cargar documento">
                       <mat-icon>attach_file</mat-icon>
                     </button>
                     <input type="text" readonly matInput formControlName="archivo" />
@@ -580,7 +580,7 @@
                     <mat-error>Ingrese un archivo en formato pdf</mat-error>
                   </mat-form-field>
                   <mat-form-field class="form-field w-10">
-                    <button mat-icon-button matSuffix type="button" [disabled]="existFile()" (click)="previewFile()"
+                    <button type="button" mat-icon-button matSuffix type="button" [disabled]="existFile()" (click)="previewFile()"
                       matTooltip="Descargar documento">
                       <mat-icon>file_download</mat-icon>
                     </button>
@@ -596,7 +596,7 @@
   </mat-card>
 
   <div class="actions-center">
-    <button mat-flat-button color="primary" (click)="regresar()">Regresar</button>
-    <button mat-flat-button color="primary" (click)="SubmitSyllabus()">Guardar</button>
+    <button type="button" mat-flat-button color="primary" (click)="regresar()">Regresar</button>
+    <button type="button" mat-flat-button color="primary" (click)="SubmitSyllabus()">Guardar</button>
   </div>
 </div>
