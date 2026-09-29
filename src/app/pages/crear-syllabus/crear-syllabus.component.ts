@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { RequestManager } from '../services/requestManager';
 import { UserService } from '../services/userService';
 import { environment } from '../../../environments/environment';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { Syllabus, PFA, ObjetivoEspecifico } from 'src/app/@core/models/syllabus';
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { Documento } from 'src/app/@core/models/documento';
@@ -392,7 +392,7 @@ export class CrearSyllabusComponent implements OnInit {
   private buildSyllabusPayload(archivoEnlace: string): any {
     let syllabus: any = {};
     if (!this.isNew && this.Syllabus) {
-      syllabus = JSON.parse(JSON.stringify(this.Syllabus));
+      syllabus = { ...this.Syllabus };
     }
 
     // Campos gestionados por el CRUD o eliminados en el nuevo formato
@@ -465,37 +465,57 @@ export class CrearSyllabusComponent implements OnInit {
         Swal.showLoading();
       },
     })
-    this.uploadActa().subscribe({
-      next: (respuesta: any) => {
-        const syllabus = this.buildSyllabusPayload(respuesta.res.Enlace);
-        this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
-          next: (respuesta: any) => {
-            Swal.close();
-            Swal.fire({
-              icon: 'success',
-              title: this.isNew?'Creación exitosa':'Edición exitosa',
+    try {
+      this.uploadActa().subscribe({
+        next: (respuesta: any) => {
+          try {
+            const syllabus = this.buildSyllabusPayload(respuesta?.res?.Enlace);
+            this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
+              next: (respuesta: any) => {
+                Swal.close();
+                Swal.fire({
+                  icon: 'success',
+                  title: this.isNew?'Creación exitosa':'Edición exitosa',
+                })
+                this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
+              },
+              error: (error) => {
+                Swal.close();
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: this.isNew?'Fallo la creación del syllabus':'Fallo la edición del syllabus',
+                })
+              }
             })
-            this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
-          },
-          error: (error) => {
+          } catch (error: any) {
             Swal.close();
+            console.error('Error al construir el payload del syllabus:', error?.stack || error);
             Swal.fire({
               icon: 'error',
               title: 'Error',
               text: this.isNew?'Fallo la creación del syllabus':'Fallo la edición del syllabus',
             })
           }
-        })
-      },
-      error: (error: Error) => {
-        Swal.close();
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Fallo la carga de los documentos',
-        })
-      }
-    });
+        },
+        error: (error: Error) => {
+          Swal.close();
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Fallo la carga de los documentos',
+          })
+        }
+      });
+    } catch (error: any) {
+      Swal.close();
+      console.error('Error al cargar el acta:', error?.stack || error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Fallo la carga de los documentos',
+      })
+    }
   }
 
   SubmitSyllabus() {
@@ -535,6 +555,9 @@ export class CrearSyllabusComponent implements OnInit {
     if (!this.actaFile && this.actaPrevia.uid) {
       const doc: any = {res: {Enlace: this.actaPrevia.uid}};
       return of(doc)
+    }
+    if (!this.actaFile) {
+      return throwError(() => new Error('No hay archivo de acta para cargar'));
     }
     const sendActa = {
       IdDocumento: 74,
