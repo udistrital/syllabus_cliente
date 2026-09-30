@@ -23,6 +23,9 @@ const EVALUACION_CORTES = [
   { nombre: 'Evaluación Final', porcentaje: 30 },
 ];
 
+const CARACTERES = ['Teórico', 'Práctico', 'Teórico-práctico'];
+const MODALIDADES = ['Presencial', 'Virtual', 'Dual', 'Híbrida'];
+
 @Component({
   selector: 'app-crear-syllabus',
   templateUrl: './crear-syllabus.component.html',
@@ -59,6 +62,8 @@ export class CrearSyllabusComponent implements OnInit {
 
   evaluacionDescripcion = EVALUACION_DESCRIPCION;
   evaluacionCortes = EVALUACION_CORTES;
+  caracteres = CARACTERES;
+  modalidades = MODALIDADES;
 
   displayedColumnsFormPFA: string[] = ['numero', 'pfaPrograma']
 

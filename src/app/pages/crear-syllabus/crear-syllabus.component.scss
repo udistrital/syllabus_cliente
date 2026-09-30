@@ -32,6 +32,18 @@
   font-weight: 600;
 }
 
+.idiomas-block {
+  margin-top: 1rem;
+}
+
+.campo-selectable {
+  margin-bottom: 1rem;
+}
+
+.campo-selectable:last-child {
+  margin-bottom: 0;
+}
+
 .m-0 {
   margin: 0;
 }
@@ -55,22 +67,21 @@
   border-collapse: collapse;
 }
 
-.casilla-caracteristica {
-  background-color: #d8e8fd;
-  color: black;
-  text-align: center;
-  font-weight: bold;
-  border-radius: 5px;
-  border: solid 1px;
+.table-casillas--compact td {
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.casilla-informacion {
-  padding: 0;
-  text-align: center;
-  vertical-align: middle;
-  border: solid 1px;
-  border-radius: 5px;
-  background-color: #f5f5f5;
+.table-casillas--compact td:last-child {
+  border-right: none;
+}
+
+.table-casillas--compact tr:last-child td {
+  border-bottom: none;
+}
+
+.table-casillas td {
+  padding: 12px 12px;
 }
 
 .casilla-header {

@@ -36,141 +36,94 @@
           <section class="sga-modal-section">
             <!-- <h3 class="section-title">Identificación del espacio académico</h3> -->
 
-            <mat-accordion [multi]="true">
-              <mat-expansion-panel [expanded]="true" hideToggle>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Parametrización del espacio académico
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <table class="mat-table table-casillas">
-                  <tr class="mat-row">
-                    <td class="mat-cell casilla-caracteristica">
-                      Código del espacio académico</td>
-                    <td class="mat-cell casilla-informacion">
-                      {{ detalle_espacio_academico?.asi_cod }}
-                    </td>
-                    <td class="mat-cell casilla-caracteristica">
-                      Número de creditos académicos</td>
-                    <td class="mat-cell casilla-informacion">
-                      {{ detalle_espacio_academico?.pen_cre }}
-                    </td>
-                  </tr>
-                </table>
-                <table class="mat-table table-casillas table-casillas--compact">
-                  <tr class="mat-row">
-                    <td class="mat-cell casilla-header">
-                      Distribución horas de trabajo</td>
-                    <td class="mat-cell casilla-subtitulo">HTD</td>
-                    <td class="mat-cell casilla-valor">
-                      {{ detalle_espacio_academico?.pen_nro_ht }}
-                    </td>
-                    <td class="mat-cell casilla-subtitulo">HTC</td>
-                    <td class="mat-cell casilla-valor">
-                      {{ detalle_espacio_academico?.pen_nro_hp }}
-                    </td>
-                    <td class="mat-cell casilla-subtitulo">HTA</td>
-                    <td class="mat-cell casilla-valor">
-                      {{ detalle_espacio_academico?.pen_nro_aut }}
-                    </td>
-                  </tr>
-                  <tr class="mat-row">
-                    <td class="mat-cell casilla-header">
-                      Tipo de espacio académico</td>
-                    <td class="mat-cell casilla-subtitulo">Asignatura</td>
-                    <td class="mat-cell casilla-valor">
-                      {{ detalle_espacio_academico?.tipo == 'ASIGNATURA' ? 'X' : '' }}
-                    </td>
-                    <td class="mat-cell casilla-subtitulo">Catedra</td>
-                    <td class="mat-cell casilla-valor">
-                      {{ detalle_espacio_academico?.tipo == 'CATEDRA' ? 'X' : '' }}
-                    </td>
-                    <td class="mat-cell casilla-valor"></td>
-                    <td class="mat-cell casilla-valor"></td>
-                  </tr>
-                </table>
-              </mat-expansion-panel>
+            <table class="mat-table table-casillas table-casillas--compact">
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Código del espacio académico</td>
+                <td class="mat-cell casilla-subtitulo" colspan="6">
+                  {{ detalle_espacio_academico?.asi_cod }}
+                </td>
+              </tr>
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Número de créditos académicos</td>
+                <td class="mat-cell casilla-valor" colspan="6">
+                  {{ detalle_espacio_academico?.pen_cre }}
+                </td>
+              </tr>
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Distribución horas de trabajo</td>
+                <td class="mat-cell casilla-subtitulo">HTD</td>
+                <td class="mat-cell casilla-valor">
+                  {{ detalle_espacio_academico?.pen_nro_ht }}
+                </td>
+                <td class="mat-cell casilla-subtitulo">HTC</td>
+                <td class="mat-cell casilla-valor">
+                  {{ detalle_espacio_academico?.pen_nro_hp }}
+                </td>
+                <td class="mat-cell casilla-subtitulo">HTA</td>
+                <td class="mat-cell casilla-valor">
+                  {{ detalle_espacio_academico?.pen_nro_aut }}
+                </td>
+              </tr>
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Tipo de espacio académico</td>
+                <td class="mat-cell casilla-subtitulo">Asignatura</td>
+                <td class="mat-cell casilla-valor">
+                  {{ detalle_espacio_academico?.tipo == 'ASIGNATURA' ? 'X' : '' }}
+                </td>
+                <td class="mat-cell casilla-subtitulo">Catedra</td>
+                <td class="mat-cell casilla-valor">
+                  {{ detalle_espacio_academico?.tipo == 'CATEDRA' ? 'X' : '' }}
+                </td>
+                <td class="mat-cell casilla-valor"></td>
+                <td class="mat-cell casilla-valor"></td>
+              </tr>
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Clasificación</td>
+                <td class="mat-cell casilla-valor" colspan="6">
+                  {{ detalle_espacio_academico?.cea_nom }}
+                </td>
+              </tr>
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Área de formación</td>
+                <td class="mat-cell casilla-subtitulo" colspan="6">
+                  {{ detalle_espacio_academico?.area_formacion }}
+                </td>
+              </tr>
+            </table>
 
-              <mat-expansion-panel [expanded]="true" hideToggle>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Naturaleza del espacio académico
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <table class="mat-table table-casillas">
-                  <tr class="mat-row">
-                    <td class="mat-cell casilla-caracteristica">Obligatorio básico</td>
-                    <td class="mat-cell casilla-informacion">
-                      {{ detalle_espacio_academico?.cea_abr == 'OB' ? 'X' : '' }}
-                    </td>
-                    <td class="mat-cell casilla-caracteristica">
-                      Obligatorio complementario
-                    </td>
-                    <td class="mat-cell casilla-informacion">
-                      {{ detalle_espacio_academico?.cea_abr == 'OC' ? 'X' : '' }}
-                    </td>
-                    <td class="mat-cell casilla-caracteristica">Electivo intrínseco</td>
-                    <td class="mat-cell casilla-informacion">
-                      {{ detalle_espacio_academico?.cea_abr == 'EI' ? 'X' : '' }}
-                    </td>
-                    <td class="mat-cell casilla-caracteristica">Electivo extrínseco</td>
-                    <td class="mat-cell casilla-informacion">
-                      {{ detalle_espacio_academico?.cea_abr == 'EE' ? 'X' : '' }}
-                    </td>
-                    <td class="mat-cell casilla-caracteristica">Electivo</td>
-                    <td class="mat-cell casilla-informacion">
-                      {{ detalle_espacio_academico?.cea_abr == 'E' ? 'X' : '' }}
-                    </td>
-                  </tr>
-                </table>
-              </mat-expansion-panel>
+            <div class="idiomas-block">
+              <div class="campo-selectable">
+                <h3 class="section-title">Carácter del espacio académico</h3>
+                <mat-form-field class="form-field" appearance="fill">
+                  <mat-label>Seleccione el carácter</mat-label>
+                  <mat-select>
+                    <mat-option *ngFor="let caracter of caracteres" [value]="caracter">
+                      {{ caracter }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
 
-              <mat-expansion-panel [expanded]="true" hideToggle>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Carácter del espacio académico
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <table class="mat-table table-casillas">
-                  <tr class="mat-row">
-                    <td class="mat-cell casilla-caracteristica">Teórico</td>
-                    <td class="mat-cell casilla-informacion"></td>
-                    <td class="mat-cell casilla-caracteristica">Práctico</td>
-                    <td class="mat-cell casilla-informacion"></td>
-                    <td class="mat-cell casilla-caracteristica">Teórico / Practico</td>
-                    <td class="mat-cell casilla-informacion"></td>
-                  </tr>
-                </table>
-              </mat-expansion-panel>
+              <div class="campo-selectable">
+                <h3 class="section-title">Modalidad de oferta del espacio académico</h3>
+                <mat-form-field class="form-field" appearance="fill">
+                  <mat-label>Seleccione la modalidad</mat-label>
+                  <mat-select>
+                    <mat-option *ngFor="let modalidad of modalidades" [value]="modalidad">
+                      {{ modalidad }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
 
-              <mat-expansion-panel [expanded]="true" hideToggle>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Modalidad de oferta del espacio académico
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <table class="mat-table table-casillas">
-                  <tr class="mat-row">
-                    <td class="mat-cell casilla-caracteristica">Presencial</td>
-                    <td class="mat-cell casilla-informacion"></td>
-                    <td class="mat-cell casilla-caracteristica">
-                      Presencial con incorporación de TIC
-                    </td>
-                    <td class="mat-cell casilla-informacion"></td>
-                    <td class="mat-cell casilla-caracteristica">Virtual</td>
-                    <td class="mat-cell casilla-informacion"></td>
-                    <td class="mat-cell casilla-caracteristica">Otros</td>
-                    <td class="mat-cell casilla-informacion"></td>
-                  </tr>
-                </table>
-              </mat-expansion-panel>
-
-              <mat-expansion-panel [expanded]="true" hideToggle>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Idiomas en que se oferta el espacio académico
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
+              <div class="campo-selectable">
+                <h3 class="section-title">Idiomas en que se oferta el espacio académico</h3>
                 <form [formGroup]="formIdiomas">
                   <mat-form-field class="form-field" appearance="fill">
                     <mat-label>Seleccione los idiomas</mat-label>
@@ -184,8 +137,8 @@
                     </mat-select>
                   </mat-form-field>
                 </form>
-              </mat-expansion-panel>
-            </mat-accordion>
+              </div>
+            </div>
 
             <mat-action-row class="actions-center">
               <button type="button" mat-flat-button color="primary" (click)="nextStep()"
