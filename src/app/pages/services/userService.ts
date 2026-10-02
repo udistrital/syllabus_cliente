@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from './../../../environments/environment';
 import { RequestManager } from '../services/requestManager';
 import { LocalStorageService } from 'src/app/@core/utils/local_storage.service';
+import { VinculacionRequest } from 'src/app/@core/models/vinculacion';
 import { Md5 } from 'ts-md5';
 
 const path = environment.TERCEROS;
@@ -77,6 +78,7 @@ export class UserService {
           this.localstorage.saveData('persona_id', '0');
         } else {
           if (payload.role.includes('JEFE_DEPENDENCIA') || payload.role.includes('COORDINADOR')) {
+            /*
             this.request.get(environment.SGA_MID, 'admision/dependencia_vinculacion_tercero/' + this.user.Id).subscribe({
               next: (dataDependencias) => {
                 //console.log(dataDependencias)
@@ -87,6 +89,8 @@ export class UserService {
                 this.localstorage.saveData('dependencias_persona_id', JSON.stringify([]))
               }
             })
+            */
+            console.log("Coordinador o Jefe dependencia")
           }
         }
 
@@ -131,6 +135,10 @@ export class UserService {
               //this.userSubject.next(this.user);              // this.localstorage.saveData('ente', res[0].Ente);
               this.localstorage.saveData('nombre_completo', this.user.NombreCompleto || '');
               this.localstorage.saveData('persona_id', this.user.Id);
+              this.localstorage.saveData('datos_identificacion', JSON.stringify({
+                Identificacion: res[0].Numero,
+                Activo: res[0].Activo
+              }));
               resolve(true);
             } else {
               //this.user$.next(this.user);
@@ -190,6 +198,23 @@ export class UserService {
 
   public getNombreCompleto(): string {
     return this.user?.NombreCompleto || this.localstorage.getData('nombre_completo') || '';
+  }
+
+  public getDatosVinculacion(): VinculacionRequest | null {
+    const raw = this.localstorage.getData('datos_identificacion');
+    if (!raw) {
+      return null;
+    }
+    const datos = JSON.parse(raw);
+    return {
+      NombreCompleto: this.getNombreCompleto(),
+      Identificacion: datos.Identificacion,
+      Activo: datos.Activo
+    };
+  }
+
+  public postVinculacion(payload: VinculacionRequest) {
+    return this.request.post(environment.SGA_MID, 'vinculacion/', payload);
   }
 
   public getPeriodo(): number {
