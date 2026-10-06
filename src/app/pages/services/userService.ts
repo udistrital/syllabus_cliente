@@ -36,6 +36,9 @@ export class UserService {
   private logoutSubject = new BehaviorSubject('');
   public logout$ = this.logoutSubject.asObservable();
 
+  private terceroListoSubject = new BehaviorSubject<boolean>(false);
+  public terceroListo$ = this.terceroListoSubject.asObservable();
+
   httpOptions: { headers: HttpHeaders; };
 
   constructor(private request: RequestManager, private localstorage: LocalStorageService) {
@@ -44,6 +47,7 @@ export class UserService {
 
   searchTercero() {
     this.request.updateHeaderToken();
+    this.terceroListoSubject.next(false);
     if (this.localstorage.getData('id_token') !== null && this.localstorage.getData('id_token') !== undefined) {
       /* const id_token = this.localstorage.getData('id_token').split('.');
       const payload = JSON.parse(atob(id_token[1])); */
@@ -94,7 +98,9 @@ export class UserService {
           }
         }
 
-      });
+      }).catch(() => {}).finally(() => this.terceroListoSubject.next(true));
+    } else {
+      this.terceroListoSubject.next(true);
     }
   }
 
@@ -446,6 +452,7 @@ export class UserService {
 
   public clearStorage() {
     this.isLogin = false;
+    this.terceroListoSubject.next(false);
     this.localstorage.clearData();
     window.sessionStorage.clear();
   }
