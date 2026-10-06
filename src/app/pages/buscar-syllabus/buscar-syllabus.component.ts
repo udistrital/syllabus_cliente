@@ -10,6 +10,7 @@ import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
 import { ListarSyllabusComponent } from '../listar-syllabus/listar-syllabus.component';
 import { LocalStorageService } from 'src/app/@core/utils/local_storage.service';
+import { VinculacionPrograma } from 'src/app/@core/models/vinculacion';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
 import { ReplaySubject, Subject, takeUntil } from 'rxjs';
@@ -50,6 +51,10 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
   roles: string[];
   dependenciasId: number[];
   previousSearch: boolean;
+  programasVinculados: VinculacionPrograma[] = [];
+  verTodo: boolean = false;
+  facultadesPermitidas: Set<number> = new Set<number>();
+  programasPermitidos: Set<number> = new Set<number>();
 
   @ViewChild('stepper') private myStepper!: MatStepper;
   @ViewChild(ListarSyllabusComponent) tablaResultados!: ListarSyllabusComponent;
@@ -62,6 +67,16 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
+    this.syllabusService.programasVinculados$.subscribe((programas) => {
+      this.programasVinculados = programas;
+      this.actualizarAlcance();
+    });
+
+    this.syllabusService.verTodo$.subscribe((verTodo) => {
+      this.verTodo = verTodo;
+      this.actualizarAlcance();
+    });
+
     this.loadFacultades();
     this.formFacultad = this._formBuilder.group({
       facultadCtrl: ['', Validators.required],
@@ -210,6 +225,15 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     this.mostrartabla = true;
   }
 
+  actualizarAlcance() {
+    this.facultadesPermitidas = new Set(
+      this.programasVinculados.map((programa) => programa.PadreOikos)
+    );
+    this.programasPermitidos = new Set(
+      this.programasVinculados.map((programa) => programa.IdOikos)
+    );
+  }
+
   loadFacultades() {
     this.request
       .get(
@@ -218,10 +242,19 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
       )
       .subscribe((dataFacultades: any) => {
         if (dataFacultades) {
-          this.facultades = dataFacultades;
+          this.facultades = this.filtrarFacultadesPorVinculacion(dataFacultades);
           this.filterFacultades.next(this.facultades);
         }
       });
+  }
+
+  private filtrarFacultadesPorVinculacion(facultades: Facultad[]): Facultad[] {
+    if (this.verTodo) {
+      return facultades;
+    }
+    return facultades.filter((facultad) =>
+      this.facultadesPermitidas.has(facultad.Id)
+    );
   }
 
   loadProyectosCurriculares() {
@@ -392,13 +425,10 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
   }
 
   filtrarDependencias() {
-    var aux_proy = [];
-    if (this.dependenciasId.length != 0) {
-      aux_proy = this.proyectos_curriculares.filter((proyecto) =>
-        this.dependenciasId.includes(proyecto.Id)
+    if (!this.verTodo) {
+      this.proyectos_curriculares = this.proyectos_curriculares.filter(
+        (proyecto) => this.programasPermitidos.has(proyecto.Id)
       );
-      this.proyectos_curriculares = aux_proy;
-      //console.log('filtrado', aux_proy);
       this.filterProyectoCurricular.next(this.proyectos_curriculares);
 
       if (this.proyectos_curriculares.length == 0) {
