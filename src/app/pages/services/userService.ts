@@ -220,7 +220,7 @@ export class UserService {
   }
 
   public postVinculacion(payload: VinculacionRequest) {
-    return this.request.post(environment.SGA_MID, 'vinculacion/', payload);
+    return this.request.post(environment.SYLLABUS_MID, 'vinculacion/', payload);
   }
 
   public getPeriodo(): number {
