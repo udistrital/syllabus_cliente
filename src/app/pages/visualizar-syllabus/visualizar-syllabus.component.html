@@ -1,61 +1,58 @@
-<mat-dialog-content *ngIf="SyllabusDocumentLoad" class="mat-typography">
-  <object
-    [data]="syllabusDocumentData | safeUrl"
-    type="application/pdf"
-    *ngIf="SyllabusDocumentLoad"
-    id="pdf_view"
-  ></object>
-</mat-dialog-content>
-<mat-dialog-actions
-  *ngIf="SyllabusDocumentLoad"
-  style="
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5em;
-  "
->
-  <button
-    mat-flat-button
-    color="accent"
-    (click)="DownloadSyllabus()"
-    matTooltip="Descargar syllabus PDF"
-  >
-    <mat-icon style="color: white">picture_as_pdf</mat-icon>
-    Descargar
-  </button>
-  <button
-    mat-flat-button
-    color="accent"
-    (click)="DownloadSyllabusXLSX()"
-    matTooltip="Descargar syllabus XLSX"
-    [disabled]="isLoadingDownloadXLSX"
-  >
-    <mat-spinner *ngIf="isLoadingDownloadXLSX" diameter="20"></mat-spinner>
-    <mat-icon *ngIf="!isLoadingDownloadXLSX" style="color: white"
-      >file_download</mat-icon
+<section class="sga-modal-shell">
+  <header class="sga-modal-header">
+    <div class="sga-modal-heading">
+      <h2 mat-dialog-title>Visualizar syllabus</h2>
+    </div>
+    <button
+      mat-icon-button
+      class="sga-modal-close"
+      type="button"
+      mat-dialog-close
+      aria-label="Cerrar visualizador"
     >
-    {{ isLoadingDownloadXLSX ? "" : "Descargar XLSX" }}
-  </button>
-  <button
-    mat-flat-button
-    mat-dialog-close
-    color="primary"
-    matTooltip="Cerrar visualizador"
-  >
-    Cerrar
-  </button>
-</mat-dialog-actions>
-<div
-  style="
-    display: flex;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-  "
-  *ngIf="!SyllabusDocumentLoad"
->
-  <mat-spinner></mat-spinner>
-</div>
+      <mat-icon fontIcon="close"></mat-icon>
+    </button>
+  </header>
+
+  <mat-dialog-content class="sga-modal-content preview-content">
+    <object
+      [data]="syllabusDocumentData | safeUrl"
+      type="application/pdf"
+      *ngIf="SyllabusDocumentLoad"
+      id="pdf_view"
+    ></object>
+    <div class="preview-loading" *ngIf="!SyllabusDocumentLoad">
+      <mat-spinner></mat-spinner>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="sga-modal-actions" *ngIf="SyllabusDocumentLoad">
+    <button
+      mat-flat-button
+      color="accent"
+      (click)="DownloadSyllabus()"
+      matTooltip="Descargar syllabus PDF"
+    >
+      Descargar
+    </button>
+    <button
+      mat-flat-button
+      color="accent"
+      (click)="DownloadSyllabusXLSX()"
+      matTooltip="Descargar syllabus XLSX"
+      [disabled]="isLoadingDownloadXLSX"
+    >
+      <mat-spinner *ngIf="isLoadingDownloadXLSX" diameter="20"></mat-spinner>
+      <mat-icon *ngIf="!isLoadingDownloadXLSX" fontIcon="file_download"></mat-icon>
+      {{ isLoadingDownloadXLSX ? "" : "Descargar XLSX" }}
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      mat-dialog-close
+      matTooltip="Cerrar visualizador"
+    >
+      Cerrar
+    </button>
+  </mat-dialog-actions>
+</section>

@@ -1,35 +1,33 @@
-<ng-uui-oas [environment]="environment"></ng-uui-oas>
+<spinner-util></spinner-util>
 
-<div [ngClass]="!loaded? 'container':'main-container'" id="container"  >
-    <div class="menu" style="width: 20vw; display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;" *ngIf="!loaded" >
-       
-            <mat-card style="background-color: #DAE8FC;width: 80%;height: 45vh;border: 1px solid #03678F;">
-                <mat-card-header style="padding: 0%; align-items: center;
-                        display: flex;
-                        justify-content: center;
-                        border-bottom: 1px solid #03678F;">
+<!-- Standalone: layout OAS + respaldo de menú local -->
+<ng-container *ngIf="!isMicrofrontend">
+    <ng-uui-oas #oasElement [environment]="environment"></ng-uui-oas>
+
+    <div [ngClass]="!loaded? 'container':'main-container'" id="container">
+        <div class="app-fallback-menu" *ngIf="!loaded">
+            <mat-card class="app-fallback-card">
+                <mat-card-header class="app-fallback-card-header">
                     <mat-card-title>
-                        <h3 style="margin: 15px; font-weight: bold;">Gestionar syllabus</h3>
+                        <h3 class="app-fallback-title">Gestionar syllabus</h3>
                     </mat-card-title>
                 </mat-card-header>
-                <mat-card-content style="padding: 0%;
-                        align-items: center;
-                        display: flex;
-                        justify-content: center;
-                        border-bottom: 1px solid #03678F;">
-                    <mat-nav-list style="padding: 0%;">
-                        <a mat-list-item routerLink="/buscar_syllabus" style="text-decoration: none;">
+                <mat-card-content class="app-fallback-card-content">
+                    <mat-nav-list class="app-fallback-list">
+                        <a mat-list-item routerLink="/buscar_syllabus" class="app-fallback-link">
                             Consultar
                         </a>
                     </mat-nav-list>
-
                 </mat-card-content>
             </mat-card>
-    </div>
-    <div id="workspace" >
+        </div>
+        <div id="workspace">
             <router-outlet></router-outlet>
+        </div>
     </div>
+</ng-container>
+
+<!-- Microfrontend: layout y menú provistos por el core -->
+<div class="main-container" *ngIf="isMicrofrontend">
+    <router-outlet></router-outlet>
 </div>

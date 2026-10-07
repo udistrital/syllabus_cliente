@@ -1,0 +1,9 @@
+/*
+ * Layout adaptado para el modo standalone.
+ * El root aporta el padding de #container cuando el cliente corre embebido;
+ * aquí solo se define la base tipográfica y el fondo para no descuadrar el layout OAS.
+ */
+body {
+  font-family: 'Raleway', 'Open Sans', sans-serif;
+  background-color: var(--background-color);
+}

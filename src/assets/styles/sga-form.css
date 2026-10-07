@@ -1,0 +1,128 @@
+/* Estilo para el formulario en pantallas grandes */
+.responsive-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.form-grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.form-grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.form-grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-item {
+  display: flex;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.form-col1 {
+  grid-column: span 1;
+}
+
+.form-col2 {
+  grid-column: span 2;
+}
+
+.form-col3 {
+  grid-column: span 3;
+}
+
+.form-col4 {
+  grid-column: span 4;
+}
+
+.full-width {
+  grid-column: span 4;
+}
+
+.half-width {
+  grid-column: span 2;
+}
+
+.one-third-width {
+  grid-column: span 1;
+}
+
+/* Ajustes para pantallas medianas */
+@media (max-width: 1200px) {
+  .form-grid4 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .full-width,
+  .form-col4 {
+    grid-column: span 3;
+  }
+
+  .form-col3 {
+    grid-column: span 3;
+  }
+
+  .form-col2 {
+    grid-column: span 2;
+  }
+
+  .form-col1 {
+    grid-column: span 1;
+  }
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 992px) {
+  .responsive-form,
+  .form-grid3,
+  .form-grid4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .full-width,
+  .form-col4,
+  .form-col3,
+  .form-col2 {
+    grid-column: span 2;
+  }
+
+  .form-col1 {
+    grid-column: span 1;
+  }
+}
+
+/* Ajustes para pantallas muy pequeñas */
+@media (max-width: 768px) {
+  .responsive-form,
+  .form-grid2,
+  .form-grid3,
+  .form-grid4 {
+    grid-template-columns: 1fr;
+  }
+
+  .form-item {
+    width: 100%;
+  }
+
+  .full-width,
+  .half-width,
+  .one-third-width,
+  .form-col1,
+  .form-col2,
+  .form-col3,
+  .form-col4 {
+    grid-column: span 1;
+  }
+}

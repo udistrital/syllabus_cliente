@@ -1,3 +1,33 @@
+/* ESTILOS GLOBALES PARA MAGENES Y ESPACIADOS */
+.margin-y {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ESTILOS GLOBALES PARA CONTENDORES DE BOTONES */
+
+.container-bottons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ESTILOS GLOBALES PARA TABLAS */
+
+.table {
+  overflow-x: auto;
+}
+
+/* ESTILOS GLOBALES PARA LOS ALETS */
+
+/* Para crear una alerta con estos estilos --> */
+/* 
+  <div class="alert  type">
+    <mat-icon class="icon">{{ icon }}</mat-icon>
+    <span>{{ message }}</span>
+  </div> 
+*/
+
 .alert {
   display: flex;
   gap: 1rem; /* Mantiene un espacio entre elementos */
@@ -10,7 +40,7 @@
   font-size: 1rem; /* Tamaño de fuente responsive */
 }
 
-.icon {
+.alert .icon {
   min-width: 32px; /* Establece un ancho mínimo para los íconos */
   height: 32px; /* Asegura que el ícono tenga un tamaño adecuado */
   font-size: 1.5rem; /* Ajusta el tamaño del ícono */
@@ -18,6 +48,8 @@
   align-items: center; /* Centra verticalmente el ícono */
   justify-content: center; /* Centra horizontalmente el ícono */
 }
+
+/* INICIO TYPES DE ALERTAS */
 
 .success {
   background-color: var(
@@ -34,7 +66,10 @@
 }
 
 .info {
-  background-color: var(--color300); /* Color de fondo para alertas de información */
+  background-color: var(
+    --color300
+  ); /* Color de fondo para alertas de información */
   border: 1px solid var(--color500); /* Borde sutil para destacar la alerta */
 }
 
+/* FIN DE TYPES DE ALERTAS */

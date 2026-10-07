@@ -1,16 +1,28 @@
-.container-baner{
-    background: linear-gradient(to top left, var(--primary), white);
-    height: 400px;
+.container-baner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-height: 400px;
+    padding: 2rem;
     text-align: center;
-    padding-top: 5%;
+    background: linear-gradient(to top left, var(--md-primary-500), #ffffff);
 }
-.title-home{
-    color: white;
-    opacity: none;
-    font-size: 60px;
+
+.title-home {
+    color: #ffffff;
+    font-size: clamp(2rem, 5vw, 3.75rem);
+    margin: 0;
 }
-.guide-home{
-    color: var(--primary);
-    opacity: none !important;
-    font-size: 1.1em;
+
+.guide-home {
+    color: var(--md-primary-900);
+    font-size: 1.1rem;
+    max-width: 60ch;
+    margin: 0;
+}
+
+.banner-action {
+    margin-top: 2rem;
 }
