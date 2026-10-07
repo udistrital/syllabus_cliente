@@ -168,7 +168,10 @@ export class ListarSyllabusComponent implements OnInit {
   openSyllabusVersion(row: number) {
     try {
       const dialogRef = this.dialog.open(VersionesSyllabusComponent, {
-        width: '80vw', // Set width to 60 percent of view port width
+        width: '80vw',
+        maxWidth: '94vw',
+        maxHeight: '90vh',
+        panelClass: 'sga-modal-panel',
       });
       this.Syllabus = this.syllabus[row];
       this.syllabusService.setSyllabus(this.Syllabus);
@@ -186,8 +189,11 @@ export class ListarSyllabusComponent implements OnInit {
       const dialogRefViewDocument = this.dialog.open(
         VisualizarSyllabusComponent,
         {
-          width: '80vw', // Set width to 80 percent of view port width
-          height: '90vh', // Set height to 90 percent of view port height
+          width: '80vw',
+          height: '90vh',
+          maxWidth: '96vw',
+          maxHeight: '94vh',
+          panelClass: 'sga-modal-panel',
         }
       );
 

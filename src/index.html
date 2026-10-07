@@ -7,6 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RBY2GQV40M"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -18,6 +20,12 @@
 </head>
 <body class="mat-typography">
   <app-root></app-root>
+  <!--
+    Nota: el web component OAS incluye su propio zone.js. Al convivir con el
+    zone.js del build (polyfills), FileReader queda doblemente parcheado en modo
+    standalone y provoca "Maximum call stack size exceeded" al leer archivos.
+    Por eso la carga del acta evita FileReader (ver gestor_documental.service.ts).
+  -->
   <script src="https://pruebasassets.portaloas.udistrital.edu.co/layout-web-component.js" defer=""></script>  <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
 </html>

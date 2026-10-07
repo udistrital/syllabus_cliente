@@ -5,6 +5,7 @@ import { Facultad } from 'src/app/@core/models/facultad';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
 import { Syllabus } from 'src/app/@core/models/syllabus';
+import { VinculacionPrograma } from 'src/app/@core/models/vinculacion';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,8 @@ export class SyllabusService {
   private syllabus =new BehaviorSubject<Syllabus>(new Syllabus);
   private isNew= new BehaviorSubject<boolean>(false);
   private rolwithEdit= new BehaviorSubject<boolean>(false);
+  private programasVinculados= new BehaviorSubject<VinculacionPrograma[]>([]);
+  private verTodo= new BehaviorSubject<boolean>(false);
 
   facultad$=this.facultad.asObservable();
   proyectoAcademico$=this.proyectoAcademico.asObservable();
@@ -32,6 +35,8 @@ export class SyllabusService {
   syllabus$=this.syllabus.asObservable();
   isNew$=this.isNew.asObservable();
   rolwithEdit$=this.rolwithEdit.asObservable();
+  programasVinculados$=this.programasVinculados.asObservable();
+  verTodo$=this.verTodo.asObservable();
 
   constructor() { }
 
@@ -74,5 +79,13 @@ export class SyllabusService {
 
   setrolwithEdit(canEdit:boolean){
     this.rolwithEdit.next(canEdit);
+  }
+
+  setProgramasVinculados(programas:VinculacionPrograma[]){
+    this.programasVinculados.next(programas);
+  }
+
+  setVerTodo(verTodo:boolean){
+    this.verTodo.next(verTodo);
   }
 }

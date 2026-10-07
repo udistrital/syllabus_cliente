@@ -20,7 +20,7 @@ import Swal from 'sweetalert2/dist/sweetalert2';
   styleUrls: ['./versiones-syllabus.component.scss']
 })
 export class VersionesSyllabusComponent implements  OnInit{
-  displayedColumns: string[] = ['version','fecha_inicio', 'fecha_fin','acciones_buttons','syllabus_template'];
+  displayedColumns: string[] = ['version','fecha_elaboracion', 'fecha_aprobacion_consejo','acciones_buttons','syllabus_template'];
   dataSource = new MatTableDataSource<SyllabusVersionInterface>();
   Proyecto:ProyectoAcademico;
   PlanEstudio:PlanEstudio;
@@ -68,8 +68,12 @@ export class VersionesSyllabusComponent implements  OnInit{
     this.syllabusData=[];
     //console.log(this.syllabusVersions);
     this.syllabusVersions.forEach((value,index)=> {
-      //console.log(typeof value.vigencia.fechaFin)
-      this.syllabusData.push({version:value.version, fecha_inicio: String(value.vigencia.fechaInicio).split('T')[0], fecha_fin: String(value.vigencia.fechaFin).split('T')[0]})
+      const seguimiento: any = value.seguimiento || {};
+      this.syllabusData.push({
+        version: value.version,
+        fecha_elaboracion: seguimiento.fecha_elaboro ? String(seguimiento.fecha_elaboro).split('T')[0] : '',
+        fecha_aprobacion_consejo: seguimiento.fechaAprobacionConsejo ? String(seguimiento.fechaAprobacionConsejo).split('T')[0] : ''
+      })
     })
     this.dataSource.data=this.syllabusData;
   }
@@ -122,8 +126,11 @@ export class VersionesSyllabusComponent implements  OnInit{
   openSyllabusVisualizarSyllabusDocument(row: number) {
     try {
       const dialogRefViewDocument = this.dialog.open(VisualizarSyllabusComponent, {
-        width: '80vw',   // Set width to 60 percent of view port width
+        width: '80vw',
         height: '90vh',
+        maxWidth: '96vw',
+        maxHeight: '94vh',
+        panelClass: 'sga-modal-panel',
       });
       dialogRefViewDocument.componentInstance.Syllabus=this.syllabusVersions[row];
       dialogRefViewDocument.afterClosed().subscribe(result => {
@@ -137,6 +144,6 @@ export class VersionesSyllabusComponent implements  OnInit{
 
 export interface SyllabusVersionInterface {
   version:number,
-  fecha_inicio: string;
-  fecha_fin: string;
+  fecha_elaboracion: string;
+  fecha_aprobacion_consejo: string;
 }

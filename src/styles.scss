@@ -1,357 +1,248 @@
 @import 'src/assets/styles/sga-sweetalert2/sga-sweetalert2.scss';
-// /* You can add global styles to this file, and also import other style files */
+// Estilos globales del proyecto. La base compartida (palette, sga-form, sga-global,
+// sga-text y layout) se carga desde angular.json antes de este archivo.
 
-// @use '@angular/material' as mat;
 @import url("https://pruebasassets.portaloas.udistrital.edu.co/urano-style.css");
 @import url("https://pruebasassets.portaloas.udistrital.edu.co/oas.css");
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0");
 
-
-
-
-// // material customize
-
-// $primary: (
-//     50: var(--primary),
-//     100: var(--primary),
-//     200: var(--primary),
-//     300: var(--primary),
-//     400: var(--primary),
-//     500: var(--primary),
-//     600: var(--primary),
-//     700: var(--primary),
-//     800: var(--primary),
-//     900: var(--primary),
-//     A100: var(--primary),
-//     A200: var(--primary),
-//     A400: var(--primary),
-//     A700: var(--primary),
-//     contrast: (50: white,
-//         100: white,
-//         200: white,
-//         300: white,
-//         400: white,
-//         500: white,
-//         600: white,
-//         700: white,
-//         800: white,
-//         900: white,
-//         A100: white,
-//         A200: white,
-//         A400: white,
-//         A700: white,
-//     ),
-// );
-// $my-primary: mat.define-palette($primary, 100);
-// $my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-// $my-typography: mat.define-typography-config(
-//     $font-family: 'sans-serif',
-// );
-
-// $my-theme: mat.define-light-theme((
-//     color: (
-//         primary: $my-primary,
-//         accent: $my-accent,
-//     ),
-//     typography: $my-typography,    
-// ));
-
-// @include mat.all-component-themes($my-theme);
-
-html
-{
-   scroll-behavior: smooth;
+// Overlay del spinner global: por encima de los dialogos CDK (1000) y debajo de SweetAlert (1060).
+spinner-util .overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  z-index: 1050 !important;
 }
 
-.container {
-    display: grid;
-    //grid-template-columns: max-content auto;
-    grid-template-rows: 100%;
-    grid-auto-flow: column;
-    padding-top: 1rem;
+// Estilos compartidos para dialogos (panel, cabecera, contenido y acciones).
+.sga-modal-panel {
+  --mdc-dialog-container-shape: 12px;
+  --color100: #e1edf2;
+  --color200: #b3d1dd;
+  --color300: #81b3c7;
+  --color400: #4f95b1;
+  --color500: #297ea0;
+  --color600: #02547c;
+  --color700: #024a72;
+  --color800: #013f68;
+  --color900: #013960;
 }
 
-.main-container{
-    overflow-y: scroll;
+.sga-modal-panel .mat-mdc-dialog-surface {
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.18);
 }
 
-.container-border {
-    border: 1px solid var(--primary);
-    padding: 1%;
-    border-radius: 15px 15px 15px 15px;
+.sga-modal-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  color: #1f2937;
+  background: #f8fafb;
 }
 
-.container-border h4 {
-    width: 17%;
-    background-color: var(--primary) !important;
-    color: #F1F5F8;
-    font-size: 15px;
-    margin-top: -28px;
-    margin-left: 7px;
-    padding: 0.5%;
-    position: relative;
-    border-radius: 15px 15px 15px 15px;
-    font-weight: normal;
+.sga-modal-header {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 2px solid var(--primary, #03678f);
+  background: #fff;
 }
 
-// .mat-step-text-label{
-//         background-color: var(--primary) !important;
-//         color: #F1F5F8;
-//         font-size: 15px;
-//         border-radius: 15px 15px 15px 15px;
-//         font-weight: normal;
-//         width: auto;
-//         padding-left: 5px;
-//         padding-right: 5px;
-// }
-
-b {
-    color: var(--primary)
+.sga-modal-heading {
+  min-width: 0;
 }
 
-.mat-table {
-    overflow-x: scroll;
+.sga-modal-heading [mat-dialog-title],
+.sga-modal-heading h2 {
+  margin: 0;
+  padding: 0;
+  color: var(--color900, #013960);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
-td.mat-cell,
-th.mat-header-cell {
-    padding: 1em;
-    width: 50vmax;
-    height: 100%;
+.sga-modal-heading p,
+.sga-modal-subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--color600, #5f6b7a);
+  font-size: 0.88rem;
+  line-height: 1.45;
 }
 
-.example-month-picker.mat-calendar {
-    height: 250px !important;
-
-    .mat-calendar-table {
-        border-collapse: unset;
-    }
-
-    .mat-calendar-table-header th {
-        padding: 0px 0;
-    }
+.sga-modal-close {
+  flex: 0 0 auto;
+  margin: -0.35rem -0.5rem 0 0;
+  color: var(--color600, #5f6b7a);
 }
 
-table thead tr th {
-    background-color: var(--primary) !important;
-    color: #fff;
+.sga-modal-close:hover:not([disabled]) {
+  color: #1f2937;
+  background: var(--color100, #f4f6f8);
 }
 
-table thead tr th:nth-child(n + 2) {
-    border-left: none;
+.sga-modal-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none !important;
+  padding: 1.25rem 1.5rem !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #f8fafb;
 }
 
-table tbody tr td {
-    padding: 10px !important;
+.sga-modal-actions {
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  min-height: 3.75rem;
+  margin: 0;
+  padding: 0.6rem 1.5rem !important;
+  border-top: 1px solid var(--color200, #e2e8f0);
+  background: #fff;
 }
 
-table tbody tr td:nth-child(n + 2) {
-    border-left: none;
+.sga-modal-actions button {
+  min-width: 6.5rem;
 }
 
-// mat-expansion-panel-header {
-//     background-color: var(--primary);
-// }
-
-.mat-expansion-panel-header:not([aria-expanded=true]){
-    border-bottom: 1px var(--color2) solid;
+.sga-modal-flat-card {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none !important;
+  background: transparent;
 }
-.mat-expansion-panel-header,
-.mat-expansion-panel-header.cdk-focused,
+
+.sga-modal-flat-card > .mat-mdc-card-content {
+  padding: 0;
+}
+
+.sga-modal-section {
+  padding: 1rem;
+  border: 1px solid var(--color200, #e2e8f0);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.sga-modal-form {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+@media (max-width: 600px) {
+  .sga-modal-panel {
+    max-width: 100vw !important;
+  }
+
+  .sga-modal-header,
+  .sga-modal-content,
+  .sga-modal-actions {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .sga-modal-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .sga-modal-actions button {
+    width: 100%;
+  }
+}
+
+// La paleta por variables CSS impide que Sass calcule el color de contraste,
+// por lo que Material aplica texto oscuro. Se fija blanco en botones con
+// color primario/accent (siempre fondos oscuros de la marca).
+.mat-mdc-unelevated-button.mat-primary,
+.mat-mdc-unelevated-button.mat-accent {
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-raised-button.mat-accent {
+  --mdc-protected-button-label-text-color: #ffffff;
+}
+
+.mat-mdc-unelevated-button.mat-primary mat-icon,
+.mat-mdc-unelevated-button.mat-accent mat-icon,
+.mat-mdc-raised-button.mat-primary mat-icon,
+.mat-mdc-raised-button.mat-accent mat-icon {
+  color: #ffffff;
+}
+
+// Acordeon (mat-expansion-panel): cabecera con tono primario claro para
+// destacar sobre el cuerpo blanco y mantener el texto oscuro legible.
+.mat-expansion-panel-header {
+  background-color: var(--md-primary-100) !important;
+}
+
+.mat-expansion-panel-header:not([aria-disabled='true']):hover,
 .mat-expansion-panel-header.mat-expanded,
-.mat-expansion-panel-header.mat-expanded.cdk-focused {
-    background-color: var(--primary) !important;
+.mat-expansion-panel-header.mat-expanded:hover {
+  background-color: var(--md-primary-200) !important;
 }
 
-.mat-expansion-panel-header:hover,
-.mat-expansion-panel-header.mat-expanded:hover{
-    background-color: var(--color900) !important;
+.mat-expansion-panel,
+.mat-expansion-panel-header {
+  --mat-expansion-header-text-color: var(--md-primary-900);
+  --mat-expansion-header-indicator-color: var(--md-primary-900);
+  --mat-expansion-header-description-color: var(--md-primary-700);
 }
 
-.mat-expansion-panel-body{
-    .container-border {
-        margin-top: 30px;
-    }
-    
+// Encabezados de tablas Material: fondo primario claro y texto oscuro.
+// Necesario porque el oas.css remoto deja el texto blanco sobre fondo blanco.
+.mat-mdc-header-cell,
+mat-header-cell.mat-mdc-header-cell {
+  background-color: var(--md-primary-100) !important;
+  color: var(--md-primary-900) !important;
 }
 
-.container-border h4{
-    width: fit-content !important;
-    max-width: 50% !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
+.mat-mdc-header-cell h3,
+.mat-mdc-header-cell h4 {
+  color: inherit;
 }
 
-.mat-expansion-panel-header-title{
-    color: white;
-    /* font-weight: bold; */
-    font-size: medium;
+// ===== Base del proyecto =====
+
+html {
+  scroll-behavior: smooth;
 }
 
-
-.mat-form-field-appearance-fill .mat-form-field-infix {
-    padding: 0.25em 0 0em 0 !important;
-    ;
-}
-
-.card-oas {
-    width: calc(100vw - 60px);
-}
-
-.card-oas-int {
-    width: calc(98vw - 60px);
-}
-
-.card-dialog {
-    width: calc(75vw - 60px);
-}
-
-mat-label {
-    color: var(--primary);
-}
-
-
-.mat-input-element:disabled,
-.mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
-    color: #333;
-}
-
-
-.mat-form-field-flex {
-    background-color: #fff !important;
-
-}
-
-
-
-.example-section {
-    margin: 12px 0;
-}
-
-.example-margin {
-    margin: 0 12px;
-}
-
-ul {
-    list-style-type: none;
-}
-
-.subtitle-term-conditional {
-    text-align: left;
-    font-size: 1.1rem;
-    color: var(--primary);
-    font-family: 'Open Sans';
-}
-
-.title-term-conditional {
-    text-align: center;
-    font-size: 1.5rem;
-    color: var(--primary);
-    font-family: 'Open Sans';
-}
-
-.text-term-condional {
-    text-align: justify;
-    font-family: 'Open Sans';
-    font-size: 1rem;
+// Contenedor del shell (respaldo standalone y modo microfrontend).
+.container {
+  display: grid;
+  grid-template-rows: 100%;
+  grid-auto-flow: column;
+  padding-top: 1rem;
 }
 
 .main-container {
-    flex-direction: column;
+  overflow-y: scroll;
+  flex-direction: column;
 }
 
-.username-info {
-    position: relative;
-
-    background-color: white;
-    color: var(--primary);
-    justify-content: center;
-    text-align: center;
-    display: flex;
-    padding: 12px 0px;
-    top: -14px;
-    left: -16px;
-    flex-wrap: wrap-reverse;
-    width: 100vw;
-    font-size: 0.8rem;
+b {
+  color: var(--primary);
 }
 
-.text-justify {
-    text-align: justify;
-    margin-left: 1rem;
-    max-width: 70%;
-
-}
-
-
-.text-note {
-    text-align: justify;
-    margin-left: 1rem;
-    max-width: 70%;
+ul {
+  list-style-type: none;
 }
 
 a {
-    color: var(--primary)
-}
-
-.item-default {
-    display: flex;
-    flex-wrap: nowrap;
-    margin-bottom: 1rem;
-    margin-left: 1rem;
-
-}
-
-.important-list {
-    text-align: left;
-}
-
-
-.item-list-important {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    text-align: justify;
-    font-family: 'Open Sans';
-    font-size: 1rem;
-
-    .success {
-        color: var(--primary);
-        margin-right: 1rem;
-    }
-
-    .pending {
-        color: var(--color1);
-        margin-right: 1rem;
-    }
-}
-
-.mat-row:nth-child(even) {
-    background-color: #E7D6D6;
-}
-
-.mat-row:nth-child(odd) {
-    background-color: white;
-}
-
-mat-icon{
-    color: var(--primary);
-}
-
-@media screen and (max-width: 425px) {
-
-    table tbody tr td {
-        font-size: 0.675em !important;
-    }
-
-}
-
-@media screen and (min-width: 1024px) {
-
-    .username-info {
-        display: none;
-    }
-
+  color: var(--primary);
 }

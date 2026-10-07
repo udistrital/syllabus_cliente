@@ -5,8 +5,9 @@
  */
 
 export const environment = {
-  production: false,
-  entorno: 'test',
+  production: true,
+  apiUrl: 'https://syllabus.portaloas.udistrital.edu.co/',
+  entorno: 'prod',
   autenticacion: true,
   notificaciones: false,
   menuApps: false,
@@ -20,18 +21,18 @@ export const environment = {
   DOCUMENTO_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/',
   TERCEROS:'https://autenticacion.portaloas.udistrital.edu.co/apioas/terceros_crud/v1/',
   IDIOMAS_CRUD:'https://autenticacion.portaloas.udistrital.edu.co/apioas/idiomas_crud/v2/',
-  SGA_MID:'https://autenticacion.portaloas.udistrital.edu.co/apioas/sga_mid/v1/',
+  SYLLABUS_MID:'https://autenticacion.portaloas.udistrital.edu.co/apioas/syllabus_mid/v1/',
 
   CONFIGURACION_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/',
-  CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/', 
+  CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/',
   TOKEN: {
     AUTORIZATION_URL: 'https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize',
-    CLIENTE_ID: 'SyAm2hZXYQh257Qq7g4X8bK7uSQa',
+    CLIENTE_ID: 'EUvgObMLVgKJdbaay5e9IpDclkka',
     RESPONSE_TYPE: 'id_token token',
     SCOPE: 'openid email role documento',
-    REDIRECT_URL: 'https://pruebassyllabus.portaloas.udistrital.edu.co',
+    REDIRECT_URL: 'https://syllabus.portaloas.udistrital.edu.co',
     SIGN_OUT_URL: 'https://autenticacion.portaloas.udistrital.edu.co/oidc/logout',
-    SIGN_OUT_REDIRECT_URL: 'https://pruebassyllabus.portaloas.udistrital.edu.co',
+    SIGN_OUT_REDIRECT_URL: 'https://syllabus.portaloas.udistrital.edu.co',
     AUTENTICACION_MID: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/autenticacion_mid/v1/token/userRol',
   },
 };
