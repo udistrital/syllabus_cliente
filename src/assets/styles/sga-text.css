@@ -1,0 +1,14 @@
+/* Las fuentes Open Sans/Raleway se cargan desde src/index.html. */
+
+
+.text-normal {
+    font-weight: 400;
+}
+
+.text-semibold {
+    font-weight: 600;
+}
+
+.text-bold {
+    font-weight: 700;
+}

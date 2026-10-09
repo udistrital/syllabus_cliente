@@ -1,0 +1,43 @@
+.app-fallback-menu {
+  width: 20vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.app-fallback-card {
+  background-color: #DAE8FC;
+  width: 80%;
+  height: 45vh;
+  border: 1px solid #03678F;
+}
+
+.app-fallback-card-header {
+  padding: 0%;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #03678F;
+}
+
+.app-fallback-title {
+  margin: 15px;
+  font-weight: bold;
+}
+
+.app-fallback-card-content {
+  padding: 0%;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #03678F;
+}
+
+.app-fallback-list {
+  padding: 0%;
+}
+
+.app-fallback-link {
+  text-decoration: none;
+}

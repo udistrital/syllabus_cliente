@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { HashLocationStrategy, LocationStrategy, PercentPipe, CommonModule } from '@angular/common';
+import { PercentPipe, CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -9,7 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LocalStorageService } from './@core/utils/local_storage.service';
 import { WindowRefService } from './@core/utils/windowref.service';
 import { SyllabusService } from './pages/services/syllabus.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { BuscarSyllabusComponent } from './pages/buscar-syllabus/buscar-syllabus.component';
 import { ListarSyllabusComponent } from './pages/listar-syllabus/listar-syllabus.component';
 import { CrearSyllabusComponent } from './pages/crear-syllabus/crear-syllabus.component';
@@ -40,6 +40,15 @@ import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } f
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule, } from '@angular/material-moment-adapter';
 import { AlertComponent } from './components/alert/alert.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { SpinnerUtilModule } from 'spinner-util';
+import { environment } from 'src/environments/environment';
+import { SpinnerUtilCounterInterceptor } from './interceptors/spinner-util-counter.interceptor';
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -80,7 +89,15 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
-    SweetAlert2Module.forRoot()
+    SweetAlert2Module.forRoot(),
+    SpinnerUtilModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     LocalStorageService,
@@ -91,7 +108,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilCounterInterceptor, multi: true },
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

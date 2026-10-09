@@ -30,67 +30,47 @@ export class GestorDocumentalService {
         });
     }
 
-    fileToBase64(file: File): Observable<string> {
-        const result = new Subject<string>();
-        let reader =new FileReader();
-        //reader.readAsBinaryString(file);
-        //console.log(reader);
-        // reader.onload = (event) => {
-        //     console.log(event);
-        //     if (event.target?.result) {
-        //         result.next(btoa(event.target.result.toString()))
-        //     }
-        // };
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            let encoded = reader.result?.toString().replace(/^data:(.*,)?/, '');
-            if ((encoded!.length % 4) > 0) {
-                encoded += '='.repeat(4 - (encoded!.length % 4));
-            }
-            result.next(encoded!);
-        };
-        reader.onerror=(e)=> {
-            result.error(e!);
-        };
-        
-        return result;
+    async fileToBase64(file: Blob): Promise<string> {
+        // Se evita FileReader a proposito: en standalone el web component OAS
+        // carga su propio zone.js y FileReader queda doblemente parcheado,
+        // provocando "Maximum call stack size exceeded" al leer el archivo.
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        let binary = '';
+        const chunkSize = 0x2000;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+            const chunk = Array.from(bytes.subarray(i, i + chunkSize));
+            binary += String.fromCharCode.apply(null, chunk);
+        }
+        return btoa(binary);
     }
 
     uploadFiles(file: any): Observable<Documento> {
         const documentsSubject = new Subject<Documento>();
         const documents$ = documentsSubject.asObservable();
 
-        let documentos: Documento;
-
-        //console.log("file", file);
-        this.fileToBase64(file.file).subscribe({
-            next:(base64) => {
-                //console.log(base64);
+        (async () => {
+            try {
                 const sendFileData = [{
                     IdTipoDocumento: file.IdDocumento,
                     nombre: file.nombre,
                     metadatos: file.metadatos ? file.metadatos : {},
                     descripcion: file.descripcion ? file.descripcion : "",
-                    file: base64
+                    file: await this.fileToBase64(file.file)
                 }]
-                //console.log("sendFileData", sendFileData);
-    
+
                 this.request.post(environment.GESTOR_DOCUMENTAL_MID, '/document/upload', sendFileData)
                     .subscribe({
-                        next:(dataResponse) => {
-                            documentos = dataResponse;
-                            documentsSubject.next(documentos);
+                        next: (dataResponse) => {
+                            documentsSubject.next(dataResponse);
                         },
-                        error:()=> {
+                        error: () => {
                             documentsSubject.error(new Error('error al cargar el documento'));
                         }
                     })
-            },
-            error: (err)=> {
-                //console.log(err);
-                documentsSubject.error(err);
+            } catch (error) {
+                documentsSubject.error(error);
             }
-        })
+        })();
 
         return documents$;
     }
