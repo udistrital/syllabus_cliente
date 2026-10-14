@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl, FormControl } from '@angular/forms'
 import { SyllabusService } from '../services/syllabus.service';
+import { FlujoService } from '../services/flujo.service';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
@@ -37,6 +38,9 @@ export class CrearSyllabusComponent implements OnInit {
   EspacioAcademico: EspacioAcademico;
   Syllabus: Syllabus;
   isNew: Boolean;
+  flujoMode: boolean = false;
+  flujoCode: string = '';
+  flujoEstado: string = '';
   detalle_espacio_academico: any;
   formSaberesPrevios: FormGroup;
   formJustificacion: FormGroup;
@@ -98,7 +102,7 @@ export class CrearSyllabusComponent implements OnInit {
     return this.formBibliografia.get('paginasWeb') as FormArray
   }
 
-  constructor(private _formBuilder: FormBuilder, private syllabusService: SyllabusService, private router: Router, private request: RequestManager, private gestorService: GestorDocumentalService, private userService: UserService) {
+  constructor(private _formBuilder: FormBuilder, private syllabusService: SyllabusService, private router: Router, private request: RequestManager, private gestorService: GestorDocumentalService, private userService: UserService, private flujoService: FlujoService) {
     this.syllabusService.proyectoAcademico$.subscribe((proyectoAcademico) => {
       this.Proyecto = proyectoAcademico;
     });
@@ -114,6 +118,11 @@ export class CrearSyllabusComponent implements OnInit {
     this.syllabusService.isNew$.subscribe((isNew) => {
       this.isNew = isNew;
     })
+    this.syllabusService.flujoDraft$.subscribe((flujo) => {
+      this.flujoMode = !!flujo;
+      this.flujoCode = flujo ? flujo.code : '';
+      this.flujoEstado = flujo ? flujo.estado : '';
+    });
   }
 
   ngOnInit(): void {
@@ -194,7 +203,7 @@ export class CrearSyllabusComponent implements OnInit {
     this.formularios.controls.push(this.formBibliografia);
 
     this.formSeguimiento = this._formBuilder.group({
-      numeroActa: [!this.isNew ? this.Syllabus.seguimiento.numeroActa : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
+      numeroActa: [!this.isNew && this.Syllabus.seguimiento ? this.Syllabus.seguimiento.numeroActa : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
       archivo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]] // loaded in handleFileInputActaChange()
     })
 
@@ -240,7 +249,7 @@ export class CrearSyllabusComponent implements OnInit {
       })
       this.updateViewTableBiblioPag();
 
-      if (this.Syllabus.seguimiento.archivo) {
+      if (this.Syllabus.seguimiento && this.Syllabus.seguimiento.archivo) {
         this.actaPrevia = { uid: null, url: null };
         this.gestorService.getByUUID(this.Syllabus.seguimiento.archivo).subscribe({
         next:(document)=>{
@@ -263,9 +272,12 @@ export class CrearSyllabusComponent implements OnInit {
     }
   }
 
-  validateForms() {
+  validateForms(skipSeguimiento: boolean = false) {
     let isValid:Boolean=true;
     this.formularios.controls.forEach(element => {
+      if (skipSeguimiento && element === this.formSeguimiento) {
+        return;
+      }
       if(!element.valid){
         element.markAllAsTouched();
         isValid=false;
@@ -446,16 +458,31 @@ export class CrearSyllabusComponent implements OnInit {
 
     const nombre = this.userService.getNombreCompleto();
     const fechaEdicion = new Date().toISOString();
-    syllabus.seguimiento = {
-      elaboro: nombre,
-      reviso: nombre,
-      aprobo: nombre,
-      fecha_elaboro: fechaEdicion,
-      fechaRevisionConsejo: fechaEdicion,
-      fechaAprobacionConsejo: fechaEdicion,
-      numeroActa: this.formSeguimiento.get('numeroActa')?.value,
-      archivo: archivoEnlace
-    };
+    const seguimientoPrevio = (this.Syllabus?.seguimiento || {}) as any;
+
+    if (this.flujoMode) {
+      // En el flujo (borrador/propuesta) solo se actualiza la elaboración.
+      // La revisión (fecha) se registra al proponer y la aprobación (fecha y
+      // revisor) al publicar; aquí se preservan si ya existieran.
+      syllabus.seguimiento = {
+        ...seguimientoPrevio,
+        elaboro: nombre,
+        fecha_elaboro: fechaEdicion,
+        numeroActa: seguimientoPrevio.numeroActa ?? '',
+        archivo: seguimientoPrevio.archivo ?? null,
+      };
+    } else {
+      syllabus.seguimiento = {
+        elaboro: nombre,
+        reviso: nombre,
+        aprobo: nombre,
+        fecha_elaboro: fechaEdicion,
+        fechaRevisionConsejo: fechaEdicion,
+        fechaAprobacionConsejo: fechaEdicion,
+        numeroActa: this.formSeguimiento.get('numeroActa')?.value,
+        archivo: archivoEnlace
+      };
+    }
 
     return syllabus;
   }
@@ -579,7 +606,70 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   regresar() {
+    if (this.flujoMode) {
+      this.router.navigate(['/dashboard'], { skipLocationChange: true });
+      return;
+    }
     this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true })
+  }
+
+  guardarBorradorFlujo(proponer: boolean) {
+    if (!this.flujoCode) {
+      return;
+    }
+    if (proponer && !this.validateForms(true)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formulario incompleto',
+        html: `Por favor llene los campos requeridos`
+      });
+      return;
+    }
+    const payload = this.buildSyllabusPayload(this.actaPrevia.uid || '');
+    payload.documento = this.flujoService.getDocumento();
+    Swal.fire({
+      title: proponer ? 'Enviando a revisión' : 'Guardando borrador',
+      html: `Por favor espere`,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      willOpen: () => { Swal.showLoading(); },
+    });
+    this.flujoService.guardarBorrador(this.flujoCode, payload).subscribe({
+      next: () => {
+        if (!proponer) {
+          Swal.close();
+          Swal.fire({ icon: 'success', title: 'Borrador guardado' });
+          return;
+        }
+        this.flujoService.proponer(this.flujoCode, {
+          documento: this.flujoService.getDocumento(),
+          observacion: '',
+        }).subscribe({
+          next: () => {
+            Swal.close();
+            Swal.fire({ icon: 'success', title: 'Propuesta enviada a revisión' });
+            this.syllabusService.setFlujoDraft(null);
+            this.router.navigate(['/dashboard'], { skipLocationChange: true });
+          },
+          error: (err) => {
+            Swal.close();
+            Swal.fire({
+              icon: 'error',
+              title: 'No se pudo enviar a revisión',
+              text: err?.error?.Message || 'Intente nuevamente.',
+            });
+          },
+        });
+      },
+      error: (err) => {
+        Swal.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'No se pudo guardar el borrador',
+          text: err?.error?.Message || 'Intente nuevamente.',
+        });
+      },
+    });
   }
 
   loadIdiomas() {
@@ -624,6 +714,16 @@ export class CrearSyllabusComponent implements OnInit {
 
   fechaActual(): string {
     return new Date().toISOString().split('T')[0];
+  }
+
+  fechaRevisionConsejo(): string {
+    const fecha = this.Syllabus?.seguimiento?.fechaRevisionConsejo;
+    return fecha ? String(fecha).split('T')[0] : 'Sin definir';
+  }
+
+  fechaAprobacionConsejo(): string {
+    const fecha = this.Syllabus?.seguimiento?.fechaAprobacionConsejo;
+    return fecha ? String(fecha).split('T')[0] : 'Sin definir';
   }
 
   previewFile(){

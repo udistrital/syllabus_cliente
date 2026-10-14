@@ -1,0 +1,64 @@
+<mat-card class="sga-modal">
+  <mat-card-title class="sga-modal-title">Revisión de propuesta</mat-card-title>
+
+  <mat-card-content>
+    <div class="info-box">
+      <p><strong>Espacio académico:</strong> {{ draft.espacio_academico_id }}</p>
+      <p><strong>Docente:</strong> {{ draft.flujo?.asignado_a_documento || 'N/D' }}</p>
+      <p><strong>Estado:</strong> {{ draft.estado }}</p>
+      <p><strong>Fecha límite:</strong> {{ draft.flujo?.fecha_limite || 'Sin definir' }}</p>
+    </div>
+
+    <form [formGroup]="form" class="stack-md">
+      <ng-container *ngIf="draft.estado === 'en_revision'">
+        <div class="acta-row">
+          <mat-form-field class="form-field">
+            <mat-label>Número de acta</mat-label>
+            <input matInput formControlName="numeroActa" placeholder="Número de acta" />
+            <mat-error *ngIf="form.get('numeroActa')?.hasError('required')">
+              El número de acta es obligatorio para publicar
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="acta-row">
+          <mat-form-field class="form-field w-90">
+            <mat-label>Acta (PDF)</mat-label>
+            <button type="button" mat-icon-button matPrefix (click)="f_input.click()" matTooltip="Cargar acta">
+              <mat-icon>attach_file</mat-icon>
+            </button>
+            <input type="text" readonly matInput formControlName="archivo" />
+            <input type="file" hidden #f_input accept="application/pdf" (change)="handleFileInputActaChange($event)" />
+            <mat-error>Adjunte el acta en formato pdf</mat-error>
+          </mat-form-field>
+        </div>
+      </ng-container>
+
+      <mat-form-field class="form-field">
+        <mat-label>Motivo de rechazo (obligatorio para rechazar)</mat-label>
+        <textarea matInput formControlName="motivo_rechazo" rows="2"></textarea>
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Nueva fecha límite (opcional al rechazar / requerida al reabrir)</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="fecha_limite" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions class="actions-center">
+    <button mat-flat-button type="button" (click)="cancelar()">Cerrar</button>
+    <button mat-flat-button color="warn" type="button" (click)="rechazar()" [disabled]="procesando">
+      Rechazar
+    </button>
+    <button mat-flat-button color="primary" type="button" *ngIf="puedeReabrir" (click)="reabrir()"
+      [disabled]="procesando">
+      Reabrir
+    </button>
+    <button mat-flat-button color="primary" type="button" *ngIf="draft.estado === 'en_revision'" (click)="aprobar()"
+      [disabled]="procesando">
+      Aprobar
+    </button>
+  </mat-card-actions>
+</mat-card>

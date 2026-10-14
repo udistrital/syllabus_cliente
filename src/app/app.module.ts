@@ -16,6 +16,8 @@ import { CrearSyllabusComponent } from './pages/crear-syllabus/crear-syllabus.co
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { VersionesSyllabusComponent } from './pages/versiones-syllabus/versiones-syllabus.component';
 import { VisualizarSyllabusComponent } from './pages/visualizar-syllabus/visualizar-syllabus.component';
+import { AsignarDocenteComponent } from './pages/asignar-docente/asignar-docente.component';
+import { AprobacionComponent } from './pages/aprobacion/aprobacion.component';
 import { SafeURL } from './@core/pipes/safeUrl.pipe';
 
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -59,6 +61,8 @@ export function createTranslateLoader(http: HttpClient) {
     DashboardComponent,
     VersionesSyllabusComponent,
     VisualizarSyllabusComponent,
+    AsignarDocenteComponent,
+    AprobacionComponent,
     SafeURL,
     AlertComponent
   ],

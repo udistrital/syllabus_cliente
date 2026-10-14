@@ -81,6 +81,15 @@
                 >
                   <mat-icon fontIcon="add"></mat-icon>
                 </a>
+                <a
+                  aria-label="Asignar docente"
+                  matTooltip="Asignar creación a un docente"
+                  *ngIf="syllabus.length == 0 && canEdit"
+                  style="cursor: pointer; margin-left: 8px;"
+                  (click)="$event.stopPropagation(); openAsignarDocente()"
+                >
+                  <mat-icon fontIcon="person_add">person_add</mat-icon>
+                </a>
               </th>
               <td mat-cell *matCellDef="let element; let row = index">
                 <button
@@ -99,6 +108,15 @@
                   matTooltip="Editar syllabus"
                 >
                   <mat-icon fontIcon="edit document"></mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  (click)="openAsignarDocente(row)"
+                  aria-label="Asignar docente"
+                  *ngIf="canEdit && shouldRemoveSyllabusButton(row)"
+                  matTooltip="Asignar docente para edición"
+                >
+                  <mat-icon fontIcon="person_add">person_add</mat-icon>
                 </button>
                 <button
                   mat-icon-button

@@ -1,0 +1,36 @@
+.sga-modal {
+  padding: 0;
+}
+
+.sga-modal-title {
+  padding: 16px 24px 0;
+  font-weight: 600;
+}
+
+.docente-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.docente-row .form-field {
+  flex: 1;
+}
+
+.docente-nombre {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: -8px 0 8px;
+  color: #3f51b5;
+  font-weight: 500;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.stack-md {
+  display: flex;
+  flex-direction: column;
+}

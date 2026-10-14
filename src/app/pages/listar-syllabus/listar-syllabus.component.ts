@@ -12,6 +12,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { VersionesSyllabusComponent } from '../versiones-syllabus/versiones-syllabus.component';
 import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
+import { AsignarDocenteComponent } from '../asignar-docente/asignar-docente.component';
+import { FlujoService } from '../services/flujo.service';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
 
@@ -45,6 +47,7 @@ export class ListarSyllabusComponent implements OnInit {
     private router: Router,
     private syllabusService: SyllabusService,
     private request: RequestManager,
+    private flujoService: FlujoService,
     public dialog: MatDialog
   ) {}
 
@@ -440,6 +443,28 @@ export class ListarSyllabusComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  openAsignarDocente(row?: number) {
+    const data: any = { documento: this.flujoService.getDocumento() };
+    if (row !== undefined && row !== null && this.syllabus[row]) {
+      data.syllabus_code = this.syllabus[row].syllabus_code;
+    } else {
+      data.espacio_academico_id = Number(this.EspacioAcademico.asi_cod);
+      data.proyecto_curricular_ids = [Number(this.PlanEstudio.pen_cra_cod)];
+      data.plan_estudios_ids = [Number(this.PlanEstudio.pen_nro)];
+    }
+    const dialogRef = this.dialog.open(AsignarDocenteComponent, {
+      width: '560px',
+      maxWidth: '94vw',
+      panelClass: 'sga-modal-panel',
+      data,
+    });
+    dialogRef.afterClosed().subscribe((asignado) => {
+      if (asignado) {
+        this.changeDataTableSyllabus();
+      }
+    });
   }
 
   FormEditSyllabus(row: number) {
