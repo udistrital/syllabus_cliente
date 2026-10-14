@@ -18,6 +18,8 @@ import { VersionesSyllabusComponent } from './pages/versiones-syllabus/versiones
 import { VisualizarSyllabusComponent } from './pages/visualizar-syllabus/visualizar-syllabus.component';
 import { AsignarDocenteComponent } from './pages/asignar-docente/asignar-docente.component';
 import { AprobacionComponent } from './pages/aprobacion/aprobacion.component';
+import { MisAsignacionesComponent } from './pages/mis-asignaciones/mis-asignaciones.component';
+import { PendientesComponent } from './pages/pendientes/pendientes.component';
 import { SafeURL } from './@core/pipes/safeUrl.pipe';
 
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -63,6 +65,8 @@ export function createTranslateLoader(http: HttpClient) {
     VisualizarSyllabusComponent,
     AsignarDocenteComponent,
     AprobacionComponent,
+    MisAsignacionesComponent,
+    PendientesComponent,
     SafeURL,
     AlertComponent
   ],
