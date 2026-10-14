@@ -1,0 +1,60 @@
+<div class="page-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Mis syllabus asignados</mat-card-title>
+      <mat-card-subtitle>
+        Propuestas asignadas para edición (asignado, rechazado o expirado)
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="loading-center" *ngIf="cargando">
+        <mat-spinner></mat-spinner>
+      </div>
+
+      <ng-container *ngIf="!cargando">
+        <table mat-table [dataSource]="asignaciones" class="sga-table" *ngIf="asignaciones.length > 0">
+          <ng-container matColumnDef="espacio">
+            <th mat-header-cell *matHeaderCellDef>Espacio académico</th>
+            <td mat-cell *matCellDef="let a">{{ a.espacio_academico_id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <td mat-cell *matCellDef="let a">{{ estadoLabel(a.estado) }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="fecha_limite">
+            <th mat-header-cell *matHeaderCellDef>Fecha límite</th>
+            <td mat-cell *matCellDef="let a">{{ fechaCorta(a.flujo?.fecha_limite) }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="motivo">
+            <th mat-header-cell *matHeaderCellDef>Observación</th>
+            <td mat-cell *matCellDef="let a">{{ a.flujo?.motivo_rechazo || '—' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let a">
+              <button mat-icon-button (click)="editarAsignacion(a)" *ngIf="esEditable(a)" matTooltip="Editar / proponer">
+                <mat-icon fontIcon="edit">edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="verMotivo(a)" matTooltip="Ver detalle">
+                <mat-icon fontIcon="info">info</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+          <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+        </table>
+
+        <p class="empty-state" *ngIf="asignaciones.length === 0">No tiene propuestas asignadas.</p>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="actions-center">
+    <button mat-flat-button color="primary" (click)="regresar()">Regresar</button>
+  </div>
+</div>

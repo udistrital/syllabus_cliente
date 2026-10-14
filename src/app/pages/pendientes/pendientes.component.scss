@@ -1,0 +1,23 @@
+.page-container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.loading-center {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.empty-state {
+  color: #757575;
+  padding: 16px 0;
+}
+
+.actions-center {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
