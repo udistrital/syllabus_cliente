@@ -3,9 +3,11 @@ import { Router } from '@angular/router';
 import { filter, take } from 'rxjs';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
+import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '../services/userService';
 import { SyllabusService } from '../services/syllabus.service';
 import { FlujoService } from '../services/flujo.service';
+import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
 import { estadoLabel, fechaCorta, esEditable } from 'src/app/@core/utils/flujo.helpers';
 
 @Component({
@@ -27,7 +29,8 @@ export class MisAsignacionesComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private syllabusService: SyllabusService,
-    private flujoService: FlujoService
+    private flujoService: FlujoService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -67,22 +70,24 @@ export class MisAsignacionesComponent implements OnInit {
   }
 
   editarAsignacion(draft: any): void {
-    const proyectoId = draft.proyecto_curricular_ids?.[0];
-    const planId = draft.plan_estudios_ids?.[0];
-    this.syllabusService.setProyectoAcademico({ Id: proyectoId, Nombre: '' } as any);
-    this.syllabusService.setPlanEstudios({
-      pen_nro: planId,
-      pen_cra_cod: proyectoId,
-      cra_nombre: '',
-    } as any);
-    this.syllabusService.setEspacioAcademico({
-      asi_cod: draft.espacio_academico_id,
-      asi_nombre: '',
-    } as any);
+    this.syllabusService.setContextoDesdeBorrador(draft);
     this.syllabusService.setisNew(false);
     this.syllabusService.setSyllabus(draft);
     this.syllabusService.setFlujoDraft({ code: draft.syllabus_code, estado: draft.estado });
     this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
+  }
+
+  verPdf(draft: any): void {
+    this.syllabusService.setContextoDesdeBorrador(draft);
+    this.syllabusService.setSyllabus(draft);
+    const dialogRef = this.dialog.open(VisualizarSyllabusComponent, {
+      width: '80vw',
+      height: '90vh',
+      maxWidth: '96vw',
+      maxHeight: '94vh',
+      panelClass: 'sga-modal-panel',
+    });
+    dialogRef.componentInstance.Syllabus = draft;
   }
 
   verMotivo(draft: any): void {

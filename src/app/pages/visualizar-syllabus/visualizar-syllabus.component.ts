@@ -58,9 +58,13 @@ export class VisualizarSyllabusComponent implements OnInit {
       proyectoId: pen_cra_cod,
       planId: pen_nro,
     };
-    this.Syllabus.syllabus_actual
-      ? null
-      : (body.version = this.Syllabus.version);
+    // Borrador/propuesta: se envía el estado para que el MID traiga la versión
+    // no publicada. Activos e históricos mantienen el comportamiento actual.
+    if (this.esBorrador()) {
+      body.estado = this.Syllabus.estado;
+    } else if (!this.Syllabus.syllabus_actual) {
+      body.version = this.Syllabus.version;
+    }
     this.request
     .post(environment.SYLLABUS_MID, 'syllabus/syllabus_template', body)
       // .post(environment.SGA_MID, 'espacios_academicos/syllabus_template', body)
@@ -86,6 +90,11 @@ export class VisualizarSyllabusComponent implements OnInit {
           });
         },
       });
+  }
+
+  private esBorrador(): boolean {
+    const estados = ['asignado', 'en_revision', 'rechazado', 'expirado'];
+    return estados.includes(this.Syllabus?.estado || '');
   }
 
   DownloadSyllabus() {

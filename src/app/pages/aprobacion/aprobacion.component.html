@@ -48,6 +48,10 @@
   </mat-card-content>
 
   <mat-card-actions class="actions-center">
+    <button mat-stroked-button color="primary" type="button" (click)="verPdf()">
+      <mat-icon fontIcon="picture_as_pdf">picture_as_pdf</mat-icon>
+      Ver propuesta (PDF)
+    </button>
     <button mat-flat-button type="button" (click)="cancelar()">Cerrar</button>
     <button mat-flat-button color="warn" type="button" (click)="rechazar()" [disabled]="procesando">
       Rechazar

@@ -94,4 +94,14 @@ export class SyllabusService {
   setFlujoDraft(flujo:{code:string, estado:string} | null){
     this.flujoDraft.next(flujo);
   }
+
+  // Establece el contexto (proyecto/plan/espacio) a partir de un borrador,
+  // útil para abrir el visor de PDF o editar un borrador desde otras vistas.
+  setContextoDesdeBorrador(draft:any){
+    const proyectoId = draft?.proyecto_curricular_ids?.[0];
+    const planId = draft?.plan_estudios_ids?.[0];
+    this.setProyectoAcademico({ Id: proyectoId, Nombre: '' } as any);
+    this.setPlanEstudios({ pen_nro: planId, pen_cra_cod: proyectoId, cra_nombre: '' } as any);
+    this.setEspacioAcademico({ asi_cod: draft?.espacio_academico_id, asi_nombre: '' } as any);
+  }
 }

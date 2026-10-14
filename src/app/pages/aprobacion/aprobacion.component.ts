@@ -1,12 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable, of, throwError } from 'rxjs';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
 import * as moment from 'moment';
 import { FlujoService } from '../services/flujo.service';
+import { SyllabusService } from '../services/syllabus.service';
 import { GestorDocumentalService } from '../services/gestor_documental.service';
+import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
 
 export interface AprobacionData {
   draft: any;
@@ -28,8 +30,10 @@ export class AprobacionComponent implements OnInit {
   constructor(
     private _formBuilder: FormBuilder,
     private flujoService: FlujoService,
+    private syllabusService: SyllabusService,
     private gestorService: GestorDocumentalService,
     public dialogRef: MatDialogRef<AprobacionComponent>,
+    public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: AprobacionData
   ) {}
 
@@ -48,6 +52,19 @@ export class AprobacionComponent implements OnInit {
 
   get puedeReabrir(): boolean {
     return this.draft.estado === 'rechazado' || this.draft.estado === 'expirado';
+  }
+
+  verPdf(): void {
+    this.syllabusService.setContextoDesdeBorrador(this.draft);
+    this.syllabusService.setSyllabus(this.draft);
+    const dialogRef = this.dialog.open(VisualizarSyllabusComponent, {
+      width: '80vw',
+      height: '90vh',
+      maxWidth: '96vw',
+      maxHeight: '94vh',
+      panelClass: 'sga-modal-panel',
+    });
+    dialogRef.componentInstance.Syllabus = this.draft;
   }
 
   private fechaFormateada(): string | undefined {
