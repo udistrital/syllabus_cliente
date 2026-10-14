@@ -1,8 +1,12 @@
+import { EstadoSyllabus, Flujo } from './flujo';
+
 export class Syllabus {
   _id: string
   syllabus_code: string
   version: number
   syllabus_actual: boolean
+  estado?: EstadoSyllabus
+  flujo?: Flujo
   espacio_academico_id: number
   proyecto_curricular_ids: number[]
   plan_estudios_ids: number[]

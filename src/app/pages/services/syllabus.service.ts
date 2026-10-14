@@ -24,6 +24,7 @@ export class SyllabusService {
   private rolwithEdit= new BehaviorSubject<boolean>(false);
   private programasVinculados= new BehaviorSubject<VinculacionPrograma[]>([]);
   private verTodo= new BehaviorSubject<boolean>(false);
+  private flujoDraft= new BehaviorSubject<{code:string, estado:string} | null>(null);
 
   facultad$=this.facultad.asObservable();
   proyectoAcademico$=this.proyectoAcademico.asObservable();
@@ -37,6 +38,7 @@ export class SyllabusService {
   rolwithEdit$=this.rolwithEdit.asObservable();
   programasVinculados$=this.programasVinculados.asObservable();
   verTodo$=this.verTodo.asObservable();
+  flujoDraft$=this.flujoDraft.asObservable();
 
   constructor() { }
 
@@ -87,5 +89,9 @@ export class SyllabusService {
 
   setVerTodo(verTodo:boolean){
     this.verTodo.next(verTodo);
+  }
+
+  setFlujoDraft(flujo:{code:string, estado:string} | null){
+    this.flujoDraft.next(flujo);
   }
 }
