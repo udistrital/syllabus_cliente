@@ -26,6 +26,15 @@
           ></app-alert>
         </div>
 
+        <div
+          *ngIf="SyllabusLoad && !hasSyllabusByProjectPlan && mensajeAsignacionContexto()"
+        >
+          <app-alert
+            [type]="'info'"
+            [message]="mensajeAsignacionContexto()"
+          ></app-alert>
+        </div>
+
         <div class="table">
           <table mat-table [dataSource]="dataSource">
             <ng-container matColumnDef="version">
@@ -64,6 +73,31 @@
               <th mat-header-cell *matHeaderCellDef>Espacio Académico</th>
               <td mat-cell *matCellDef="let element">
                 {{ element.espacio_academico }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="asignacion">
+              <th mat-header-cell *matHeaderCellDef>Asignación</th>
+              <td mat-cell *matCellDef="let element">
+                <div
+                  *ngIf="element.asignado"
+                  class="status-indicator"
+                  [ngClass]="{
+                    pending: element.estadoAsignacion === 'asignado',
+                    info: element.estadoAsignacion === 'en_revision',
+                    inactive: element.estadoAsignacion === 'rechazado',
+                    neutral: element.estadoAsignacion === 'expirado'
+                  }"
+                  [matTooltip]="
+                    'Docente: ' +
+                    (element.docenteAsignado || 'N/D') +
+                    ' · Límite: ' +
+                    fechaCorta(element.fechaLimiteAsignacion)
+                  "
+                >
+                  {{ estadoLabel(element.estadoAsignacion) }}
+                </div>
+                <span *ngIf="!element.asignado">—</span>
               </td>
             </ng-container>
 
@@ -153,7 +187,7 @@
                 id="col-combinado"
                 mat-header-cell
                 *matHeaderCellDef
-                [attr.colspan]="5"
+                [attr.colspan]="6"
               >
                 Resultados consulta
               </th>

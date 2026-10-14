@@ -20,7 +20,19 @@
 
           <ng-container matColumnDef="estado">
             <th mat-header-cell *matHeaderCellDef>Estado</th>
-            <td mat-cell *matCellDef="let a">{{ estadoLabel(a.estado) }}</td>
+            <td mat-cell *matCellDef="let a">
+              <div
+                class="status-indicator"
+                [ngClass]="{
+                  pending: a.estado === 'asignado',
+                  info: a.estado === 'en_revision',
+                  inactive: a.estado === 'rechazado',
+                  neutral: a.estado === 'expirado'
+                }"
+              >
+                {{ estadoLabel(a.estado) }}
+              </div>
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="fecha_limite">

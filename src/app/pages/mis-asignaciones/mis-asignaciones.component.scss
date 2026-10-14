@@ -21,3 +21,32 @@
   justify-content: center;
   gap: 12px;
 }
+
+/* Indicador de estado (similar a listado de admisiones) */
+.status-indicator {
+  display: inline-block;
+  margin-top: 0.3em;
+  margin-bottom: 0.3rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: default;
+  white-space: nowrap;
+}
+.status-indicator.pending {
+  color: #1f2937;
+  background-color: #facc15;
+}
+.status-indicator.info {
+  color: #ffffff;
+  background-color: #3f51b5;
+}
+.status-indicator.inactive {
+  color: #ffffff;
+  background-color: #dc3545;
+}
+.status-indicator.neutral {
+  color: #ffffff;
+  background-color: #6c757d;
+}
