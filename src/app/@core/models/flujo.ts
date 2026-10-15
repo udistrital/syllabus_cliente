@@ -23,8 +23,8 @@ export interface Flujo {
   fecha_asignacion?: string;
   fecha_limite?: string;
   fecha_envio?: string;
-  fecha_resolucion?: string;
-  resuelto_por?: number;
+  fecha_ultima_decision?: string;
+  ultima_decision_por?: number;
   motivo_rechazo?: string;
   historial?: HistorialEstado[];
 }
