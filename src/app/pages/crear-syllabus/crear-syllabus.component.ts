@@ -14,6 +14,8 @@ import { Syllabus, PFA, ObjetivoEspecifico } from 'src/app/@core/models/syllabus
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { Documento } from 'src/app/@core/models/documento';
 import  {EmptySpaceValidator } from '../../@core/validators/emptyValue.validator'
+import { fechaCorta } from 'src/app/@core/utils/flujo.helpers';
+import * as moment from 'moment';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
 
@@ -705,25 +707,19 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   formatDate(date: string | null): string {
-    if (date) {
-      return date.split('T')[0];
-    } else {
-      return "Sin definir";
-    }
+    return fechaCorta(date);
   }
 
   fechaActual(): string {
-    return new Date().toISOString().split('T')[0];
+    return moment().format('YYYY-MM-DD');
   }
 
   fechaRevisionConsejo(): string {
-    const fecha = this.Syllabus?.seguimiento?.fechaRevisionConsejo;
-    return fecha ? String(fecha).split('T')[0] : 'Sin definir';
+    return fechaCorta(this.Syllabus?.seguimiento?.fechaRevisionConsejo);
   }
 
   fechaAprobacionConsejo(): string {
-    const fecha = this.Syllabus?.seguimiento?.fechaAprobacionConsejo;
-    return fecha ? String(fecha).split('T')[0] : 'Sin definir';
+    return fechaCorta(this.Syllabus?.seguimiento?.fechaAprobacionConsejo);
   }
 
   previewFile(){
