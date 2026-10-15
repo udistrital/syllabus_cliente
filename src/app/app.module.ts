@@ -32,6 +32,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -83,6 +84,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatFormFieldModule,
     MatStepperModule,
     MatListModule,
+    MatTabsModule,
     MatPaginatorModule,
     MatTableModule,
     MatExpansionModule,

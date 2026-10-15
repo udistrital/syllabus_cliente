@@ -1,6 +1,6 @@
 <mat-card class="sga-modal">
   <mat-card-title class="sga-modal-title">
-    {{ esSyllabusExistente ? 'Asignar edición del Syllabus' : 'Asignar creación del Syllabus' }}
+    {{ titulo }}
   </mat-card-title>
 
   <mat-card-content>
@@ -42,7 +42,7 @@
   <mat-card-actions class="actions-center">
     <button mat-flat-button type="button" (click)="cancelar()">Cancelar</button>
     <button mat-flat-button color="primary" type="button" (click)="asignar()" [disabled]="asignando">
-      {{ asignando ? 'Asignando…' : 'Asignar' }}
+      {{ asignando ? 'Procesando…' : (esReasignacion ? 'Reasignar' : 'Asignar') }}
     </button>
   </mat-card-actions>
 </mat-card>

@@ -94,6 +94,10 @@ export class FlujoService {
     return this.request.post(environment.SYLLABUS_MID, `flujo/${code}/reabrir`, payload);
   }
 
+  reasignar(code: string, payload: AsignarRequest) {
+    return this.request.post(environment.SYLLABUS_MID, `flujo/${code}/reasignar`, payload);
+  }
+
   cancelar(code: string, payload: TransicionRequest) {
     return this.request.post(environment.SYLLABUS_MID, `flujo/${code}/cancelar`, payload);
   }

@@ -9,6 +9,8 @@ import { AsignarRequest } from 'src/app/@core/models/flujo';
 
 export interface AsignarDocenteData {
   documento?: string;
+  mode?: 'asignar' | 'reasignar';
+  code?: string;
   syllabus_code?: string;
   espacio_academico_id?: number;
   proyecto_curricular_ids?: number[];
@@ -44,6 +46,17 @@ export class AsignarDocenteComponent implements OnInit {
 
   get esSyllabusExistente(): boolean {
     return !!this.data.syllabus_code;
+  }
+
+  get esReasignacion(): boolean {
+    return this.data.mode === 'reasignar' && !!this.data.code;
+  }
+
+  get titulo(): string {
+    if (this.esReasignacion) {
+      return 'Reasignar docente de la propuesta';
+    }
+    return this.esSyllabusExistente ? 'Asignar edición del Syllabus' : 'Asignar creación del Syllabus';
   }
 
   buscarDocente(): void {
@@ -91,6 +104,34 @@ export class AsignarDocenteComponent implements OnInit {
       fecha_limite: moment(fecha).format('YYYY-MM-DD'),
       observacion: this.form.get('observacion')?.value,
     };
+
+    if (this.esReasignacion) {
+      this.asignando = true;
+      this.flujoService.reasignar(this.data.code!, payload).subscribe({
+        next: (res: any) => {
+          this.asignando = false;
+          if (res && res.Success) {
+            Swal.fire({ icon: 'success', title: 'Propuesta reasignada al docente' });
+            this.dialogRef.close(true);
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'No se pudo reasignar',
+              text: (res && res.Message) || 'Intente nuevamente.',
+            });
+          }
+        },
+        error: (err) => {
+          this.asignando = false;
+          Swal.fire({
+            icon: 'error',
+            title: 'No se pudo reasignar',
+            text: this.mensajeError(err),
+          });
+        },
+      });
+      return;
+    }
 
     if (this.data.syllabus_code) {
       payload.syllabus_code = this.data.syllabus_code;

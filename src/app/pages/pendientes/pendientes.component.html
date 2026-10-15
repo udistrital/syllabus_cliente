@@ -3,7 +3,7 @@
     <mat-card-header>
       <mat-card-title>Pendientes de aprobación</mat-card-title>
       <mat-card-subtitle>
-        Propuestas en revisión de sus programas académicos
+        Propuestas abiertas de sus programas académicos (las heredadas de coordinadores anteriores también)
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -12,53 +12,114 @@
       </div>
 
       <ng-container *ngIf="!cargando">
-        <table mat-table [dataSource]="pendientes" class="sga-table" *ngIf="pendientes.length > 0">
-          <ng-container matColumnDef="espacio">
-            <th mat-header-cell *matHeaderCellDef>Espacio académico</th>
-            <td mat-cell *matCellDef="let p">{{ p.espacio_academico_id }}</td>
-          </ng-container>
+        <mat-tab-group [(selectedIndex)]="tab" animationDuration="150ms" class="pendientes-tabs">
+          <mat-tab>
+            <ng-template mat-tab-label>En revisión ({{ enRevision.length }})</ng-template>
 
-          <ng-container matColumnDef="docente">
-            <th mat-header-cell *matHeaderCellDef>Docente</th>
-            <td mat-cell *matCellDef="let p">{{ p.flujo?.asignado_a_documento || 'N/D' }}</td>
-          </ng-container>
+            <table mat-table [dataSource]="enRevision" class="sga-table" *ngIf="enRevision.length > 0">
+              <ng-container matColumnDef="espacio">
+                <th mat-header-cell *matHeaderCellDef>Espacio académico</th>
+                <td mat-cell *matCellDef="let p">{{ p.espacio_academico_id }}</td>
+              </ng-container>
 
-          <ng-container matColumnDef="estado">
-            <th mat-header-cell *matHeaderCellDef>Estado</th>
-            <td mat-cell *matCellDef="let p">
-              <div
-                class="status-indicator"
-                [ngClass]="{
-                  pending: p.estado === 'asignado',
-                  info: p.estado === 'en_revision',
-                  inactive: p.estado === 'rechazado',
-                  neutral: p.estado === 'expirado'
-                }"
-              >
-                {{ estadoLabel(p.estado) }}
-              </div>
-            </td>
-          </ng-container>
+              <ng-container matColumnDef="docente">
+                <th mat-header-cell *matHeaderCellDef>Docente</th>
+                <td mat-cell *matCellDef="let p">{{ p.flujo?.asignado_a_documento || 'N/D' }}</td>
+              </ng-container>
 
-          <ng-container matColumnDef="fecha_limite">
-            <th mat-header-cell *matHeaderCellDef>Fecha límite</th>
-            <td mat-cell *matCellDef="let p">{{ fechaCorta(p.flujo?.fecha_limite) }}</td>
-          </ng-container>
+              <ng-container matColumnDef="estado">
+                <th mat-header-cell *matHeaderCellDef>Estado</th>
+                <td mat-cell *matCellDef="let p">
+                  <div class="status-indicator" [ngClass]="{
+                    pending: p.estado === 'asignado',
+                    info: p.estado === 'en_revision',
+                    inactive: p.estado === 'rechazado',
+                    neutral: p.estado === 'expirado'
+                  }">
+                    {{ estadoLabel(p.estado) }}
+                  </div>
+                </td>
+              </ng-container>
 
-          <ng-container matColumnDef="acciones">
-            <th mat-header-cell *matHeaderCellDef>Acciones</th>
-            <td mat-cell *matCellDef="let p">
-              <button mat-icon-button (click)="abrirAprobacion(p)" matTooltip="Revisar propuesta">
-                <mat-icon fontIcon="fact_check">fact_check</mat-icon>
-              </button>
-            </td>
-          </ng-container>
+              <ng-container matColumnDef="fecha_limite">
+                <th mat-header-cell *matHeaderCellDef>Fecha límite</th>
+                <td mat-cell *matCellDef="let p">{{ fechaCorta(p.flujo?.fecha_limite) }}</td>
+              </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="columnas"></tr>
-          <tr mat-row *matRowDef="let row; columns: columnas"></tr>
-        </table>
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                <td mat-cell *matCellDef="let p">
+                  <button mat-icon-button (click)="abrirAprobacion(p)" matTooltip="Revisar propuesta">
+                    <mat-icon fontIcon="fact_check">fact_check</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
 
-        <p class="empty-state" *ngIf="pendientes.length === 0">No hay propuestas pendientes de aprobación.</p>
+              <tr mat-header-row *matHeaderRowDef="columnasRevision"></tr>
+              <tr mat-row *matRowDef="let row; columns: columnasRevision"></tr>
+            </table>
+            <p class="empty-state" *ngIf="enRevision.length === 0">No hay propuestas en revisión.</p>
+          </mat-tab>
+
+          <mat-tab>
+            <ng-template mat-tab-label>En curso ({{ enCurso.length }})</ng-template>
+
+            <table mat-table [dataSource]="enCurso" class="sga-table" *ngIf="enCurso.length > 0">
+              <ng-container matColumnDef="espacio">
+                <th mat-header-cell *matHeaderCellDef>Espacio académico</th>
+                <td mat-cell *matCellDef="let p">{{ p.espacio_academico_id }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="docente">
+                <th mat-header-cell *matHeaderCellDef>Docente</th>
+                <td mat-cell *matCellDef="let p">{{ p.flujo?.asignado_a_documento || 'N/D' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="estado">
+                <th mat-header-cell *matHeaderCellDef>Estado</th>
+                <td mat-cell *matCellDef="let p">
+                  <div class="status-indicator" [ngClass]="{
+                    pending: p.estado === 'asignado',
+                    info: p.estado === 'en_revision',
+                    inactive: p.estado === 'rechazado',
+                    neutral: p.estado === 'expirado'
+                  }">
+                    {{ estadoLabel(p.estado) }}
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="fecha_limite">
+                <th mat-header-cell *matHeaderCellDef>Fecha límite</th>
+                <td mat-cell *matCellDef="let p">{{ fechaCorta(p.flujo?.fecha_limite) }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="motivo">
+                <th mat-header-cell *matHeaderCellDef>Observación</th>
+                <td mat-cell *matCellDef="let p">{{ p.flujo?.motivo_rechazo || '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                <td mat-cell *matCellDef="let p">
+                  <button mat-icon-button *ngIf="puedeReabrir(p)" (click)="reabrir(p)" matTooltip="Reabrir con plazo nuevo">
+                    <mat-icon fontIcon="restart_alt">restart_alt</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="reasignar(p)" matTooltip="Reasignar docente">
+                    <mat-icon fontIcon="swap_horiz">swap_horiz</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="cancelarPropuesta(p)" matTooltip="Cancelar propuesta">
+                    <mat-icon fontIcon="block">block</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columnasCurso"></tr>
+              <tr mat-row *matRowDef="let row; columns: columnasCurso"></tr>
+            </table>
+            <p class="empty-state" *ngIf="enCurso.length === 0">No hay asignaciones en curso.</p>
+          </mat-tab>
+        </mat-tab-group>
       </ng-container>
     </mat-card-content>
   </mat-card>
