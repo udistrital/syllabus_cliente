@@ -23,7 +23,6 @@ export class VisualizarSyllabusComponent implements OnInit {
   syllabusDocumentData: string;
   SyllabusDocumentLoad: boolean = false;
   canEdit: boolean;
-  isLoadingDownloadXLSX: boolean = false;
   @Input() Syllabus: Syllabus;
   @Output() loadEvent = new EventEmitter<boolean>();
   showDialog: boolean = false;
@@ -104,46 +103,6 @@ export class VisualizarSyllabusComponent implements OnInit {
     link.download = `Syllabus_${this.Proyecto.Nombre}_${this.PlanEstudio.pen_nro}_${this.EspacioAcademico.asi_nombre}`;
     link.click();
     link.remove();
-  }
-
-  DownloadSyllabusXLSX() {
-    this.isLoadingDownloadXLSX = true;
-    const body: any = {
-      proyectoId: Number(this.PlanEstudio.pen_cra_cod),
-      planId: Number(this.PlanEstudio.pen_nro),
-      syllabusCode: this.Syllabus.syllabus_code,
-      format: 'xlsx',
-    };
-    this.Syllabus.syllabus_actual
-      ? null
-      : (body.version = this.Syllabus.version);
-    this.request
-    .post(environment.SYLLABUS_MID, 'syllabus/syllabus_template', body)
-      // .post(environment.SGA_MID, 'espacios_academicos/syllabus_template', body)
-      .subscribe({
-        next: (syllabus_document) => {
-          if (syllabus_document) {
-            if (syllabus_document.Data.document) {
-              const link = document.createElement('a');
-              link.href =
-                'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' +
-                syllabus_document.Data.document;
-              link.download = `Syllabus_${this.Proyecto.Nombre}_${this.PlanEstudio.pen_nro}_${this.EspacioAcademico.asi_nombre}`;
-              link.click();
-              link.remove();
-            }
-          }
-          this.isLoadingDownloadXLSX = false;
-        },
-        error: (error) => {
-          //console.error(error);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error descargando el syllabus en formato XLSX',
-          });
-          this.isLoadingDownloadXLSX = false;
-        },
-      });
   }
 
   // EditSyllabus(){
