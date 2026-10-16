@@ -17,6 +17,7 @@ import { estadoLabel, fechaCorta, esEditable } from 'src/app/@core/utils/flujo.h
 })
 export class MisAsignacionesComponent implements OnInit {
   cargando = true;
+  accesoNoAplicable = false;
   documento = '';
   asignaciones: any[] = [];
   columnas: string[] = ['espacio', 'estado', 'fecha_limite', 'motivo', 'acciones'];
@@ -34,6 +35,13 @@ export class MisAsignacionesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // El administrador (vista global) no tiene asignaciones: no se consulta el MID.
+    if (this.userService.esVistaGlobal()) {
+      this.accesoNoAplicable = true;
+      this.cargando = false;
+      return;
+    }
+
     this.userService.terceroListo$
       .pipe(filter((listo: boolean) => listo), take(1))
       .subscribe(() => {

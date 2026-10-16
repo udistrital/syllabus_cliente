@@ -102,10 +102,24 @@
                   {{ detalle_espacio_academico?.area_formacion }}
                 </td>
               </tr>
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Modalidad
+                <td class="mat-cell casilla-valor" colspan="6">
+                  {{ detalle_espacio_academico?.modalidades }}
+                </td>
+              </tr>
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Carácter del espacio</td>
+                <td class="mat-cell casilla-subtitulo" colspan="6">
+                  {{ detalle_espacio_academico?.caracteres }}
+                </td>
+              </tr>
             </table>
 
             <div class="idiomas-block">
-              <div class="campo-selectable">
+              <!-- <div class="campo-selectable"> 
                 <h3 class="section-title">Carácter del espacio académico</h3>
                 <mat-form-field class="form-field" appearance="fill">
                   <mat-label>Seleccione el carácter</mat-label>
@@ -127,7 +141,7 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-              </div>
+              </div> -->
 
               <div class="campo-selectable">
                 <h3 class="section-title">Idiomas en que se oferta el espacio académico</h3>

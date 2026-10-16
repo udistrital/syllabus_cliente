@@ -286,6 +286,13 @@ export class UserService {
     }
   }
 
+  // Vista global (administrador): roles de asesoría/vicerrectoría. Se resuelve
+  // desde el token, sin solicitudes de red.
+  public esVistaGlobal(): boolean {
+    const role = this.getPayload()?.role || [];
+    return role.includes('ASESOR_VICE') || role.includes('VICERRECTOR');
+  }
+
   public getRole() {
     const rolePromise = new Promise<string[]>((resolve, reject) => {
       this.userSubject.subscribe({

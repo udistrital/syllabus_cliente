@@ -5,13 +5,15 @@
 </div>
 
 <div class="dashboard-sections">
-    <mat-card class="dashboard-card">
+    <mat-card class="dashboard-card" *ngIf="mostrarMisAsignados">
         <mat-card-header>
             <mat-card-title>Mis syllabus asignados</mat-card-title>
             <mat-card-subtitle>Consulte y edite las propuestas que le fueron asignadas</mat-card-subtitle>
         </mat-card-header>
         <mat-card-actions>
-            <button mat-flat-button color="primary" (click)="irAMisAsignaciones()">Ver mis asignados</button>
+            <span [matTooltip]="accionesDeshabilitadas ? 'No aplica para su rol' : ''">
+                <button mat-flat-button color="primary" [disabled]="accionesDeshabilitadas" (click)="irAMisAsignaciones()">Ver mis asignados</button>
+            </span>
         </mat-card-actions>
     </mat-card>
 
@@ -21,7 +23,9 @@
             <mat-card-subtitle>Revise y apruebe o rechace las propuestas en revisión</mat-card-subtitle>
         </mat-card-header>
         <mat-card-actions>
-            <button mat-flat-button color="primary" (click)="irAPendientes()">Ver pendientes</button>
+            <span [matTooltip]="accionesDeshabilitadas ? 'No aplica para su rol' : ''">
+                <button mat-flat-button color="primary" [disabled]="accionesDeshabilitadas" (click)="irAPendientes()">Ver pendientes</button>
+            </span>
         </mat-card-actions>
     </mat-card>
 </div>

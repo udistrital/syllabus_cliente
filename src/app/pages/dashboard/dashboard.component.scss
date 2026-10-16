@@ -26,3 +26,27 @@
 .banner-action {
     margin-top: 2rem;
 }
+
+.dashboard-sections {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.dashboard-card {
+    flex: 1 1 calc(50% - 0.5rem);
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.dashboard-card .mat-mdc-card-header {
+    display: flex;
+    justify-content: center;
+}
+
+.dashboard-card .mat-mdc-card-actions {
+    display: flex;
+    justify-content: center;
+}

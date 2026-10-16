@@ -17,6 +17,7 @@ import { estadoLabel, fechaCorta } from 'src/app/@core/utils/flujo.helpers';
 })
 export class PendientesComponent implements OnInit {
   cargando = true;
+  accesoNoAplicable = false;
   tab = 0;
   documento = '';
   enRevision: any[] = [];
@@ -35,6 +36,13 @@ export class PendientesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // El administrador (vista global) no gestiona propuestas: no se consulta el MID.
+    if (this.userService.esVistaGlobal()) {
+      this.accesoNoAplicable = true;
+      this.cargando = false;
+      return;
+    }
+
     this.userService.terceroListo$
       .pipe(filter((listo: boolean) => listo), take(1))
       .subscribe(() => {

@@ -26,8 +26,7 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const role = this.userService.getPayload()?.role || [];
-    this.esVistaGlobal = role.includes('ASESOR_VICE') || role.includes('VICERRECTOR');
+    this.esVistaGlobal = this.userService.esVistaGlobal();
 
     this.userService.terceroListo$
       .pipe(filter((listo: boolean) => listo), take(1))
@@ -86,9 +85,20 @@ export class DashboardComponent implements OnInit {
     this.cargando = false;
   }
 
-  // "Pendientes de aprobación" solo para coordinadores y vista global.
+  // "Pendientes de aprobación": coordinadores y vista global (admin). El admin
+  // ve la tarjeta pero con la acción deshabilitada.
   get mostrarPendientes(): boolean {
-    return this.esCoordinador || this.esVistaGlobal;
+    return !this.cargando && (this.esCoordinador || this.esVistaGlobal);
+  }
+
+  // "Mis syllabus asignados": docentes y vista global (admin).
+  get mostrarMisAsignados(): boolean {
+    return !this.cargando && (!this.esCoordinador || this.esVistaGlobal);
+  }
+
+  // El administrador (vista global) no tiene asignaciones: no debe solicitar.
+  get accionesDeshabilitadas(): boolean {
+    return this.esVistaGlobal;
   }
 
   irAlBuscador(): void {
