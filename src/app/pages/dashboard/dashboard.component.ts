@@ -41,7 +41,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     const role = this.userService.getPayload()?.role || [];
     if (role.includes('ASESOR_VICE') || role.includes('VICERRECTOR')) {
-      this.setPuedeBuscar(true);
+      const puedeEditar = role.includes('VICERRECTOR');
+      this.setPuedeBuscar(true, puedeEditar);
       this.syllabusService.setVerTodo(true);
       this.syllabusService.setProgramasVinculados([]);
       return;
@@ -92,9 +93,9 @@ export class DashboardComponent implements OnInit {
     this.navigateToSearch();
   }
 
-  private setPuedeBuscar(valor: boolean){
+  private setPuedeBuscar(valor: boolean, canEdit: boolean = valor){
     this.puedeBuscar = valor;
-    this.syllabusService.setrolwithEdit(valor);
+    this.syllabusService.setrolwithEdit(canEdit);
   }
 
   private navigateToSearch(){
