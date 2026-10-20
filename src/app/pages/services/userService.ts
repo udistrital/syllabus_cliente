@@ -286,11 +286,33 @@ export class UserService {
     }
   }
 
-  // Vista global (administrador): roles de asesoría/vicerrectoría. Se resuelve
-  // desde el token, sin solicitudes de red.
+  // Roles de la sesión. El token puede no incluir los roles de negocio
+  // (p. ej. ASESOR_VICE); se combinan con los recibidos de autenticación.
+  private getRolesSesion(): string[] {
+    const stored = this.localstorage.getData('user');
+    if (stored) {
+      try {
+        const data = JSON.parse(atob(stored));
+        const roles: string[] = [...(data?.user?.role || []), ...(data?.userService?.role || [])];
+        if (roles.length > 0) {
+          return [...new Set(roles)].filter((rol: any) => typeof rol === 'string' && !rol.includes('/'));
+        }
+      } catch {
+        // Si el almacenamiento no es válido, se usa el payload del token.
+      }
+    }
+    return this.getPayload()?.role || [];
+  }
+
+  // Vista global (administrador): roles de asesoría/vicerrectoría.
   public esVistaGlobal(): boolean {
-    const role = this.getPayload()?.role || [];
-    return role.includes('ASESOR_VICE') || role.includes('VICERRECTOR');
+    const roles = this.getRolesSesion();
+    return roles.includes('ASESOR_VICE') || roles.includes('VICERRECTOR');
+  }
+
+  // Solo el vicerrector conserva permisos de edición dentro de la vista global.
+  public esVicerrector(): boolean {
+    return this.getRolesSesion().includes('VICERRECTOR');
   }
 
   public getRole() {

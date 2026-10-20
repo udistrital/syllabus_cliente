@@ -45,7 +45,7 @@ export class DashboardComponent implements OnInit {
       this.puedeBuscar = true;
       this.syllabusService.setVerTodo(true);
       this.syllabusService.setProgramasVinculados([]);
-      this.syllabusService.setrolwithEdit(true);
+      this.syllabusService.setrolwithEdit(this.userService.esVicerrector());
       this.cargando = false;
       return;
     }
