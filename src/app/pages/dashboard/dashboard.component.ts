@@ -27,9 +27,9 @@ export class DashboardComponent implements OnInit {
               this.isValidRol=true;
             }
           });
-          console.log('[Dashboard] user.role:', user.role);
-          console.log('[Dashboard] userService.role:', userData?.role);
-          console.log('[Dashboard] roles efectivos:', roles);
+          // console.log('[Dashboard] user.role:', user.role);
+          // console.log('[Dashboard] userService.role:', userData?.role);
+          // console.log('[Dashboard] roles efectivos:', roles);
           if(roles.includes('ASESOR_VICE') || roles.includes('VICERRECTOR')){
             this.isAsesorVicerrector = true;
             // syllabusService.setrolwithEdit(true);
