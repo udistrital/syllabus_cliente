@@ -16,6 +16,10 @@ import { CrearSyllabusComponent } from './pages/crear-syllabus/crear-syllabus.co
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { VersionesSyllabusComponent } from './pages/versiones-syllabus/versiones-syllabus.component';
 import { VisualizarSyllabusComponent } from './pages/visualizar-syllabus/visualizar-syllabus.component';
+import { AsignarDocenteComponent } from './pages/asignar-docente/asignar-docente.component';
+import { AprobacionComponent } from './pages/aprobacion/aprobacion.component';
+import { MisAsignacionesComponent } from './pages/mis-asignaciones/mis-asignaciones.component';
+import { PendientesComponent } from './pages/pendientes/pendientes.component';
 import { SafeURL } from './@core/pipes/safeUrl.pipe';
 
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -28,6 +32,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -59,6 +64,10 @@ export function createTranslateLoader(http: HttpClient) {
     DashboardComponent,
     VersionesSyllabusComponent,
     VisualizarSyllabusComponent,
+    AsignarDocenteComponent,
+    AprobacionComponent,
+    MisAsignacionesComponent,
+    PendientesComponent,
     SafeURL,
     AlertComponent
   ],
@@ -75,6 +84,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatFormFieldModule,
     MatStepperModule,
     MatListModule,
+    MatTabsModule,
     MatPaginatorModule,
     MatTableModule,
     MatExpansionModule,

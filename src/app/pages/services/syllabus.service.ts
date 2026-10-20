@@ -24,6 +24,7 @@ export class SyllabusService {
   private rolwithEdit= new BehaviorSubject<boolean>(false);
   private programasVinculados= new BehaviorSubject<VinculacionPrograma[]>([]);
   private verTodo= new BehaviorSubject<boolean>(false);
+  private flujoDraft= new BehaviorSubject<{code:string, estado:string} | null>(null);
 
   facultad$=this.facultad.asObservable();
   proyectoAcademico$=this.proyectoAcademico.asObservable();
@@ -37,6 +38,7 @@ export class SyllabusService {
   rolwithEdit$=this.rolwithEdit.asObservable();
   programasVinculados$=this.programasVinculados.asObservable();
   verTodo$=this.verTodo.asObservable();
+  flujoDraft$=this.flujoDraft.asObservable();
 
   constructor() { }
 
@@ -87,5 +89,19 @@ export class SyllabusService {
 
   setVerTodo(verTodo:boolean){
     this.verTodo.next(verTodo);
+  }
+
+  setFlujoDraft(flujo:{code:string, estado:string} | null){
+    this.flujoDraft.next(flujo);
+  }
+
+  // Establece el contexto (proyecto/plan/espacio) a partir de un borrador,
+  // útil para abrir el visor de PDF o editar un borrador desde otras vistas.
+  setContextoDesdeBorrador(draft:any){
+    const proyectoId = draft?.proyecto_curricular_ids?.[0];
+    const planId = draft?.plan_estudios_ids?.[0];
+    this.setProyectoAcademico({ Id: proyectoId, Nombre: '' } as any);
+    this.setPlanEstudios({ pen_nro: planId, pen_cra_cod: proyectoId, cra_nombre: '' } as any);
+    this.setEspacioAcademico({ asi_cod: draft?.espacio_academico_id, asi_nombre: '' } as any);
   }
 }

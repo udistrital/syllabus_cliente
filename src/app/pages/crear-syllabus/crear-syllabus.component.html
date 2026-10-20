@@ -1,4 +1,11 @@
 <div class="page-container">
+  <mat-card class="flow-banner" *ngIf="flujoMode">
+    <mat-card-content>
+      <p><strong>Propuesta asignada.</strong> Estado actual: {{ flujoEstado }}.</p>
+      <p>Guarde el borrador mientras avanza. Al <em>enviar a revisión</em> la propuesta pasa al coordinador
+        y no podrá editarla hasta que sea aprobada o rechazada.</p>
+    </mat-card-content>
+  </mat-card>
   <mat-card>
     <mat-card-header>
       <mat-card-title>{{ isNew ? 'Nuevo Syllabus' : 'Editar Syllabus' }}</mat-card-title>
@@ -95,10 +102,24 @@
                   {{ detalle_espacio_academico?.area_formacion }}
                 </td>
               </tr>
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Modalidad
+                <td class="mat-cell casilla-valor" colspan="6">
+                  {{ detalle_espacio_academico?.modalidades }}
+                </td>
+              </tr>
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Carácter del espacio</td>
+                <td class="mat-cell casilla-subtitulo" colspan="6">
+                  {{ detalle_espacio_academico?.caracteres }}
+                </td>
+              </tr>
             </table>
 
             <div class="idiomas-block">
-              <div class="campo-selectable">
+              <!-- <div class="campo-selectable"> 
                 <h3 class="section-title">Carácter del espacio académico</h3>
                 <mat-form-field class="form-field" appearance="fill">
                   <mat-label>Seleccione el carácter</mat-label>
@@ -120,7 +141,7 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-              </div>
+              </div> -->
 
               <div class="campo-selectable">
                 <h3 class="section-title">Idiomas en que se oferta el espacio académico</h3>
@@ -508,21 +529,21 @@
                   <div class="seguimiento-label w-25">Fecha de elaboración</div>
                   <div class="seguimiento-field w-25">{{ fechaActual() }}</div>
                   <div class="seguimiento-label w-25">Fecha de revisión</div>
-                  <div class="seguimiento-field w-25">{{ fechaActual() }}</div>
+                  <div class="seguimiento-field w-25">{{ fechaRevisionConsejo() }}</div>
                 </div>
 
                 <div class="seguimiento-row">
                   <div class="seguimiento-label w-25">Fecha de aprobación</div>
-                  <div class="seguimiento-field w-25">{{ fechaActual() }}</div>
-                  <div class="seguimiento-label w-25">Número de acta</div>
-                  <div class="seguimiento-field w-25">
+                  <div class="seguimiento-field w-25">{{ fechaAprobacionConsejo() }}</div>
+                  <div class="seguimiento-label w-25" *ngIf="!flujoMode">Número de acta</div>
+                  <div class="seguimiento-field w-25" *ngIf="!flujoMode">
                     <mat-form-field class="form-field">
                       <input matInput type="text" formControlName="numeroActa" placeholder="Número de acta">
                     </mat-form-field>
                   </div>
                 </div>
 
-                <div class="seguimiento-row">
+                <div class="seguimiento-row" *ngIf="!flujoMode">
                   <mat-form-field class="form-field w-90">
                     <mat-label>Acta</mat-label>
                     <button type="button" mat-icon-button matPrefix type="button" (click)="f_input.click()" matTooltip="Cargar documento">
@@ -540,6 +561,10 @@
                     <input matInput type="text" readonly>
                   </mat-form-field>
                 </div>
+
+                <p class="flow-banner-note" *ngIf="flujoMode">
+                  El acta de consejo se adjunta al momento de la aprobación (publicación).
+                </p>
               </div>
             </form>
           </section>
@@ -550,6 +575,12 @@
 
   <div class="actions-center">
     <button type="button" mat-flat-button color="primary" (click)="regresar()">Regresar</button>
-    <button type="button" mat-flat-button color="primary" (click)="SubmitSyllabus()">Guardar</button>
+    <ng-container *ngIf="flujoMode; else edicionNormal">
+      <button type="button" mat-flat-button (click)="guardarBorradorFlujo(false)">Guardar borrador</button>
+      <button type="button" mat-flat-button color="accent" (click)="guardarBorradorFlujo(true)">Enviar a revisión</button>
+    </ng-container>
+    <ng-template #edicionNormal>
+      <button type="button" mat-flat-button color="primary" (click)="SubmitSyllabus()">Guardar</button>
+    </ng-template>
   </div>
 </div>

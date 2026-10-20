@@ -1,0 +1,48 @@
+<mat-card class="sga-modal">
+  <mat-card-title class="sga-modal-title">
+    {{ titulo }}
+  </mat-card-title>
+
+  <mat-card-content>
+    <form [formGroup]="form" class="stack-md">
+      <div class="docente-row">
+        <mat-form-field class="form-field">
+          <mat-label>Documento del docente</mat-label>
+          <input matInput formControlName="documento_docente" placeholder="Número de identificación" />
+          <mat-error *ngIf="form.get('documento_docente')?.hasError('required')">
+            El documento es obligatorio
+          </mat-error>
+        </mat-form-field>
+        <button mat-flat-button color="primary" type="button" (click)="buscarDocente()" [disabled]="buscando">
+          {{ buscando ? 'Buscando…' : 'Buscar' }}
+        </button>
+      </div>
+
+      <p class="docente-nombre" *ngIf="docenteNombre">
+        <mat-icon fontIcon="person">person</mat-icon> {{ docenteNombre }}
+      </p>
+
+      <mat-form-field class="form-field">
+        <mat-label>Fecha límite de edición</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="fecha_limite" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="form.get('fecha_limite')?.hasError('required')">
+          La fecha límite es obligatoria
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Observación (opcional)</mat-label>
+        <textarea matInput formControlName="observacion" rows="2"></textarea>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions class="actions-center">
+    <button mat-flat-button type="button" (click)="cancelar()">Cancelar</button>
+    <button mat-flat-button color="primary" type="button" (click)="asignar()" [disabled]="asignando">
+      {{ asignando ? 'Procesando…' : (esReasignacion ? 'Reasignar' : 'Asignar') }}
+    </button>
+  </mat-card-actions>
+</mat-card>

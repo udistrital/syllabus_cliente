@@ -37,17 +37,6 @@
     </button>
     <button
       mat-flat-button
-      color="accent"
-      (click)="DownloadSyllabusXLSX()"
-      matTooltip="Descargar syllabus XLSX"
-      [disabled]="isLoadingDownloadXLSX"
-    >
-      <mat-spinner *ngIf="isLoadingDownloadXLSX" diameter="20"></mat-spinner>
-      <mat-icon *ngIf="!isLoadingDownloadXLSX" fontIcon="file_download"></mat-icon>
-      {{ isLoadingDownloadXLSX ? "" : "Descargar XLSX" }}
-    </button>
-    <button
-      mat-flat-button
       color="primary"
       mat-dialog-close
       matTooltip="Cerrar visualizador"
