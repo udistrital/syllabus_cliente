@@ -19,14 +19,18 @@ export class DashboardComponent implements OnInit {
   constructor( private router: Router,private userService:UserService,private syllabusService:SyllabusService){
     userService.user$.subscribe({
       next:(data:any) => {
-        const {user}=data;
+        const {user, userService: userData}=data;
         if(typeof user!==undefined){
+          const roles:string[] = [...(user.role || []), ...(userData?.role || [])];
           this.ValidRols.forEach((rol)=>{
-            if(user.role.includes(rol)){
+            if(roles.includes(rol)){
               this.isValidRol=true;
             }
           });
-          if(user.role.includes('ASESOR_VICE') || user.role.includes('VICERRECTOR')){
+          console.log('[Dashboard] user.role:', user.role);
+          console.log('[Dashboard] userService.role:', userData?.role);
+          console.log('[Dashboard] roles efectivos:', roles);
+          if(roles.includes('ASESOR_VICE') || roles.includes('VICERRECTOR')){
             this.isAsesorVicerrector = true;
             // syllabusService.setrolwithEdit(true);
           };
@@ -38,8 +42,8 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  ngOnInit(): void {
-    const role = this.userService.getPayload()?.role || [];
+  async ngOnInit(): Promise<void> {
+    const role = await this.userService.getRole();
     if (role.includes('ASESOR_VICE') || role.includes('VICERRECTOR')) {
       const puedeEditar = role.includes('VICERRECTOR');
       this.setPuedeBuscar(true, puedeEditar);
