@@ -14,6 +14,8 @@ import { Syllabus, PFA, ObjetivoEspecifico } from 'src/app/@core/models/syllabus
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { Documento } from 'src/app/@core/models/documento';
 import  {EmptySpaceValidator } from '../../@core/validators/emptyValue.validator'
+import { RichTextValidator } from '../../@core/validators/richText.validator';
+import { normalizeRichTextValue } from '../../@core/utils/html-editor.utils';
 import { fechaCorta } from 'src/app/@core/utils/flujo.helpers';
 import * as moment from 'moment';
 // @ts-ignore
@@ -169,7 +171,7 @@ export class CrearSyllabusComponent implements OnInit {
     this.formularios.controls.push(this.formPFA);
 
     this.formContenidosTematicos = this._formBuilder.group({
-      descripcion: [this.Syllabus.contenido && !this.isNew ? this.Syllabus.contenido.descripcion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
+      descripcion: [this.Syllabus.contenido && !this.isNew ? this.Syllabus.contenido.descripcion : '', [RichTextValidator.required]]
     });
 
     this.formularios.controls.push(this.formContenidosTematicos);
@@ -452,7 +454,9 @@ export class CrearSyllabusComponent implements OnInit {
     syllabus.objetivo_general = this.formObjetivos.get('objetivoGeneral')?.value;
     syllabus.objetivos_especificos = this.objetivosEspecificos.value;
     syllabus.resultados_aprendizaje = this.pfa.value;
-    syllabus.contenido = { descripcion: this.formContenidosTematicos.get('descripcion')?.value };
+    syllabus.contenido = {
+      descripcion: normalizeRichTextValue(this.formContenidosTematicos.get('descripcion')?.value)
+    };
     syllabus.evaluacion = this.buildEvaluacion();
     syllabus.recursos_educativos = this.formMedios.get('medios')?.value;
     syllabus.practicas_academicas = this.formPracticasAcademicas.get('practicasAcademicas')?.value;

@@ -311,10 +311,24 @@
                 <form [formGroup]="formContenidosTematicos">
                   <ng-template matStepLabel>Contenidos temáticos</ng-template>
                   <ng-template matStepContent>
-                    <mat-form-field class="form-field">
-                      <mat-label>Descripcion</mat-label>
-                      <textarea matInput formControlName="descripcion"></textarea>
-                    </mat-form-field>
+                    <div class="rich-field">
+                      <label class="rich-label">Descripción</label>
+                      <app-rich-text-editor
+                        formControlName="descripcion"
+                        placeholder="Escriba el contenido temático (texto enriquecido y tablas)…"
+                      ></app-rich-text-editor>
+                      <div
+                        class="rich-error"
+                        *ngIf="formContenidosTematicos.get('descripcion')?.touched && formContenidosTematicos.get('descripcion')?.invalid"
+                      >
+                        <ng-container *ngIf="formContenidosTematicos.get('descripcion')?.errors?.requiredRichText">
+                          Este campo es obligatorio.
+                        </ng-container>
+                        <ng-container *ngIf="formContenidosTematicos.get('descripcion')?.errors?.maxRichTextLength">
+                          El contenido supera el máximo de 100 000 caracteres.
+                        </ng-container>
+                      </div>
+                    </div>
 
                     <div class="actions-row actions-row--top">
                       <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
