@@ -44,6 +44,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule, } from '@angular/material-moment-adapter';
 import { AlertComponent } from './components/alert/alert.component';
+import { RichTextEditorComponent } from './components/rich-text-editor/rich-text-editor.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -69,7 +70,8 @@ export function createTranslateLoader(http: HttpClient) {
     MisAsignacionesComponent,
     PendientesComponent,
     SafeURL,
-    AlertComponent
+    AlertComponent,
+    RichTextEditorComponent
   ],
   imports: [
     NgxMatSelectSearchModule,
