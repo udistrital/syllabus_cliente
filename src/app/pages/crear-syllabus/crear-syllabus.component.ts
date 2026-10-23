@@ -170,9 +170,15 @@ export class CrearSyllabusComponent implements OnInit {
 
     this.formularios.controls.push(this.formPFA);
 
+    const contenidoPrevio = !this.isNew && this.Syllabus.contenido ? this.Syllabus.contenido : undefined;
+    const modoContenido: 'texto' | 'imagen' = contenidoPrevio?.imagen_id ? 'imagen' : 'texto';
+
     this.formContenidosTematicos = this._formBuilder.group({
-      descripcion: [this.Syllabus.contenido && !this.isNew ? this.Syllabus.contenido.descripcion : '', [RichTextValidator.required]]
+      modo: [modoContenido],
+      descripcion: [contenidoPrevio?.descripcion ?? ''],
+      imagen_id: [contenidoPrevio?.imagen_id ?? ''],
     });
+    this.setContenidoValidators(modoContenido);
 
     this.formularios.controls.push(this.formContenidosTematicos);
 
@@ -274,6 +280,30 @@ export class CrearSyllabusComponent implements OnInit {
         this.actaPrevia = {uid: null, url: null};
       }
     }
+  }
+
+  setContenidoValidators(modo: string): void {
+    if (!this.formContenidosTematicos) {
+      return;
+    }
+
+    const descripcion = this.formContenidosTematicos.get('descripcion');
+    const imagen = this.formContenidosTematicos.get('imagen_id');
+
+    if (modo === 'imagen') {
+      descripcion?.clearValidators();
+      imagen?.setValidators([Validators.required]);
+    } else {
+      imagen?.clearValidators();
+      descripcion?.setValidators([RichTextValidator.required]);
+    }
+
+    descripcion?.updateValueAndValidity();
+    imagen?.updateValueAndValidity();
+  }
+
+  onModoContenidoChange(modo: string): void {
+    this.setContenidoValidators(modo);
   }
 
   validateForms(skipSeguimiento: boolean = false) {
@@ -454,9 +484,10 @@ export class CrearSyllabusComponent implements OnInit {
     syllabus.objetivo_general = this.formObjetivos.get('objetivoGeneral')?.value;
     syllabus.objetivos_especificos = this.objetivosEspecificos.value;
     syllabus.resultados_aprendizaje = this.pfa.value;
-    syllabus.contenido = {
-      descripcion: normalizeRichTextValue(this.formContenidosTematicos.get('descripcion')?.value)
-    };
+    const modoContenido = this.formContenidosTematicos.get('modo')?.value;
+    syllabus.contenido = modoContenido === 'imagen'
+      ? { imagen_id: this.formContenidosTematicos.get('imagen_id')?.value }
+      : { descripcion: normalizeRichTextValue(this.formContenidosTematicos.get('descripcion')?.value) };
     syllabus.evaluacion = this.buildEvaluacion();
     syllabus.recursos_educativos = this.formMedios.get('medios')?.value;
     syllabus.practicas_academicas = this.formPracticasAcademicas.get('practicasAcademicas')?.value;
