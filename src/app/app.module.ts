@@ -26,6 +26,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -45,6 +46,7 @@ import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } f
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule, } from '@angular/material-moment-adapter';
 import { AlertComponent } from './components/alert/alert.component';
 import { RichTextEditorComponent } from './components/rich-text-editor/rich-text-editor.component';
+import { ContentImageSelectorComponent } from './components/content-image-selector/content-image-selector.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -71,7 +73,8 @@ export function createTranslateLoader(http: HttpClient) {
     PendientesComponent,
     SafeURL,
     AlertComponent,
-    RichTextEditorComponent
+    RichTextEditorComponent,
+    ContentImageSelectorComponent
   ],
   imports: [
     NgxMatSelectSearchModule,
@@ -81,6 +84,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatCardModule,
     MatIconModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatSelectModule,
     MatInputModule,
     MatFormFieldModule,
