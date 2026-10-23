@@ -311,10 +311,46 @@
                 <form [formGroup]="formContenidosTematicos">
                   <ng-template matStepLabel>Contenidos temáticos</ng-template>
                   <ng-template matStepContent>
-                    <mat-form-field class="form-field">
-                      <mat-label>Descripcion</mat-label>
-                      <textarea matInput formControlName="descripcion"></textarea>
-                    </mat-form-field>
+                    <div class="rich-field">
+                      <mat-button-toggle-group
+                        class="contenido-modo"
+                        formControlName="modo"
+                        (change)="onModoContenidoChange($event.value)"
+                      >
+                        <mat-button-toggle value="texto">Texto</mat-button-toggle>
+                        <mat-button-toggle value="imagen">Imagen</mat-button-toggle>
+                      </mat-button-toggle-group>
+
+                      <ng-container *ngIf="formContenidosTematicos.get('modo')?.value === 'texto'; else imagenContenido">
+                        <label class="rich-label">Descripción</label>
+                        <app-rich-text-editor
+                          formControlName="descripcion"
+                          placeholder="Escriba el contenido temático (texto enriquecido y tablas)…"
+                        ></app-rich-text-editor>
+                        <div
+                          class="rich-error"
+                          *ngIf="formContenidosTematicos.get('descripcion')?.touched && formContenidosTematicos.get('descripcion')?.invalid"
+                        >
+                          <ng-container *ngIf="formContenidosTematicos.get('descripcion')?.errors?.requiredRichText">
+                            Este campo es obligatorio.
+                          </ng-container>
+                          <ng-container *ngIf="formContenidosTematicos.get('descripcion')?.errors?.maxRichTextLength">
+                            El contenido supera el máximo de 100 000 caracteres.
+                          </ng-container>
+                        </div>
+                      </ng-container>
+
+                      <ng-template #imagenContenido>
+                        <label class="rich-label">Descripción</label>
+                        <app-content-image-selector formControlName="imagen_id"></app-content-image-selector>
+                        <div
+                          class="rich-error"
+                          *ngIf="formContenidosTematicos.get('imagen_id')?.touched && formContenidosTematicos.get('imagen_id')?.invalid"
+                        >
+                          Debe cargar una imagen.
+                        </div>
+                      </ng-template>
+                    </div>
 
                     <div class="actions-row actions-row--top">
                       <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
