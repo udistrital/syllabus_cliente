@@ -35,7 +35,8 @@ export class PFA {
 }
 
 export class Contenido {
-  descripcion: string
+  descripcion?: string
+  imagen_id?: string
 }
 
 export class ObjetivoEspecifico{

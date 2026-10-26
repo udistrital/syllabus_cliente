@@ -1,0 +1,74 @@
+<div class="rich-editor" [class.disabled]="isDisabled">
+  <div class="toolbar" role="toolbar" aria-label="Formato de texto" (mousedown)="$event.preventDefault()">
+    <button type="button" mat-icon-button matTooltip="Negrita" (click)="exec('bold')" [class.active]="activeFormats.bold" [disabled]="isDisabled">
+      <mat-icon>format_bold</mat-icon>
+    </button>
+    <button type="button" mat-icon-button matTooltip="Cursiva" (click)="exec('italic')" [class.active]="activeFormats.italic" [disabled]="isDisabled">
+      <mat-icon>format_italic</mat-icon>
+    </button>
+    <button type="button" mat-icon-button matTooltip="Subrayado" (click)="exec('underline')" [class.active]="activeFormats.underline" [disabled]="isDisabled">
+      <mat-icon>format_underlined</mat-icon>
+    </button>
+    <button type="button" mat-icon-button matTooltip="Limpiar formato" (click)="clearFormat()" [disabled]="isDisabled">
+      <mat-icon>format_clear</mat-icon>
+    </button>
+
+    <span class="separator"></span>
+
+    <button type="button" mat-icon-button matTooltip="Alinear a la izquierda" (click)="align('left')" [class.active]="activeFormats.alignLeft" [disabled]="isDisabled">
+      <mat-icon>format_align_left</mat-icon>
+    </button>
+    <button type="button" mat-icon-button matTooltip="Centrar" (click)="align('center')" [class.active]="activeFormats.alignCenter" [disabled]="isDisabled">
+      <mat-icon>format_align_center</mat-icon>
+    </button>
+    <button type="button" mat-icon-button matTooltip="Alinear a la derecha" (click)="align('right')" [class.active]="activeFormats.alignRight" [disabled]="isDisabled">
+      <mat-icon>format_align_right</mat-icon>
+    </button>
+    <button type="button" mat-icon-button matTooltip="Justificar" (click)="align('justify')" [class.active]="activeFormats.alignJustify" [disabled]="isDisabled">
+      <mat-icon>format_align_justify</mat-icon>
+    </button>
+
+    <span class="separator"></span>
+
+    <button type="button" mat-icon-button matTooltip="Lista con viñetas" (click)="exec('insertUnorderedList')" [class.active]="activeFormats.unorderedList" [disabled]="isDisabled">
+      <mat-icon>format_list_bulleted</mat-icon>
+    </button>
+    <button type="button" mat-icon-button matTooltip="Lista numerada" (click)="exec('insertOrderedList')" [class.active]="activeFormats.orderedList" [disabled]="isDisabled">
+      <mat-icon>format_list_numbered</mat-icon>
+    </button>
+
+    <span class="separator"></span>
+
+    <button type="button" mat-icon-button matTooltip="Insertar tabla" (click)="insertTable()" [disabled]="isDisabled">
+      <mat-icon>table_chart</mat-icon>
+    </button>
+  </div>
+
+  <div class="table-tools" *ngIf="inTable && !isDisabled" (mousedown)="$event.preventDefault()">
+    <button type="button" mat-button (click)="addRow()" matTooltip="Agregar fila debajo">+ Fila</button>
+    <button type="button" mat-button (click)="removeRow()" matTooltip="Eliminar fila actual">- Fila</button>
+    <button type="button" mat-button (click)="addColumn()" matTooltip="Agregar columna a la derecha">+ Columna</button>
+    <button type="button" mat-button (click)="removeColumn()" matTooltip="Eliminar columna actual">- Columna</button>
+    <button type="button" mat-button (click)="deleteTable()" matTooltip="Eliminar la tabla">Eliminar tabla</button>
+  </div>
+
+  <div
+    #editor
+    class="editor"
+    [class.is-empty]="isEmpty"
+    [contentEditable]="isDisabled ? 'false' : 'true'"
+    [attr.data-placeholder]="placeholder"
+    role="textbox"
+    aria-multiline="true"
+    (input)="onInput()"
+    (blur)="onBlur()"
+    (paste)="onPaste($event)"
+    (keyup)="onSelectionChange()"
+    (mouseup)="onSelectionChange()"
+    (focus)="onSelectionChange()"
+  ></div>
+
+  <div class="footer">
+    <span class="counter" [class.over]="length > maxLength">{{ length }} / {{ maxLength }}</span>
+  </div>
+</div>

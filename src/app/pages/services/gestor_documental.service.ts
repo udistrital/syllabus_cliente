@@ -4,6 +4,7 @@ import { Documento } from '../../@core/models/documento'
 import { RequestManager } from './requestManager';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Subject, Observable, ReplaySubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { BaseCdkCell } from '@angular/cdk/table';
 
 
@@ -123,5 +124,37 @@ export class GestorDocumentalService {
                 }
             })
         return documents$;
+    }
+
+    // Provisional para pruebas: tipo de documento usado por el acta.
+    // Debe reemplazarse por el tipo de documento de imagenes cuando exista.
+    uploadImage(file: File, metadatos: Record<string, unknown> = {}): Observable<string> {
+        return this.uploadFiles({
+            IdDocumento: 74,
+            nombre: file.name.replace(/\.[^.]+$/, ''),
+            metadatos,
+            descripcion: 'Imagen de contenido tematico del syllabus',
+            file,
+        }).pipe(
+            map((respuesta: any) => {
+                const enlace = respuesta?.res?.Enlace;
+                if (!enlace) {
+                    throw new Error('NUXEO no devolvio el identificador de la imagen');
+                }
+                return enlace as string;
+            })
+        );
+    }
+
+    getDocumentDataUrl(uuid: string): Observable<string> {
+        return this.request.get(environment.GESTOR_DOCUMENTAL_MID, 'document/' + uuid).pipe(
+            map((documento: any) => {
+                const mime = documento?.['file:content']?.['mime-type'] || 'image/jpeg';
+                if (!documento?.file) {
+                    throw new Error('NUXEO no devolvio el contenido de la imagen');
+                }
+                return `data:${mime};base64,${documento.file}`;
+            })
+        );
     }
 }
