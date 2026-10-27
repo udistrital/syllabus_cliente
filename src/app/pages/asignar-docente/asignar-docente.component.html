@@ -21,6 +21,9 @@
       <p class="docente-nombre" *ngIf="docenteNombre">
         <mat-icon fontIcon="person">person</mat-icon> {{ docenteNombre }}
       </p>
+      <p class="docente-hint" *ngIf="!docenteValidado">
+        Busque y valide el docente antes de asignar o reasignar.
+      </p>
 
       <mat-form-field class="form-field">
         <mat-label>Fecha límite de edición</mat-label>
@@ -41,7 +44,7 @@
 
   <mat-card-actions class="actions-center">
     <button mat-flat-button type="button" (click)="cancelar()">Cancelar</button>
-    <button mat-flat-button color="primary" type="button" (click)="asignar()" [disabled]="asignando">
+    <button mat-flat-button color="primary" type="button" (click)="asignar()" [disabled]="asignando || !puedeAsignar">
       {{ asignando ? 'Procesando…' : (esReasignacion ? 'Reasignar' : 'Asignar') }}
     </button>
   </mat-card-actions>
