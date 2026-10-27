@@ -1,6 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Subject, takeUntil } from 'rxjs';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
 import * as moment from 'moment';
@@ -22,11 +23,14 @@ export interface AsignarDocenteData {
   templateUrl: './asignar-docente.component.html',
   styleUrls: ['./asignar-docente.component.scss'],
 })
-export class AsignarDocenteComponent implements OnInit {
+export class AsignarDocenteComponent implements OnInit, OnDestroy {
   form: FormGroup;
   docenteNombre = '';
   buscando = false;
   asignando = false;
+  docenteValidado = false;
+  private documentoValidado = '';
+  private destroy$ = new Subject<void>();
   maxDate: Date = moment().add(1, 'years').toDate();
 
   constructor(
@@ -42,6 +46,23 @@ export class AsignarDocenteComponent implements OnInit {
       fecha_limite: ['', [Validators.required]],
       observacion: [''],
     });
+
+    this.form.get('documento_docente')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.limpiarDocenteValidado());
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  get puedeAsignar(): boolean {
+    return this.docenteValidado && this.documentoActual === this.documentoValidado;
+  }
+
+  private get documentoActual(): string {
+    return (this.form.get('documento_docente')?.value || '').toString().trim();
   }
 
   get esSyllabusExistente(): boolean {
@@ -60,7 +81,7 @@ export class AsignarDocenteComponent implements OnInit {
   }
 
   buscarDocente(): void {
-    const documento = this.form.get('documento_docente')?.value;
+    const documento = this.documentoActual;
     if (!documento) {
       Swal.fire({ icon: 'warning', title: 'Ingrese el documento del docente' });
       return;
@@ -69,10 +90,16 @@ export class AsignarDocenteComponent implements OnInit {
     this.flujoService.buscarDocente(documento).subscribe({
       next: (res: any) => {
         this.buscando = false;
+        if (this.documentoActual !== documento) {
+          return;
+        }
         if (res && res.Success && res.Data) {
-          this.docenteNombre = res.Data.NombreCompleto || 'Docente encontrado';
+          this.docenteNombre =
+            res.Data.NombreCompleto || res.Data.nombre || 'Docente encontrado';
+          this.documentoValidado = documento;
+          this.docenteValidado = true;
         } else {
-          this.docenteNombre = '';
+          this.limpiarDocenteValidado();
           Swal.fire({
             icon: 'warning',
             title: 'Docente no encontrado',
@@ -82,10 +109,14 @@ export class AsignarDocenteComponent implements OnInit {
       },
       error: (err) => {
         this.buscando = false;
-        this.docenteNombre = '';
+        if (this.documentoActual !== documento) {
+          return;
+        }
+        this.limpiarDocenteValidado();
+        const noEncontrado = err?.status === 404 || err?.status === 400;
         Swal.fire({
-          icon: 'error',
-          title: 'Error consultando el docente',
+          icon: noEncontrado ? 'warning' : 'error',
+          title: noEncontrado ? 'Docente no encontrado' : 'Error consultando el docente',
           text: this.mensajeError(err),
         });
       },
@@ -95,6 +126,13 @@ export class AsignarDocenteComponent implements OnInit {
   asignar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      return;
+    }
+    if (!this.puedeAsignar) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Debe buscar y validar el docente antes de asignar',
+      });
       return;
     }
     const fecha = this.form.get('fecha_limite')?.value;
@@ -165,6 +203,12 @@ export class AsignarDocenteComponent implements OnInit {
         });
       },
     });
+  }
+
+  private limpiarDocenteValidado(): void {
+    this.docenteNombre = '';
+    this.docenteValidado = false;
+    this.documentoValidado = '';
   }
 
   private mensajeError(err: any): string {
