@@ -30,6 +30,8 @@ const EVALUACION_CORTES = [
 
 const CARACTERES = ['Teórico', 'Práctico', 'Teórico-práctico'];
 const MODALIDADES = ['Presencial', 'Virtual', 'Dual', 'Híbrida'];
+const MAX_CARACTERES_JUSTIFICACION = 1200;
+const MAX_OBJETIVOS_ESPECIFICOS = 4;
 
 @Component({
   selector: 'app-crear-syllabus',
@@ -72,6 +74,8 @@ export class CrearSyllabusComponent implements OnInit {
   evaluacionCortes = EVALUACION_CORTES;
   caracteres = CARACTERES;
   modalidades = MODALIDADES;
+  maxCaracteresJustificacion = MAX_CARACTERES_JUSTIFICACION;
+  maxObjetivosEspecificos = MAX_OBJETIVOS_ESPECIFICOS;
 
   displayedColumnsFormPFA: string[] = ['numero', 'pfaPrograma']
 
@@ -148,7 +152,7 @@ export class CrearSyllabusComponent implements OnInit {
     this.formularios.controls.push(this.formSaberesPrevios);
 
     this.formJustificacion = this._formBuilder.group({
-      justificacion: [this.Syllabus.justificacion && !this.isNew ? this.Syllabus.justificacion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
+      justificacion: [this.Syllabus.justificacion && !this.isNew ? this.Syllabus.justificacion : '', [Validators.required, Validators.maxLength(MAX_CARACTERES_JUSTIFICACION), EmptySpaceValidator.noEmptySpaceAllowed]]
     });
 
     this.formularios.controls.push(this.formJustificacion);
@@ -236,7 +240,7 @@ export class CrearSyllabusComponent implements OnInit {
       this.formIdiomas.get('idioma_espacio_id')?.setValue(this.Syllabus.idioma_espacio_id);
 
       this.Syllabus.objetivos_especificos?.forEach((obj_esp) => {
-        this.agregarObjetivoEspecifico(obj_esp);
+        this.agregarObjetivoEspecifico(obj_esp, true);
       })
       this.Syllabus.resultados_aprendizaje?.forEach((pfa) => {
         this.agregarPFA(pfa, true);
@@ -341,7 +345,10 @@ export class CrearSyllabusComponent implements OnInit {
     this.step--;
   }
 
-  agregarObjetivoEspecifico(obj?: ObjetivoEspecifico) {
+  agregarObjetivoEspecifico(obj?: ObjetivoEspecifico, permitirExceder = false) {
+    if (!permitirExceder && this.objetivosEspecificos.length >= MAX_OBJETIVOS_ESPECIFICOS) {
+      return;
+    }
     const isFirst = this.objetivosEspecificos.length === 0;
     const validators = isFirst ? [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed] : [];
     const objeEsp = this._formBuilder.group({
