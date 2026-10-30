@@ -16,18 +16,24 @@ import { CrearSyllabusComponent } from './pages/crear-syllabus/crear-syllabus.co
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { VersionesSyllabusComponent } from './pages/versiones-syllabus/versiones-syllabus.component';
 import { VisualizarSyllabusComponent } from './pages/visualizar-syllabus/visualizar-syllabus.component';
+import { AsignarDocenteComponent } from './pages/asignar-docente/asignar-docente.component';
+import { AprobacionComponent } from './pages/aprobacion/aprobacion.component';
+import { MisAsignacionesComponent } from './pages/mis-asignaciones/mis-asignaciones.component';
+import { PendientesComponent } from './pages/pendientes/pendientes.component';
 import { SafeURL } from './@core/pipes/safeUrl.pipe';
 
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -39,6 +45,8 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule, } from '@angular/material-moment-adapter';
 import { AlertComponent } from './components/alert/alert.component';
+import { RichTextEditorComponent } from './components/rich-text-editor/rich-text-editor.component';
+import { ContentImageSelectorComponent } from './components/content-image-selector/content-image-selector.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -59,8 +67,14 @@ export function createTranslateLoader(http: HttpClient) {
     DashboardComponent,
     VersionesSyllabusComponent,
     VisualizarSyllabusComponent,
+    AsignarDocenteComponent,
+    AprobacionComponent,
+    MisAsignacionesComponent,
+    PendientesComponent,
     SafeURL,
-    AlertComponent
+    AlertComponent,
+    RichTextEditorComponent,
+    ContentImageSelectorComponent
   ],
   imports: [
     NgxMatSelectSearchModule,
@@ -70,11 +84,13 @@ export function createTranslateLoader(http: HttpClient) {
     MatCardModule,
     MatIconModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatSelectModule,
     MatInputModule,
     MatFormFieldModule,
     MatStepperModule,
     MatListModule,
+    MatTabsModule,
     MatPaginatorModule,
     MatTableModule,
     MatExpansionModule,

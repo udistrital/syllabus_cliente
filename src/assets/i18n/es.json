@@ -4,5 +4,16 @@
   },
   "APP": {
     "TITLE": "Syllabus SGA"
+  },
+  "CREAR_SYLLABUS": {
+    "placeholder_saberes_previos": "Describa los saberes previos necesarios para el abordaje del espacio académico. Estos no se limitan únicamente a conocimientos conceptuales; también incluyen aspectos actitudinales y procedimentales que facilitan la participación, el aprendizaje y el desarrollo de las actividades previstas.",
+    "placeholder_justificacion": "Describa de forma general el sentido del espacio académico (el porqué), la pertinencia y aporte a la formación del profesional con base en los Propósitos de la Formación y del Aprendizaje del programa académico. Máximo 200 palabras.",
+    "placeholder_objetivo_general": "Describa el objetivo general del espacio académico. Este debe estar claramente relacionado con el carácter del espacio académico, sus contenidos, enfoque didáctico, prácticas (si aplica), evaluación del aprendizaje y perfil de egreso.",
+    "placeholder_objetivo_especifico": "Describa un objetivo específico que dé seguimiento al cumplimiento del objetivo general. Se deben incluir entre 2 a 4 objetivos específicos, claramente relacionados con el carácter del espacio académico, sus contenidos, enfoque didáctico, prácticas (si aplica), evaluación del aprendizaje y perfil de egreso.",
+    "placeholder_pfa": "Relacione cuáles son los Propósitos de Formación y de Aprendizaje a nivel mesocurricular que dirigen el proceso formativo del espacio académico. Se recomienda 3 a 5 ya que esta cantidad facilita su seguimiento, cumplimiento y evaluación.",
+    "placeholder_contenidos_tematicos": "Se define la manera cómo van a ser organizados los contenidos temáticos y/o problemáticos del espacio académico, los cuales establecen relación directa con los Propósitos de la Formación y del Aprendizaje identificados. Se pueden organizar por ejes, núcleos o unidades temáticas, en todo caso, mínimo 3. Se debe indicar el tiempo tentativo que involucrará el abordaje y desarrollo de los contenidos planteados.",
+    "placeholder_medios_recursos": "Describa la dotación o recursos que sean necesarios para el desarrollo de las intencionalidades formativas y contenidos propuestos en el espacio académico.",
+    "placeholder_practicas_academicas": "Sólo en el caso de los espacios académicos teórico-prácticos y prácticos, describa la modalidad de práctica a desarrollar, su intensidad, su articulación con la apuesta pedagógica y didáctica, los objetivos del curso, los Propósitos de Formación y Aprendizaje y el perfil de egreso del programa. Se debe listar el nombre de las prácticas y el número de sesiones que tomarán. En el caso de las salidas de campo se debe especificar las semanas del calendario académico en las cuales se desarrollará.",
+    "placeholder_fuentes": "Relacione las diferentes fuentes o referentes documentales, bibliográficos, audiovisuales, electrónicos, entre otros, abordados en el espacio académico o asignatura."
   }
 }

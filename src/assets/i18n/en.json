@@ -4,5 +4,16 @@
   },
   "APP": {
     "TITLE": "Syllabus SGA"
+  },
+  "CREAR_SYLLABUS": {
+    "placeholder_saberes_previos": "Describe the prior knowledge required to approach the academic space. This is not limited to conceptual knowledge; it also includes attitudinal and procedural aspects that facilitate participation, learning and the development of the planned activities.",
+    "placeholder_justificacion": "Describe in general terms the meaning of the academic space (the why), its relevance and contribution to the professional's education based on the Training and Learning Purposes of the academic program. Maximum 200 words.",
+    "placeholder_objetivo_general": "Describe the general objective of the academic space. It must be clearly related to the nature of the academic space, its contents, didactic approach, practices (if applicable), learning assessment and graduate profile.",
+    "placeholder_objetivo_especifico": "Describe a specific objective that follows up on the fulfillment of the general objective. Between 2 and 4 specific objectives must be included, clearly related to the nature of the academic space, its contents, didactic approach, practices (if applicable), learning assessment and graduate profile.",
+    "placeholder_pfa": "List the mesocurricular Training and Learning Purposes that guide the formative process of the academic space. 3 to 5 are recommended, as this number facilitates their monitoring, fulfillment and evaluation.",
+    "placeholder_contenidos_tematicos": "Define how the thematic and/or problem-based contents of the academic space will be organized, establishing a direct relationship with the identified Training and Learning Purposes. They may be organized by thematic axes, cores or units; in any case, a minimum of 3. The tentative time involved in addressing and developing the proposed contents must be indicated.",
+    "placeholder_medios_recursos": "Describe the equipment or resources necessary for the development of the formative intentions and contents proposed in the academic space.",
+    "placeholder_practicas_academicas": "Only in the case of theoretical-practical and practical academic spaces, describe the practice modality to be developed, its intensity, its articulation with the pedagogical and didactic approach, the course objectives, the Training and Learning Purposes and the program's graduate profile. The name of the practices and the number of sessions they will take must be listed. In the case of field trips, the weeks of the academic calendar in which they will be developed must be specified.",
+    "placeholder_fuentes": "List the different documentary, bibliographic, audiovisual, electronic and other sources or references addressed in the academic space or course."
   }
 }
