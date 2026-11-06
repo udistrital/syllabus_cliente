@@ -30,8 +30,16 @@ export class Syllabus {
   fecha_modificacion: Date
 }
 
+// Forma de registro de los propósitos de formación y de aprendizaje.
+// El modo se deduce de la forma del contenido: un item con pfa_matriz es
+// una matriz y un item con pfa_programa es un listado.
+export type PFAModo = 'listado' | 'matriz';
+
 export class PFA {
-  pfa_programa: string
+  // Modo listado: un propósito por fila.
+  pfa_programa?: string
+  // Modo matriz: HTML de la tabla de propósitos.
+  pfa_matriz?: string
 }
 
 export class Contenido {
