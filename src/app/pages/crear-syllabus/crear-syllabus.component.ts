@@ -10,12 +10,13 @@ import { RequestManager } from '../services/requestManager';
 import { UserService } from '../services/userService';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { Syllabus, PFA, ObjetivoEspecifico } from 'src/app/@core/models/syllabus';
+import { Syllabus, PFA, ObjetivoEspecifico, PFAModo } from 'src/app/@core/models/syllabus';
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { Documento } from 'src/app/@core/models/documento';
 import  {EmptySpaceValidator } from '../../@core/validators/emptyValue.validator'
 import { RichTextValidator } from '../../@core/validators/richText.validator';
-import { normalizeRichTextValue } from '../../@core/utils/html-editor.utils';
+import { MAX_FILAS_MATRIZ_PFA, PFAValidator } from '../../@core/validators/pfa.validator';
+import { normalizeRichTextValue, sanitizeRichText } from '../../@core/utils/html-editor.utils';
 import { fechaCorta } from 'src/app/@core/utils/flujo.helpers';
 import * as moment from 'moment';
 // @ts-ignore
@@ -32,6 +33,10 @@ const CARACTERES = ['Teórico', 'Práctico', 'Teórico-práctico'];
 const MODALIDADES = ['Presencial', 'Virtual', 'Dual', 'Híbrida'];
 const MAX_CARACTERES_JUSTIFICACION = 1200;
 const MAX_OBJETIVOS_ESPECIFICOS = 4;
+const MODO_PFA_LISTADO: PFAModo = 'listado';
+const MODO_PFA_MATRIZ: PFAModo = 'matriz';
+const MAX_COLUMNAS_MATRIZ_PFA = 5;
+const ENCABEZADO_MATRIZ_PFA = 'Propósitos de Formación';
 
 @Component({
   selector: 'app-crear-syllabus',
@@ -76,6 +81,10 @@ export class CrearSyllabusComponent implements OnInit {
   modalidades = MODALIDADES;
   maxCaracteresJustificacion = MAX_CARACTERES_JUSTIFICACION;
   maxObjetivosEspecificos = MAX_OBJETIVOS_ESPECIFICOS;
+  modoPFA: PFAModo = MODO_PFA_LISTADO;
+  maxFilasMatrizPFA = MAX_FILAS_MATRIZ_PFA;
+  maxColumnasMatrizPFA = MAX_COLUMNAS_MATRIZ_PFA;
+  encabezadoMatrizPFA = ENCABEZADO_MATRIZ_PFA;
 
   displayedColumnsFormPFA: string[] = ['numero', 'pfaPrograma']
 
@@ -166,11 +175,24 @@ export class CrearSyllabusComponent implements OnInit {
 
     this.formularios.controls.push(this.formObjetivos);
 
+    const pfaPrevio = !this.isNew && Array.isArray(this.Syllabus.resultados_aprendizaje)
+      ? this.Syllabus.resultados_aprendizaje
+      : [];
+    const primerPFA = pfaPrevio.length > 0 ? pfaPrevio[0] : undefined;
+    // El modo se deduce de la forma del contenido: pfa_matriz => matriz, pfa_programa => listado.
+    // Los syllabus sin modo (anteriores a esta funcionalidad) abren en modo listado.
+    const esMatrizPFA = !!primerPFA && primerPFA.pfa_matriz !== undefined && primerPFA.pfa_matriz !== null;
+    const modoPFA: PFAModo = esMatrizPFA ? MODO_PFA_MATRIZ : MODO_PFA_LISTADO;
+    this.modoPFA = modoPFA;
+
     this.formPFA = this._formBuilder.group({
+      modo: [modoPFA],
       pfa: this._formBuilder.array([
 
-      ], [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed])
+      ], [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]),
+      pfa_matriz: [esMatrizPFA ? (primerPFA?.pfa_matriz ?? '') : ''],
     });
+    this.setPFAValidators(modoPFA);
 
     this.formularios.controls.push(this.formPFA);
 
@@ -242,9 +264,11 @@ export class CrearSyllabusComponent implements OnInit {
       this.Syllabus.objetivos_especificos?.forEach((obj_esp) => {
         this.agregarObjetivoEspecifico(obj_esp, true);
       })
-      this.Syllabus.resultados_aprendizaje?.forEach((pfa) => {
-        this.agregarPFA(pfa, true);
-      })
+      if (!esMatrizPFA) {
+        this.Syllabus.resultados_aprendizaje?.forEach((pfa) => {
+          this.agregarPFA(pfa, true);
+        })
+      }
       this.updateViewTablePFA();
       this.Syllabus.bibliografia?.basicas?.forEach((basica) => {
         this.agregarBibliografiaBasica(basica, true);
@@ -308,6 +332,39 @@ export class CrearSyllabusComponent implements OnInit {
 
   onModoContenidoChange(modo: string): void {
     this.setContenidoValidators(modo);
+  }
+
+  setPFAValidators(modo: string): void {
+    if (!this.formPFA) {
+      return;
+    }
+
+    const listado = this.formPFA.get('pfa');
+    const matriz = this.formPFA.get('pfa_matriz');
+
+    if (modo === MODO_PFA_MATRIZ) {
+      listado?.clearValidators();
+      matriz?.setValidators([PFAValidator.matrizValida]);
+    } else {
+      matriz?.clearValidators();
+      listado?.setValidators([Validators.required, EmptySpaceValidator.noEmptySpaceAllowed]);
+    }
+
+    listado?.updateValueAndValidity();
+    matriz?.updateValueAndValidity();
+  }
+
+  onModoPFAChange(modo: PFAModo): void {
+    this.modoPFA = modo;
+    // Los modos son excluyentes: al cambiar de modo se descarta el contenido
+    // del modo anterior y el bloque queda en blanco.
+    this.pfa.clear();
+    this.formPFA.get('pfa_matriz')?.setValue('');
+    if (modo === MODO_PFA_LISTADO) {
+      this.agregarPFA(undefined, false);
+    }
+    this.updateViewTablePFA();
+    this.setPFAValidators(modo);
   }
 
   validateForms(skipSeguimiento: boolean = false) {
@@ -447,6 +504,17 @@ export class CrearSyllabusComponent implements OnInit {
     };
   }
 
+  private buildPFAPayload(): PFA[] {
+    const modo = this.formPFA.get('modo')?.value;
+
+    if (modo === MODO_PFA_MATRIZ) {
+      const matriz = this.formPFA.get('pfa_matriz')?.value ?? '';
+      return [{ pfa_matriz: sanitizeRichText(matriz) }];
+    }
+
+    return this.pfa.value as PFA[];
+  }
+
   private buildSyllabusPayload(archivoEnlace: string): any {
     let syllabus: any = {};
     if (!this.isNew && this.Syllabus) {
@@ -490,7 +558,7 @@ export class CrearSyllabusComponent implements OnInit {
     syllabus.justificacion = this.formJustificacion.get('justificacion')?.value;
     syllabus.objetivo_general = this.formObjetivos.get('objetivoGeneral')?.value;
     syllabus.objetivos_especificos = this.objetivosEspecificos.value;
-    syllabus.resultados_aprendizaje = this.pfa.value;
+    syllabus.resultados_aprendizaje = this.buildPFAPayload();
     const modoContenido = this.formContenidosTematicos.get('modo')?.value;
     syllabus.contenido = modoContenido === 'imagen'
       ? { imagen_id: this.formContenidosTematicos.get('imagen_id')?.value }

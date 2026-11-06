@@ -278,7 +278,19 @@
                 <form [formGroup]="formPFA">
                   <ng-template matStepLabel>Propósitos de formación y de aprendizaje (PFA)</ng-template>
                   <ng-template matStepContent>
-                    <div class="table">
+                    <div class="rich-field pfa-modo">
+                      <label class="rich-label">{{ 'CREAR_SYLLABUS.pfa_modo_titulo' | translate }}</label>
+                      <mat-button-toggle-group
+                        class="contenido-modo"
+                        formControlName="modo"
+                        (change)="onModoPFAChange($event.value)"
+                      >
+                        <mat-button-toggle value="listado">{{ 'CREAR_SYLLABUS.pfa_modo_listado' | translate }}</mat-button-toggle>
+                        <mat-button-toggle value="matriz">{{ 'CREAR_SYLLABUS.pfa_modo_matriz' | translate }}</mat-button-toggle>
+                      </mat-button-toggle-group>
+                    </div>
+
+                    <div class="table" *ngIf="modoPFA === 'listado'; else matrizPFA">
                       <table mat-table class="pfa-table" [dataSource]="dataSourceFormPFA" formArrayName="pfa">
                         <ng-container matColumnDef="numero">
                           <th mat-header-cell *matHeaderCellDef>
@@ -311,6 +323,24 @@
                         <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumnsFormPFA;"></tr>
                       </table>
                     </div>
+
+                    <ng-template #matrizPFA>
+                      <div class="rich-field">
+                        <p class="pfa-matriz-ayuda">{{ 'CREAR_SYLLABUS.pfa_matriz_ayuda' | translate }}</p>
+                        <app-rich-text-editor
+                          formControlName="pfa_matriz"
+                          [modoMatriz]="true"
+                          [maxFilasContenido]="maxFilasMatrizPFA"
+                          [maxColumnas]="maxColumnasMatrizPFA"
+                          [encabezadoPrimeraColumna]="encabezadoMatrizPFA">
+                        </app-rich-text-editor>
+                        <span class="rich-label">{{ 'CREAR_SYLLABUS.pfa_matriz_max_filas' | translate }}</span>
+                        <div class="rich-error"
+                          *ngIf="formPFA.get('pfa_matriz')?.touched && formPFA.get('pfa_matriz')?.invalid">
+                          {{ 'CREAR_SYLLABUS.pfa_matriz_error' | translate }}
+                        </div>
+                      </div>
+                    </ng-template>
 
                     <div class="form-actions">
                       <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
