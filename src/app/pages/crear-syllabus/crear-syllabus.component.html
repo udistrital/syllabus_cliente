@@ -191,7 +191,7 @@
 
             <!-- [linear]="isNew" -->
             <mat-stepper orientation="vertical" [linear]="isNew">
-              <mat-step [stepControl]="formSaberesPrevios">
+              <mat-step [stepControl]="formSaberesPrevios" [hasError]="formSaberesPrevios.invalid">
                 <form [formGroup]="formSaberesPrevios">
                   <ng-template matStepLabel>Saberes y conocimientos previos</ng-template>
                   <ng-template matStepContent>
@@ -207,7 +207,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formJustificacion">
+              <mat-step [stepControl]="formJustificacion" [hasError]="formJustificacion.invalid">
                 <form [formGroup]="formJustificacion">
                   <ng-template matStepLabel>Justificación del espacio académico</ng-template>
                   <ng-template matStepContent>
@@ -228,7 +228,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formObjetivos">
+              <mat-step [stepControl]="formObjetivos" [hasError]="formObjetivos.invalid">
                 <form [formGroup]="formObjetivos">
                   <ng-template matStepLabel>Objetivos del espacio académico</ng-template>
                   <ng-template matStepContent>
@@ -274,7 +274,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formPFA">
+              <mat-step [stepControl]="formPFA" [hasError]="formPFA.invalid">
                 <form [formGroup]="formPFA">
                   <ng-template matStepLabel>Propósitos de formación y de aprendizaje (PFA)</ng-template>
                   <ng-template matStepContent>
@@ -350,7 +350,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formContenidosTematicos">
+              <mat-step [stepControl]="formContenidosTematicos" [hasError]="formContenidosTematicos.invalid">
                 <form [formGroup]="formContenidosTematicos">
                   <ng-template matStepLabel>Contenidos temáticos</ng-template>
                   <ng-template matStepContent>
@@ -433,7 +433,7 @@
                 </ng-template>
               </mat-step>
 
-              <mat-step [stepControl]="formMedios">
+              <mat-step [stepControl]="formMedios" [hasError]="formMedios.invalid">
                 <form [formGroup]="formMedios">
                   <ng-template matStepLabel>Medios y recursos educativos</ng-template>
                   <ng-template matStepContent>
@@ -450,7 +450,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formPracticasAcademicas">
+              <mat-step [stepControl]="formPracticasAcademicas" [hasError]="formPracticasAcademicas.invalid">
                 <form [formGroup]="formPracticasAcademicas">
                   <ng-template matStepLabel>Prácticas académicas</ng-template>
                   <ng-template matStepContent>
@@ -467,7 +467,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formBibliografia">
+              <mat-step [stepControl]="formBibliografia" [hasError]="formBibliografia.invalid">
                 <form [formGroup]="formBibliografia">
                   <ng-template matStepLabel>Fuentes y recursos</ng-template>
                   <ng-template matStepContent>
