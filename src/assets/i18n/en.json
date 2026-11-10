@@ -20,6 +20,7 @@
     "pfa_modo_matriz": "Relation matrix",
     "pfa_matriz_ayuda": "Fill in the purposes matrix: the 'Training Purposes' column is mandatory and the other columns are editable. Rich content can only be written inside the table.",
     "pfa_matriz_max_filas": "Maximum 4 purposes (rows) not counting the header.",
-    "pfa_matriz_error": "The matrix must have a header with at least two columns and between 1 and 4 purpose rows, with the purpose in the first column filled in."
+    "pfa_matriz_error": "The matrix must have a header with at least two columns and between 1 and 4 purpose rows, with the purpose in the first column filled in.",
+    "evaluacion_ayuda": "Teacher, note that although the percentages for the assessment periods are already defined, within your academic freedom you may establish, divide or organize the assessments of the course as appropriate, within those limits."
   }
 }

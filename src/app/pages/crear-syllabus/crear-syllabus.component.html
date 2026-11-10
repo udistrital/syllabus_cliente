@@ -326,7 +326,7 @@
 
                     <ng-template #matrizPFA>
                       <div class="rich-field">
-                        <p class="pfa-matriz-ayuda">{{ 'CREAR_SYLLABUS.pfa_matriz_ayuda' | translate }}</p>
+                        <p class="nota-ayuda">{{ 'CREAR_SYLLABUS.pfa_matriz_ayuda' | translate }}</p>
                         <app-rich-text-editor
                           formControlName="pfa_matriz"
                           [modoMatriz]="true"
@@ -423,6 +423,8 @@
                       </tbody>
                     </table>
                   </div>
+
+                  <p class="nota-ayuda nota-ayuda--pie">{{ 'CREAR_SYLLABUS.evaluacion_ayuda' | translate }}</p>
 
                   <div class="form-actions">
                     <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>

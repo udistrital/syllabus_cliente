@@ -147,13 +147,18 @@
   margin-bottom: 8px;
 }
 
-.pfa-matriz-ayuda {
+/* Notas informativas: mismo estilo en todos los bloques */
+.nota-ayuda {
   margin: 0;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.6);
 }
 
-.pfa-matriz-ayuda + app-rich-text-editor {
+.nota-ayuda--pie {
+  margin-top: 0.5rem;
+}
+
+.nota-ayuda + app-rich-text-editor {
   display: block;
 }
 

@@ -20,6 +20,7 @@
     "pfa_modo_matriz": "Matriz de relación",
     "pfa_matriz_ayuda": "Diligencie la matriz de propósitos: la primera columna 'Propósitos de Formación' es obligatoria y las demás columnas son editables. El contenido enriquecido solo se puede escribir dentro de la tabla.",
     "pfa_matriz_max_filas": "Máximo 4 propósitos (filas) sin contar el encabezado.",
-    "pfa_matriz_error": "La matriz debe tener un encabezado con al menos dos columnas y entre 1 y 4 filas de propósito, con el propósito de la primera columna diligenciado."
+    "pfa_matriz_error": "La matriz debe tener un encabezado con al menos dos columnas y entre 1 y 4 filas de propósito, con el propósito de la primera columna diligenciado.",
+    "evaluacion_ayuda": "Docente, tenga en cuenta que si bien los porcentajes de los cortes están definidos, usted, dentro de su libertad académica, puede establecer, dividir u organizar las evaluaciones del espacio según convenga, dentro de esos límites."
   }
 }
