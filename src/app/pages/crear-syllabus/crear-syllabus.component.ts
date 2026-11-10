@@ -36,7 +36,7 @@ const MAX_OBJETIVOS_ESPECIFICOS = 4;
 const MODO_PFA_LISTADO: PFAModo = 'listado';
 const MODO_PFA_MATRIZ: PFAModo = 'matriz';
 const MAX_COLUMNAS_MATRIZ_PFA = 5;
-const ENCABEZADO_MATRIZ_PFA = 'Propósitos de Formación';
+const ENCABEZADO_MATRIZ_PFA = 'Propósitos de Formación y Aprendizaje PFA';
 
 @Component({
   selector: 'app-crear-syllabus',
@@ -718,11 +718,10 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   regresar() {
-    if (this.flujoMode) {
-      this.router.navigate(['/dashboard'], { skipLocationChange: true });
-      return;
-    }
-    this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true })
+    // El modo flujo (borrador/propuesta) solo se alcanza desde "Mis syllabus asignados";
+    // sin flujo se llega desde la vista de búsqueda de syllabus.
+    const destino = this.flujoMode ? '/mis-asignaciones' : '/buscar_syllabus';
+    this.router.navigate([destino], { skipLocationChange: true });
   }
 
   guardarBorradorFlujo(proponer: boolean) {
