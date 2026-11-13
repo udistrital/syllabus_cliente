@@ -376,7 +376,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     this.request
       .get(
         environment.SYLLABUS_CRUD,
-        `syllabus?query=${query}&fields=espacio_academico_id&limit=50`
+        `syllabus?query=${query}&fields=espacio_academico_id&limit=150`
       )
       .subscribe({
         next: (dataSyllabus: any) => {
