@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
+import { EspacioAcademico, ListadoEspacios } from 'src/app/@core/models/espacioAcademico';
 import { Facultad } from 'src/app/@core/models/facultad';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
@@ -19,6 +19,10 @@ export class SyllabusService {
   private proyectosAcademicos = new BehaviorSubject<ProyectoAcademico[]>([]);
   private planesEstudio = new BehaviorSubject<PlanEstudio[]>([]);
   private espaciosAcademicos = new BehaviorSubject<EspacioAcademico[]>([]);
+  private espaciosConSyllabus = new BehaviorSubject<ListadoEspacios>({
+    espacios: [],
+    cargando: false,
+  });
   private syllabus =new BehaviorSubject<Syllabus>(new Syllabus);
   private isNew= new BehaviorSubject<boolean>(false);
   private rolwithEdit= new BehaviorSubject<boolean>(false);
@@ -33,6 +37,7 @@ export class SyllabusService {
   proyectosAcademicos$=this.proyectosAcademicos.asObservable();
   planesEstudio$=this.planesEstudio.asObservable();
   espaciosAcademicos$=this.espaciosAcademicos.asObservable();
+  espaciosConSyllabus$=this.espaciosConSyllabus.asObservable();
   syllabus$=this.syllabus.asObservable();
   isNew$=this.isNew.asObservable();
   rolwithEdit$=this.rolwithEdit.asObservable();
@@ -69,6 +74,10 @@ export class SyllabusService {
 
   setEspaciosAcademicos(espaciosAcademicos:EspacioAcademico[]){
     this.espaciosAcademicos.next(espaciosAcademicos)
+  }
+
+  setEspaciosConSyllabus(espaciosConSyllabus:ListadoEspacios){
+    this.espaciosConSyllabus.next(espaciosConSyllabus)
   }
 
   setSyllabus(syllabus:Syllabus){
