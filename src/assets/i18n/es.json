@@ -14,6 +14,13 @@
     "placeholder_contenidos_tematicos": "Se define la manera cómo van a ser organizados los contenidos temáticos y/o problemáticos del espacio académico, los cuales establecen relación directa con los Propósitos de la Formación y del Aprendizaje identificados. Se pueden organizar por ejes, núcleos o unidades temáticas, en todo caso, mínimo 3. Se debe indicar el tiempo tentativo que involucrará el abordaje y desarrollo de los contenidos planteados.",
     "placeholder_medios_recursos": "Describa la dotación o recursos que sean necesarios para el desarrollo de las intencionalidades formativas y contenidos propuestos en el espacio académico.",
     "placeholder_practicas_academicas": "Sólo en el caso de los espacios académicos teórico-prácticos y prácticos, describa la modalidad de práctica a desarrollar, su intensidad, su articulación con la apuesta pedagógica y didáctica, los objetivos del curso, los Propósitos de Formación y Aprendizaje y el perfil de egreso del programa. Se debe listar el nombre de las prácticas y el número de sesiones que tomarán. En el caso de las salidas de campo se debe especificar las semanas del calendario académico en las cuales se desarrollará.",
-    "placeholder_fuentes": "Relacione las diferentes fuentes o referentes documentales, bibliográficos, audiovisuales, electrónicos, entre otros, abordados en el espacio académico o asignatura."
+    "placeholder_fuentes": "Relacione las diferentes fuentes o referentes documentales, bibliográficos, audiovisuales, electrónicos, entre otros, abordados en el espacio académico o asignatura.",
+    "pfa_modo_titulo": "Forma de registro de los propósitos de formación y de aprendizaje",
+    "pfa_modo_listado": "Listado",
+    "pfa_modo_matriz": "Matriz de relación",
+    "pfa_matriz_ayuda": "Diligencie la matriz de propósitos: la primera columna 'Propósitos de Formación' es obligatoria y las demás columnas son editables. El contenido enriquecido solo se puede escribir dentro de la tabla.",
+    "pfa_matriz_max_filas": "Máximo 4 propósitos (filas) sin contar el encabezado.",
+    "pfa_matriz_error": "La matriz debe tener un encabezado con al menos dos columnas y entre 1 y 4 filas de propósito, con el propósito de la primera columna diligenciado.",
+    "evaluacion_ayuda": "Docente, tenga en cuenta que si bien los porcentajes de los cortes están definidos, usted, dentro de su libertad académica, puede establecer, dividir u organizar las evaluaciones del espacio según convenga, dentro de esos límites."
   }
 }

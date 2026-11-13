@@ -191,7 +191,7 @@
 
             <!-- [linear]="isNew" -->
             <mat-stepper orientation="vertical" [linear]="isNew">
-              <mat-step [stepControl]="formSaberesPrevios">
+              <mat-step [stepControl]="formSaberesPrevios" [hasError]="formSaberesPrevios.invalid">
                 <form [formGroup]="formSaberesPrevios">
                   <ng-template matStepLabel>Saberes y conocimientos previos</ng-template>
                   <ng-template matStepContent>
@@ -207,7 +207,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formJustificacion">
+              <mat-step [stepControl]="formJustificacion" [hasError]="formJustificacion.invalid">
                 <form [formGroup]="formJustificacion">
                   <ng-template matStepLabel>Justificación del espacio académico</ng-template>
                   <ng-template matStepContent>
@@ -228,7 +228,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formObjetivos">
+              <mat-step [stepControl]="formObjetivos" [hasError]="formObjetivos.invalid">
                 <form [formGroup]="formObjetivos">
                   <ng-template matStepLabel>Objetivos del espacio académico</ng-template>
                   <ng-template matStepContent>
@@ -274,11 +274,23 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formPFA">
+              <mat-step [stepControl]="formPFA" [hasError]="formPFA.invalid">
                 <form [formGroup]="formPFA">
                   <ng-template matStepLabel>Propósitos de formación y de aprendizaje (PFA)</ng-template>
                   <ng-template matStepContent>
-                    <div class="table">
+                    <div class="rich-field pfa-modo">
+                      <label class="rich-label">{{ 'CREAR_SYLLABUS.pfa_modo_titulo' | translate }}</label>
+                      <mat-button-toggle-group
+                        class="contenido-modo"
+                        formControlName="modo"
+                        (change)="onModoPFAChange($event.value)"
+                      >
+                        <mat-button-toggle value="listado">{{ 'CREAR_SYLLABUS.pfa_modo_listado' | translate }}</mat-button-toggle>
+                        <mat-button-toggle value="matriz">{{ 'CREAR_SYLLABUS.pfa_modo_matriz' | translate }}</mat-button-toggle>
+                      </mat-button-toggle-group>
+                    </div>
+
+                    <div class="table" *ngIf="modoPFA === 'listado'; else matrizPFA">
                       <table mat-table class="pfa-table" [dataSource]="dataSourceFormPFA" formArrayName="pfa">
                         <ng-container matColumnDef="numero">
                           <th mat-header-cell *matHeaderCellDef>
@@ -312,6 +324,24 @@
                       </table>
                     </div>
 
+                    <ng-template #matrizPFA>
+                      <div class="rich-field">
+                        <p class="nota-ayuda">{{ 'CREAR_SYLLABUS.pfa_matriz_ayuda' | translate }}</p>
+                        <app-rich-text-editor
+                          formControlName="pfa_matriz"
+                          [modoMatriz]="true"
+                          [maxFilasContenido]="maxFilasMatrizPFA"
+                          [maxColumnas]="maxColumnasMatrizPFA"
+                          [encabezadoPrimeraColumna]="encabezadoMatrizPFA">
+                        </app-rich-text-editor>
+                        <span class="rich-label">{{ 'CREAR_SYLLABUS.pfa_matriz_max_filas' | translate }}</span>
+                        <div class="rich-error"
+                          *ngIf="formPFA.get('pfa_matriz')?.touched && formPFA.get('pfa_matriz')?.invalid">
+                          {{ 'CREAR_SYLLABUS.pfa_matriz_error' | translate }}
+                        </div>
+                      </div>
+                    </ng-template>
+
                     <div class="form-actions">
                       <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
                       <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
@@ -320,7 +350,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formContenidosTematicos">
+              <mat-step [stepControl]="formContenidosTematicos" [hasError]="formContenidosTematicos.invalid">
                 <form [formGroup]="formContenidosTematicos">
                   <ng-template matStepLabel>Contenidos temáticos</ng-template>
                   <ng-template matStepContent>
@@ -394,6 +424,8 @@
                     </table>
                   </div>
 
+                  <p class="nota-ayuda nota-ayuda--pie">{{ 'CREAR_SYLLABUS.evaluacion_ayuda' | translate }}</p>
+
                   <div class="form-actions">
                     <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
                     <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
@@ -401,7 +433,7 @@
                 </ng-template>
               </mat-step>
 
-              <mat-step [stepControl]="formMedios">
+              <mat-step [stepControl]="formMedios" [hasError]="formMedios.invalid">
                 <form [formGroup]="formMedios">
                   <ng-template matStepLabel>Medios y recursos educativos</ng-template>
                   <ng-template matStepContent>
@@ -418,7 +450,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formPracticasAcademicas">
+              <mat-step [stepControl]="formPracticasAcademicas" [hasError]="formPracticasAcademicas.invalid">
                 <form [formGroup]="formPracticasAcademicas">
                   <ng-template matStepLabel>Prácticas académicas</ng-template>
                   <ng-template matStepContent>
@@ -435,7 +467,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formBibliografia">
+              <mat-step [stepControl]="formBibliografia" [hasError]="formBibliografia.invalid">
                 <form [formGroup]="formBibliografia">
                   <ng-template matStepLabel>Fuentes y recursos</ng-template>
                   <ng-template matStepContent>

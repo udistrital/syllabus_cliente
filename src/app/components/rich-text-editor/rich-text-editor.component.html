@@ -37,19 +37,19 @@
       <mat-icon>format_list_numbered</mat-icon>
     </button>
 
-    <span class="separator"></span>
+    <span class="separator" *ngIf="!modoMatriz"></span>
 
-    <button type="button" mat-icon-button matTooltip="Insertar tabla" (click)="insertTable()" [disabled]="isDisabled">
+    <button type="button" mat-icon-button matTooltip="Insertar tabla" (click)="insertTable()" [disabled]="isDisabled" *ngIf="!modoMatriz">
       <mat-icon>table_chart</mat-icon>
     </button>
   </div>
 
   <div class="table-tools" *ngIf="inTable && !isDisabled" (mousedown)="$event.preventDefault()">
-    <button type="button" mat-button (click)="addRow()" matTooltip="Agregar fila debajo">+ Fila</button>
+    <button type="button" mat-button (click)="addRow()" matTooltip="Agregar fila debajo" [disabled]="!puedeAgregarFila">+ Fila</button>
     <button type="button" mat-button (click)="removeRow()" matTooltip="Eliminar fila actual">- Fila</button>
-    <button type="button" mat-button (click)="addColumn()" matTooltip="Agregar columna a la derecha">+ Columna</button>
+    <button type="button" mat-button (click)="addColumn()" matTooltip="Agregar columna a la derecha" [disabled]="!puedeAgregarColumna">+ Columna</button>
     <button type="button" mat-button (click)="removeColumn()" matTooltip="Eliminar columna actual">- Columna</button>
-    <button type="button" mat-button (click)="deleteTable()" matTooltip="Eliminar la tabla">Eliminar tabla</button>
+    <button type="button" mat-button (click)="deleteTable()" matTooltip="Eliminar la tabla" *ngIf="!modoMatriz">Eliminar tabla</button>
   </div>
 
   <div

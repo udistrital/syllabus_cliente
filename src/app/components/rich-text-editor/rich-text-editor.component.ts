@@ -17,6 +17,16 @@ import {
   sanitizeRichText,
   toEditorHtml
 } from '../../@core/utils/html-editor.utils';
+import {
+  agregarColumnaMatriz as agregarColumnaEnMatriz,
+  agregarFilaMatriz as agregarFilaEnMatriz,
+  cantidadColumnasMatriz,
+  crearMatrizPorDefecto,
+  eliminarColumnaMatriz as eliminarColumnaEnMatriz,
+  eliminarFilaMatriz as eliminarFilaEnMatriz,
+  filasContenidoMatriz,
+  normalizarMatriz as normalizarTablaMatriz
+} from '../../@core/utils/matriz-pfa.utils';
 
 type AlignValue = 'left' | 'center' | 'right' | 'justify';
 
@@ -47,6 +57,12 @@ interface ActiveFormats {
 export class RichTextEditorComponent implements AfterViewInit, ControlValueAccessor, OnDestroy {
   @Input() placeholder = '';
   @Input() maxLength = MAX_RICH_TEXT_LENGTH;
+  // Modo matriz: el contenido solo se puede escribir dentro de la tabla y la
+  // tabla tiene una columna fija de propósitos que no se puede eliminar.
+  @Input() modoMatriz = false;
+  @Input() maxFilasContenido = 4;
+  @Input() maxColumnas = 5;
+  @Input() encabezadoPrimeraColumna = 'Propósitos de Formación';
 
   @ViewChild('editor', { static: true }) editorRef!: ElementRef<HTMLDivElement>;
 
@@ -54,6 +70,8 @@ export class RichTextEditorComponent implements AfterViewInit, ControlValueAcces
   isEmpty = true;
   length = 0;
   inTable = false;
+  puedeAgregarFila = true;
+  puedeAgregarColumna = true;
   activeFormats: ActiveFormats = {
     bold: false,
     italic: false,
@@ -122,12 +140,32 @@ export class RichTextEditorComponent implements AfterViewInit, ControlValueAcces
   }
 
   onInput(): void {
+    if (this.modoMatriz) {
+      // Fuera de la tabla no se puede escribir: se descarta el contenido suelto.
+      this.normalizarMatriz();
+    }
     this.refreshState();
     this.onChange(this.editorRef.nativeElement.innerHTML);
   }
 
   onBlur(): void {
     const editor = this.editorRef.nativeElement;
+
+    if (this.modoMatriz) {
+      const sanitized = sanitizeRichText(editor.innerHTML);
+
+      if (sanitized !== editor.innerHTML) {
+        editor.innerHTML = sanitized;
+      }
+
+      // Tras sanitizar se reaplica la columna fija de propósitos.
+      this.normalizarMatriz();
+      this.refreshState();
+      this.onChange(editor.innerHTML);
+      this.onTouched();
+      return;
+    }
+
     const normalized = normalizeRichTextValue(editor.innerHTML);
 
     if (normalized !== editor.innerHTML) {
@@ -224,6 +262,13 @@ export class RichTextEditorComponent implements AfterViewInit, ControlValueAcces
       return;
     }
 
+    if (this.modoMatriz) {
+      // En modo matriz la tabla tiene estructura fija: encabezado + filas de propósito.
+      crearMatrizPorDefecto(this.editorRef.nativeElement, this.encabezadoPrimeraColumna);
+      this.afterCommand();
+      return;
+    }
+
     const result = await Swal.fire({
       title: 'Insertar tabla',
       html:
@@ -259,6 +304,11 @@ export class RichTextEditorComponent implements AfterViewInit, ControlValueAcces
   }
 
   addRow(): void {
+    if (this.modoMatriz) {
+      this.agregarFilaMatriz();
+      return;
+    }
+
     const row = this.currentRow();
     if (!row) {
       return;
@@ -277,6 +327,11 @@ export class RichTextEditorComponent implements AfterViewInit, ControlValueAcces
   }
 
   removeRow(): void {
+    if (this.modoMatriz) {
+      this.removerFilaMatriz();
+      return;
+    }
+
     const row = this.currentRow();
     const table = row?.closest('table');
     if (!row || !table || table.rows.length <= 1) {
@@ -295,6 +350,11 @@ export class RichTextEditorComponent implements AfterViewInit, ControlValueAcces
   }
 
   addColumn(): void {
+    if (this.modoMatriz) {
+      this.agregarColumnaMatriz();
+      return;
+    }
+
     const cell = this.currentCell();
     const table = cell?.closest('table');
     if (!cell || !table) {
@@ -313,6 +373,11 @@ export class RichTextEditorComponent implements AfterViewInit, ControlValueAcces
   }
 
   removeColumn(): void {
+    if (this.modoMatriz) {
+      this.removerColumnaMatriz();
+      return;
+    }
+
     const cell = this.currentCell();
     const table = cell?.closest('table');
     if (!cell || !table) {
@@ -337,6 +402,11 @@ export class RichTextEditorComponent implements AfterViewInit, ControlValueAcces
   }
 
   deleteTable(): void {
+    if (this.modoMatriz) {
+      // En modo matriz la tabla es obligatoria: no se puede eliminar.
+      return;
+    }
+
     const cell = this.currentCell();
     const table = cell?.closest('table');
     if (!table) {
@@ -348,17 +418,72 @@ export class RichTextEditorComponent implements AfterViewInit, ControlValueAcces
     this.afterCommand();
   }
 
+  private matrizTable(): HTMLTableElement | null {
+    if (!this.modoMatriz) {
+      return null;
+    }
+    return this.editorRef.nativeElement.querySelector('table');
+  }
+
+  private normalizarMatriz(): void {
+    if (!this.modoMatriz) {
+      return;
+    }
+    normalizarTablaMatriz(
+      this.editorRef.nativeElement,
+      this.encabezadoPrimeraColumna,
+      this.maxFilasContenido
+    );
+  }
+
+  private agregarFilaMatriz(): void {
+    const fila = agregarFilaEnMatriz(this.matrizTable(), this.maxFilasContenido);
+    if (!fila) {
+      return;
+    }
+    this.focusCell(fila.cells.item(0) ?? undefined);
+    this.afterCommand();
+  }
+
+  private removerFilaMatriz(): void {
+    const siguiente = eliminarFilaEnMatriz(this.matrizTable(), this.currentRow());
+    if (!siguiente) {
+      return;
+    }
+    this.focusCell(siguiente.cells.item(0) ?? undefined);
+    this.afterCommand();
+  }
+
+  private agregarColumnaMatriz(): void {
+    if (!agregarColumnaEnMatriz(this.matrizTable(), this.maxColumnas)) {
+      return;
+    }
+    this.afterCommand();
+  }
+
+  private removerColumnaMatriz(): void {
+    const celda = this.currentCell();
+    if (!celda || !eliminarColumnaEnMatriz(this.matrizTable(), celda.cellIndex)) {
+      return;
+    }
+    this.focusEditorEnd();
+    this.afterCommand();
+  }
+
   private applyPendingValue(): void {
     const editor = this.editorRef.nativeElement;
     const html = toEditorHtml(this.pendingValue);
-    const display = htmlToText(html) ? html : '';
+    // En modo matriz se conserva la tabla aunque todavía no tenga texto.
+    const display = this.modoMatriz ? html : (htmlToText(html) ? html : '');
 
-    if (editor.innerHTML === display) {
-      this.refreshState();
-      return;
+    if (editor.innerHTML !== display) {
+      editor.innerHTML = display;
     }
 
-    editor.innerHTML = display;
+    if (this.modoMatriz) {
+      this.normalizarMatriz();
+    }
+
     this.refreshState();
   }
 
@@ -367,6 +492,8 @@ export class RichTextEditorComponent implements AfterViewInit, ControlValueAcces
     this.length = html.length;
     this.isEmpty = !htmlToText(html);
     this.inTable = this.currentCell() !== null;
+    this.puedeAgregarFila = !this.modoMatriz || filasContenidoMatriz(this.matrizTable()).length < this.maxFilasContenido;
+    this.puedeAgregarColumna = !this.modoMatriz || cantidadColumnasMatriz(this.matrizTable()) < this.maxColumnas;
     this.refreshActiveFormats();
   }
 

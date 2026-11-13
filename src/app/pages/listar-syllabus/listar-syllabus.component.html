@@ -1,5 +1,85 @@
 <div class="page-container">
-  <mat-card id="tablaResultados">
+  <mat-card id="tablaEspacios" *ngIf="!espacioSeleccionado">
+    <mat-card-header>
+      <mat-card-title>Espacios académicos del plan de estudios</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="filtro-espacios">
+        <mat-form-field appearance="fill">
+          <mat-label>Buscar espacio académico</mat-label>
+          <input
+            matInput
+            type="text"
+            name="filtroEspacios"
+            [(ngModel)]="filtroEspacios"
+            (ngModelChange)="aplicarFiltroEspacios()"
+            placeholder="Nombre del espacio académico"
+          />
+        </mat-form-field>
+      </div>
+
+      <div class="loading-center" *ngIf="cargandoEspacios">
+        <mat-spinner></mat-spinner>
+      </div>
+
+      <div class="table" *ngIf="!cargandoEspacios && espacios.length > 0">
+        <table mat-table [dataSource]="espaciosDataSource">
+          <ng-container matColumnDef="espacio">
+            <th mat-header-cell *matHeaderCellDef>Espacio Académico</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.espacio.asi_nombre }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="semestre">
+            <th mat-header-cell *matHeaderCellDef>
+              Periodo académico (Semestre)
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.espacio.pen_sem }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="estado_syllabus">
+            <th mat-header-cell *matHeaderCellDef>Syllabus</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-icon
+                *ngIf="element.tieneSyllabus"
+                class="icon-syllabus-si"
+                matTooltip="Este espacio ya tiene syllabus registrado"
+                aria-label="Este espacio ya tiene syllabus registrado"
+              >
+                check_circle
+              </mat-icon>
+              <mat-icon
+                *ngIf="!element.tieneSyllabus"
+                class="icon-syllabus-no"
+                matTooltip="Este espacio no tiene syllabus registrado"
+                aria-label="Este espacio no tiene syllabus registrado"
+              >
+                radio_button_unchecked
+              </mat-icon>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columnasEspacios"></tr>
+          <tr
+            mat-row
+            *matRowDef="let element; columns: columnasEspacios"
+            class="fila-espacio"
+            (click)="seleccionarEspacio(element.espacio)"
+          ></tr>
+        </table>
+      </div>
+
+      <div class="sin-espacios" *ngIf="!cargandoEspacios && espacios.length === 0">
+        No se encontraron espacios académicos para el plan de estudios
+        seleccionado.
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card id="tablaResultados" *ngIf="espacioSeleccionado">
     <mat-card-header>
       <mat-card-title>Tabla resumen Búsqueda</mat-card-title>
     </mat-card-header>
@@ -211,7 +291,7 @@
       </ng-container>
 
       <div class="actions-center">
-        <button mat-flat-button color="primary" (click)="scrollFormBuscar()">
+        <button mat-flat-button color="primary" (click)="volverAEspacios()">
           Regresar
         </button>
       </div>

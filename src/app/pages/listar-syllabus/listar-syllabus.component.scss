@@ -29,6 +29,36 @@ td.mat-cell {
   margin-top: 1rem;
 }
 
+/* Listado de espacios académicos del plan de estudios */
+.filtro-espacios {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.fila-espacio {
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.fila-espacio:hover {
+  background-color: rgba(41, 126, 160, 0.08);
+}
+
+.icon-syllabus-si {
+  color: #2e7d32;
+}
+
+.icon-syllabus-no {
+  color: #9e9e9e;
+}
+
+.sin-espacios {
+  padding: 1.5rem 0;
+  text-align: center;
+  color: #6c757d;
+}
+
 /* Indicador de asignación (similar a listado de admisiones) */
 .status-indicator {
   display: inline-block;
