@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
+import { EspacioAcademico, EspacioConSyllabus } from 'src/app/@core/models/espacioAcademico';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
 import { SyllabusService } from '../services/syllabus.service';
@@ -46,6 +46,15 @@ export class ListarSyllabusComponent implements OnInit {
   hasSyllabusByProjectPlan: boolean;
   asignacionesPorCodigo = new Map<string, Syllabus>();
 
+  // Listado de espacios académicos del plan de estudios con el indicador de
+  // si el espacio ya tiene syllabus registrado.
+  espacios: EspacioConSyllabus[] = [];
+  espaciosDataSource = new MatTableDataSource<EspacioConSyllabus>();
+  columnasEspacios: string[] = ['espacio', 'semestre', 'estado_syllabus'];
+  filtroEspacios: string = '';
+  espacioSeleccionado: boolean = false;
+  cargandoEspacios: boolean = false;
+
   readonly estadoLabel = estadoLabel;
   readonly fechaCorta = fechaCorta;
 
@@ -65,8 +74,21 @@ export class ListarSyllabusComponent implements OnInit {
     this.syllabusService.planEstudios$.subscribe((planEstudio) => {
       this.PlanEstudio = planEstudio;
     });
+    this.syllabusService.espaciosConSyllabus$.subscribe((listado) => {
+      this.espacios = listado.espacios;
+      this.cargandoEspacios = listado.cargando;
+      this.aplicarFiltroEspacios();
+    });
     this.syllabusService.espacioAcademico$.subscribe((espacioAcademico) => {
       this.EspacioAcademico = espacioAcademico;
+      if (!espacioAcademico || !espacioAcademico.asi_cod) {
+        // Sin espacio seleccionado: se colapsa la tabla de resultados y se
+        // vuelve a mostrar el listado de espacios. No se consulta el CRUD.
+        this.espacioSeleccionado = false;
+        this.limpiarTablaResultados();
+        return;
+      }
+      this.espacioSeleccionado = true;
       this.SyllabusLoad = false;
       this.scrollTablaResultados();
       this.changeDataTableSyllabus();
@@ -102,6 +124,48 @@ export class ListarSyllabusComponent implements OnInit {
         },
         error: () => this.cargarActivos(),
       });
+  }
+
+  /**
+   * Selecciona un espacio del listado: replica el comportamiento del anterior
+   * selector de espacio académico.
+   */
+  seleccionarEspacio(espacio: EspacioAcademico) {
+    this.syllabusService.setEspacioAcademico(espacio);
+  }
+
+  /**
+   * Regresa al listado de espacios del plan limpiando el filtro de espacio
+   * académico. No vuelve a consultar el CRUD de syllabus.
+   */
+  volverAEspacios() {
+    this.syllabusService.setEspacioAcademico(new EspacioAcademico());
+    // El listado de espacios se vuelve a renderizar después del cambio de estado.
+    setTimeout(() => this.scrollTablaEspacios());
+  }
+
+  /**
+   * Filtra el listado de espacios por nombre o periodo.
+   */
+  aplicarFiltroEspacios() {
+    const filtro = (this.filtroEspacios || '').trim().toLowerCase();
+    const espacios = filtro
+      ? this.espacios.filter(
+          (item) =>
+            (item.espacio.asi_nombre || '').toLowerCase().includes(filtro) ||
+            (item.espacio.pen_sem || '').toLowerCase().includes(filtro)
+        )
+      : this.espacios;
+    this.espaciosDataSource.data = espacios;
+  }
+
+  private limpiarTablaResultados() {
+    this.syllabus = [];
+    this.syllabusData = [];
+    this.dataSource.data = [];
+    this.hasSyllabusByProjectPlan = false;
+    this.asignacionesPorCodigo.clear();
+    this.SyllabusLoad = false;
   }
 
   private cargarActivos() {
@@ -311,6 +375,11 @@ export class ListarSyllabusComponent implements OnInit {
   scrollFormBuscar() {
     const formBusqueda = document.getElementById('formBusqueda');
     formBusqueda?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  scrollTablaEspacios() {
+    const tablaEspacios = document.getElementById('tablaEspacios');
+    tablaEspacios?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   scrollToTable() {
