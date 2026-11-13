@@ -7,7 +7,7 @@ import { SyllabusService } from '../services/syllabus.service';
 import { Facultad } from 'src/app/@core/models/facultad';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
-import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
+import { EspacioAcademico, EspacioConSyllabus } from 'src/app/@core/models/espacioAcademico';
 import { ListarSyllabusComponent } from '../listar-syllabus/listar-syllabus.component';
 import { LocalStorageService } from 'src/app/@core/utils/local_storage.service';
 import { VinculacionPrograma } from 'src/app/@core/models/vinculacion';
@@ -29,25 +29,24 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     new ReplaySubject<ProyectoAcademico[]>(1);
   public filterPlanesDeEstudio: ReplaySubject<PlanEstudio[]> =
     new ReplaySubject<PlanEstudio[]>(1);
-  public filterEspaciosAcademicos: ReplaySubject<EspacioAcademico[]> =
-    new ReplaySubject<EspacioAcademico[]>(1);
   mostrartabla: boolean = false;
   facultades: Facultad[] = [];
   proyectos_curriculares: ProyectoAcademico[] = [];
   planes_estudio: PlanEstudio[] = [];
   espacios_academicos: EspacioAcademico[] = [];
+  espacios_con_syllabus: EspacioConSyllabus[] = [];
+  espacios_con_syllabus_ids: Set<number> = new Set<number>();
+  espacios_cargados: boolean = false;
+  syllabus_plan_cargados: boolean = false;
   facultadSelected!: Facultad;
   facultadSelectedName: string = '';
   proyectoCurricularSelected!: ProyectoAcademico;
   proyectoCurricularSelectedName: string = '';
   planEstudiosSelected!: PlanEstudio;
   planEstudiosSelectedName: string = '';
-  espacioAcademicoSelected!: EspacioAcademico;
-  espacioAcademicoSelectedName: string = '';
   formFacultad: FormGroup;
   formProyectoCurricular: FormGroup;
   formPlanEstudios: FormGroup;
-  formEspaciosAcademicos: FormGroup;
   roles: string[];
   dependenciasId: number[];
   previousSearch: boolean;
@@ -90,10 +89,6 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
       planEstudiosCtrl: ['', Validators.required],
       planEstudiosFilterCtrl: [''],
     });
-    this.formEspaciosAcademicos = this._formBuilder.group({
-      espaciosAcademicosCtrl: ['', Validators.required],
-      espaciosAcademicosFilterCtrl: [''],
-    });
 
     this.syllabusService.facultad$.subscribe((facultad) => {
       this.facultadSelected = facultad;
@@ -125,12 +120,10 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     });
 
     this.syllabusService.espacioAcademico$.subscribe((espacioAcademico) => {
-      this.espacioAcademicoSelected = espacioAcademico;
-      if (Object.keys(this.espacioAcademicoSelected).length != 0) {
-        this.formEspaciosAcademicos
-          .get('espaciosAcademicosCtrl')
-          ?.setValue(this.espacioAcademicoSelected);
-        this.espacioAcademicoSelectedName = espacioAcademico.asi_nombre;
+      // El espacio seleccionado se mantiene en el servicio de contexto: el
+      // listado de espacios del plan se colapsa cuando hay espacio elegido y
+      // reaparece cuando el filtro se limpia.
+      if (espacioAcademico && Object.keys(espacioAcademico).length != 0) {
         this.previousSearch = true;
       } else {
         this.previousSearch = false;
@@ -153,9 +146,7 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
 
     this.syllabusService.espaciosAcademicos$.subscribe(
       (espacios_academicos) => {
-        if (espacios_academicos.length !== 0) {
-          this.espacios_academicos = espacios_academicos;
-        }
+        this.espacios_academicos = espacios_academicos;
       }
     );
 
@@ -199,26 +190,24 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
           )
         );
       });
-
-    this.formEspaciosAcademicos
-      .get('espaciosAcademicosFilterCtrl')
-      ?.valueChanges.pipe(takeUntil(this._onDestroy))
-      .subscribe((value) => {
-        this.filterEspaciosAcademicos.next(
-          this.espacios_academicos.filter((espacio) =>
-            espacio.asi_nombre.toLowerCase().includes(value ? value.toLowerCase() : '')
-          )
-        );
-      });
   }
 
   ngAfterViewInit() {
-    if (this.previousSearch) {
+    if (this.previousSearch || this.hayPlanSeleccionado()) {
       this.myStepper.steps.forEach((step) => {
         step.completed = true;
       });
       this.MostrarTabla();
     }
+  }
+
+  // Hay un plan de estudios seleccionado (aunque no haya espacio elegido):
+  // en ese caso la vista debe mostrar el listado de espacios del plan.
+  hayPlanSeleccionado(): boolean {
+    return (
+      this.planEstudiosSelected &&
+      Object.keys(this.planEstudiosSelected).length != 0
+    );
   }
 
   MostrarTabla() {
@@ -332,26 +321,32 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
   }
 
   loadEspaciosAcademicos() {
+    const pen_nro = this.planEstudiosSelected.pen_nro;
+    const pen_cra_cod = this.planEstudiosSelected.pen_cra_cod;
     this.request
       .get(
         environment.ACADEMICA_JBPM_SERVICE,
-        'espacios_academicos_proyecto/' +
-          this.planEstudiosSelected.pen_nro +
-          '/' +
-          this.planEstudiosSelected.pen_cra_cod
+        'espacios_academicos_proyecto/' + pen_nro + '/' + pen_cra_cod
       )
       .subscribe({
         next: (dataEspaciosAcademicosProyecto: any) => {
+          // Se descarta la respuesta si el plan seleccionado ya cambió.
+          if (!this.esPlanSeleccionado(pen_nro, pen_cra_cod)) {
+            return;
+          }
           if (dataEspaciosAcademicosProyecto) {
             this.espacios_academicos =
               dataEspaciosAcademicosProyecto.espacios_academicos.espacio_academico;
             this.syllabusService.setEspaciosAcademicos(
               this.espacios_academicos
             );
-            this.filterEspaciosAcademicos.next(this.espacios_academicos);
+            this.espacios_cargados = true;
+            this.actualizarEspaciosConSyllabus();
           }
         },
         error: () => {
+          this.espacios_cargados = true;
+          this.actualizarEspaciosConSyllabus();
           Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -361,6 +356,97 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
           });
         },
       });
+  }
+
+  /**
+   * Consulta el CRUD de syllabus por plan de estudios para conocer qué espacios
+   * del plan ya tienen syllabus registrado. Es una única petición (no una por
+   * espacio) y se realiza al seleccionar el plan de estudios.
+   *
+   * Sin estado explicito el CRUD excluye los syllabus en estado borrador
+   * (asignado, en_revision, rechazado, expirado), de modo que el indicador
+   * refleja los mismos syllabus que muestra la tabla de resultados.
+   */
+  loadSyllabusPorPlan(planEstudio: PlanEstudio) {
+    const pen_nro = planEstudio.pen_nro;
+    const pen_cra_cod = planEstudio.pen_cra_cod;
+    const query = encodeURIComponent(
+      `plan_estudios_id:${pen_nro},syllabus_actual:true,activo:true`
+    );
+    this.request
+      .get(
+        environment.SYLLABUS_CRUD,
+        `syllabus?query=${query}&fields=espacio_academico_id&limit=50`
+      )
+      .subscribe({
+        next: (dataSyllabus: any) => {
+          // Se descarta la respuesta si el plan seleccionado ya cambió.
+          if (!this.esPlanSeleccionado(pen_nro, pen_cra_cod)) {
+            return;
+          }
+          const lista: any[] =
+            dataSyllabus && dataSyllabus.Data ? dataSyllabus.Data : [];
+          const ids = new Set<number>();
+          lista.forEach((item: any) => {
+            const id = Number(item.espacio_academico_id);
+            if (!isNaN(id)) {
+              ids.add(id);
+            }
+          });
+          this.espacios_con_syllabus_ids = ids;
+          this.syllabus_plan_cargados = true;
+          this.actualizarEspaciosConSyllabus();
+        },
+        error: () => {
+          // Sin indicador, pero el listado de espacios sigue disponible.
+          this.espacios_con_syllabus_ids = new Set<number>();
+          this.syllabus_plan_cargados = true;
+          this.actualizarEspaciosConSyllabus();
+        },
+      });
+  }
+
+  // Verifica que el plan de la respuesta siga siendo el plan seleccionado.
+  private esPlanSeleccionado(pen_nro: string, pen_cra_cod: string): boolean {
+    return (
+      !!this.planEstudiosSelected &&
+      this.planEstudiosSelected.pen_nro === pen_nro &&
+      this.planEstudiosSelected.pen_cra_cod === pen_cra_cod
+    );
+  }
+
+  /**
+   * Cruza los espacios académicos del plan con los que ya tienen syllabus
+   * registrado y publica el listado. Es idempotente: se puede invocar cuando
+   * llegue cualquiera de las dos respuestas (espacios o syllabus del plan).
+   */
+  private actualizarEspaciosConSyllabus() {
+    this.espacios_con_syllabus = this.espacios_academicos.map((espacio) => ({
+      espacio,
+      tieneSyllabus: this.espacios_con_syllabus_ids.has(Number(espacio.asi_cod)),
+    }));
+    this.syllabusService.setEspaciosConSyllabus({
+      espacios: this.espacios_con_syllabus,
+      cargando: !(this.espacios_cargados && this.syllabus_plan_cargados),
+    });
+  }
+
+  // Limpia el filtro de espacio académico (el listado de espacios vuelve a verse).
+  private limpiarEspacioAcademico() {
+    this.syllabusService.setEspacioAcademico(new EspacioAcademico());
+  }
+
+  private limpiarEspaciosConSyllabus() {
+    this.espacios_academicos = [];
+    this.espacios_con_syllabus_ids = new Set<number>();
+    this.espacios_con_syllabus = [];
+    this.espacios_cargados = false;
+    this.syllabus_plan_cargados = false;
+    this.syllabusService.setEspaciosAcademicos([]);
+    this.syllabusService.setEspaciosConSyllabus({
+      espacios: [],
+      cargando: true,
+    });
   }
 
   onChangeFacultad(facultad: any) {
@@ -378,9 +464,8 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     this.filterPlanesDeEstudio.next([]);
 
     // Reset espacios académicos
-    this.espacioAcademicoSelectedName = '';
-    this.formEspaciosAcademicos.reset();
-    this.filterEspaciosAcademicos.next([]);
+    this.limpiarEspacioAcademico();
+    this.limpiarEspaciosConSyllabus();
 
     this.loadProyectosCurriculares();
     this.myStepper.next();
@@ -396,9 +481,8 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     this.filterPlanesDeEstudio.next([]);
 
     // Reset espacios académicos
-    this.espacioAcademicoSelectedName = '';
-    this.formEspaciosAcademicos.reset();
-    this.filterEspaciosAcademicos.next([]);
+    this.limpiarEspacioAcademico();
+    this.limpiarEspaciosConSyllabus();
 
     this.loadPlanEstudios();
     this.myStepper.next();
@@ -409,18 +493,15 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
     this.planEstudiosSelectedName =
       planEstudio.cra_nombre + ', plan de estudio:' + planEstudio.pen_nro;
 
-    // Reset espacios académicos
-    this.espacioAcademicoSelectedName = '';
-    this.formEspaciosAcademicos.reset();
-    this.filterEspaciosAcademicos.next([]);
+    // Reset espacios académicos: se limpia el filtro y el listado con indicadores
+    this.limpiarEspacioAcademico();
+    this.limpiarEspaciosConSyllabus();
 
+    // Espacios del plan (academica) y syllabus del plan (CRUD) en paralelo
     this.loadEspaciosAcademicos();
-    this.myStepper.next();
-  }
+    this.loadSyllabusPorPlan(planEstudio);
 
-  onChangeEspacioAcademico(espacioAcademico: any) {
-    this.syllabusService.setEspacioAcademico(espacioAcademico);
-    this.espacioAcademicoSelectedName = espacioAcademico.asi_nombre;
+    // El listado de espacios vive en la tabla de resultados de búsqueda.
     this.MostrarTabla();
   }
 
@@ -464,13 +545,6 @@ export class BuscarSyllabusComponent implements OnInit, AfterViewInit {
       return false;
     }
     return pe1.pen_cra_cod === pe2.cra_nombre && pe1.pen_nro === pe2.pen_nro;
-  }
-
-  compareEspacioAcademico(ea1: EspacioAcademico, ea2: EspacioAcademico) {
-    if (!ea1 || !ea2) {
-      return false;
-    }
-    return ea1.asi_nombre === ea2.asi_nombre && ea1.asi_cod === ea2.asi_cod;
   }
 
   ngOnDestroy() {
