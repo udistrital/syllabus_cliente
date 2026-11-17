@@ -1,0 +1,46 @@
+<div class="image-selector">
+  <input
+    #fileInput
+    type="file"
+    accept="image/png,image/jpeg"
+    class="hidden-input"
+    (change)="onFileChange($event)"
+    [disabled]="isDisabled || uploading"
+  >
+
+  <div class="preview" *ngIf="previewUrl; else emptyState">
+    <img [src]="previewUrl" alt="Vista previa de la imagen del contenido temático">
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty">
+      <mat-icon>image</mat-icon>
+      <span>Sin imagen seleccionada</span>
+    </div>
+  </ng-template>
+
+  <div class="actions">
+    <button
+      type="button"
+      mat-flat-button
+      color="primary"
+      (click)="selectFile()"
+      [disabled]="isDisabled || uploading"
+    >
+      {{ imageId ? 'Reemplazar imagen' : 'Seleccionar imagen' }}
+    </button>
+    <button
+      type="button"
+      mat-stroked-button
+      *ngIf="imageId"
+      (click)="remove()"
+      [disabled]="isDisabled || uploading"
+    >
+      Quitar
+    </button>
+    <mat-progress-spinner *ngIf="uploading" diameter="20" mode="indeterminate"></mat-progress-spinner>
+  </div>
+
+  <p class="hint">PNG o JPEG. La imagen se ajusta automáticamente a un máximo de 1.5 MB.</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+</div>

@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
+import { EspacioAcademico, EspacioConSyllabus } from 'src/app/@core/models/espacioAcademico';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
 import { SyllabusService } from '../services/syllabus.service';
@@ -12,6 +12,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { VersionesSyllabusComponent } from '../versiones-syllabus/versiones-syllabus.component';
 import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
+import { AsignarDocenteComponent } from '../asignar-docente/asignar-docente.component';
+import { FlujoService } from '../services/flujo.service';
+import { estadoLabel, fechaCorta } from 'src/app/@core/utils/flujo.helpers';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
 
@@ -27,6 +30,7 @@ export class ListarSyllabusComponent implements OnInit {
     'plan_estudios',
     'semestre',
     'espacio_academico',
+    'asignacion',
     'acciones_buttons',
   ];
   displayedHeaders: string[] = ['resultadosConsulta', 'acciones'];
@@ -40,11 +44,25 @@ export class ListarSyllabusComponent implements OnInit {
   Syllabus: Syllabus;
   SyllabusLoad: boolean;
   hasSyllabusByProjectPlan: boolean;
+  asignacionesPorCodigo = new Map<string, Syllabus>();
+
+  // Listado de espacios académicos del plan de estudios con el indicador de
+  // si el espacio ya tiene syllabus registrado.
+  espacios: EspacioConSyllabus[] = [];
+  espaciosDataSource = new MatTableDataSource<EspacioConSyllabus>();
+  columnasEspacios: string[] = ['espacio', 'semestre', 'estado_syllabus'];
+  filtroEspacios: string = '';
+  espacioSeleccionado: boolean = false;
+  cargandoEspacios: boolean = false;
+
+  readonly estadoLabel = estadoLabel;
+  readonly fechaCorta = fechaCorta;
 
   constructor(
     private router: Router,
     private syllabusService: SyllabusService,
     private request: RequestManager,
+    private flujoService: FlujoService,
     public dialog: MatDialog
   ) {}
 
@@ -56,8 +74,21 @@ export class ListarSyllabusComponent implements OnInit {
     this.syllabusService.planEstudios$.subscribe((planEstudio) => {
       this.PlanEstudio = planEstudio;
     });
+    this.syllabusService.espaciosConSyllabus$.subscribe((listado) => {
+      this.espacios = listado.espacios;
+      this.cargandoEspacios = listado.cargando;
+      this.aplicarFiltroEspacios();
+    });
     this.syllabusService.espacioAcademico$.subscribe((espacioAcademico) => {
       this.EspacioAcademico = espacioAcademico;
+      if (!espacioAcademico || !espacioAcademico.asi_cod) {
+        // Sin espacio seleccionado: se colapsa la tabla de resultados y se
+        // vuelve a mostrar el listado de espacios. No se consulta el CRUD.
+        this.espacioSeleccionado = false;
+        this.limpiarTablaResultados();
+        return;
+      }
+      this.espacioSeleccionado = true;
       this.SyllabusLoad = false;
       this.scrollTablaResultados();
       this.changeDataTableSyllabus();
@@ -69,6 +100,75 @@ export class ListarSyllabusComponent implements OnInit {
 
   changeDataTableSyllabus() {
     this.hasSyllabusByProjectPlan = false;
+    this.asignacionesPorCodigo.clear();
+
+    // 1) Propuestas (borradores) del espacio para saber si hay asignación a docente
+    const queryBorradores = encodeURIComponent(
+      `espacio_academico_id:${this.EspacioAcademico.asi_cod},` +
+        `estado:asignado|en_revision|rechazado|expirado,activo:true`
+    );
+    this.request
+      .get(environment.SYLLABUS_CRUD, `syllabus?query=${queryBorradores}&limit=50`)
+      .subscribe({
+        next: (dataAsignaciones) => {
+          const lista: Syllabus[] =
+            dataAsignaciones && dataAsignaciones.Data ? dataAsignaciones.Data : [];
+          lista.forEach((borrador) => {
+            if (borrador.syllabus_code) {
+              this.asignacionesPorCodigo.set(borrador.syllabus_code, borrador);
+            }
+          });
+          // RequestManager no completa (header$ es un BehaviorSubject), por eso
+          // el encadenamiento va en next, no en complete.
+          this.cargarActivos();
+        },
+        error: () => this.cargarActivos(),
+      });
+  }
+
+  /**
+   * Selecciona un espacio del listado: replica el comportamiento del anterior
+   * selector de espacio académico.
+   */
+  seleccionarEspacio(espacio: EspacioAcademico) {
+    this.syllabusService.setEspacioAcademico(espacio);
+  }
+
+  /**
+   * Regresa al listado de espacios del plan limpiando el filtro de espacio
+   * académico. No vuelve a consultar el CRUD de syllabus.
+   */
+  volverAEspacios() {
+    this.syllabusService.setEspacioAcademico(new EspacioAcademico());
+    // El listado de espacios se vuelve a renderizar después del cambio de estado.
+    setTimeout(() => this.scrollTablaEspacios());
+  }
+
+  /**
+   * Filtra el listado de espacios por nombre o periodo.
+   */
+  aplicarFiltroEspacios() {
+    const filtro = (this.filtroEspacios || '').trim().toLowerCase();
+    const espacios = filtro
+      ? this.espacios.filter(
+          (item) =>
+            (item.espacio.asi_nombre || '').toLowerCase().includes(filtro) ||
+            (item.espacio.pen_sem || '').toLowerCase().includes(filtro)
+        )
+      : this.espacios;
+    this.espaciosDataSource.data = espacios;
+  }
+
+  private limpiarTablaResultados() {
+    this.syllabus = [];
+    this.syllabusData = [];
+    this.dataSource.data = [];
+    this.hasSyllabusByProjectPlan = false;
+    this.asignacionesPorCodigo.clear();
+    this.SyllabusLoad = false;
+  }
+
+  private cargarActivos() {
     this.request
       .get(
         environment.SYLLABUS_CRUD,
@@ -83,10 +183,14 @@ export class ListarSyllabusComponent implements OnInit {
             if (this.syllabus.length == 0) {
               this.syllabusData = [];
               this.dataSource.data = this.syllabusData;
+              const asignadas = this.asignacionesDelContexto();
               Swal.fire({
                 icon: 'warning',
                 title: 'Sin syllabus',
-                text: 'No se encontraron syllabus para este espacio académico.',
+                text:
+                  asignadas.length > 0
+                    ? 'No hay una versión activa, pero existe una propuesta asignada a un docente (en edición o revisión).'
+                    : 'No se encontraron syllabus para este espacio académico.',
               }).then(() => {
                 this.scrollToTable();
               });
@@ -117,6 +221,36 @@ export class ListarSyllabusComponent implements OnInit {
         },
         complete: () => {},
       });
+  }
+
+  // Propuestas borrador del contexto (proyecto/plan) actual
+  asignacionesDelContexto(): Syllabus[] {
+    const pen_cra_cod = Number(this.PlanEstudio?.pen_cra_cod);
+    const pen_nro = Number(this.PlanEstudio?.pen_nro);
+    const resultado: Syllabus[] = [];
+    this.asignacionesPorCodigo.forEach((borrador) => {
+      const proyectos = borrador.proyecto_curricular_ids || [];
+      const planes = borrador.plan_estudios_ids || [];
+      if (proyectos.includes(pen_cra_cod) && planes.includes(pen_nro)) {
+        resultado.push(borrador);
+      }
+    });
+    return resultado;
+  }
+
+  mensajeAsignacionContexto(): string {
+    const asignadas = this.asignacionesDelContexto();
+    if (asignadas.length === 0) {
+      return '';
+    }
+    const asignada = asignadas[0];
+    return (
+      'Existe una propuesta asignada a un docente (' +
+      estadoLabel(asignada.estado || '') +
+      '). Docente: ' +
+      (asignada.flujo?.asignado_a_documento || 'N/D') +
+      '.'
+    );
   }
 
   filterSyllabusByProjectPlan() {
@@ -153,12 +287,17 @@ export class ListarSyllabusComponent implements OnInit {
   formatDataSyllabusForTable() {
     this.syllabusData = [];
     this.syllabus.forEach((value, index) => {
+      const borrador = this.asignacionesPorCodigo.get(value.syllabus_code);
       this.syllabusData.push({
         version: value.version.toString(),
         proyecto: this.Proyecto.Nombre,
         plan_estudios: `${this.PlanEstudio.cra_nombre} - ${this.PlanEstudio.pen_nro}`,
         semestre: this.EspacioAcademico.pen_sem,
         espacio_academico: this.EspacioAcademico.asi_nombre,
+        asignado: !!borrador,
+        estadoAsignacion: borrador?.estado,
+        docenteAsignado: borrador?.flujo?.asignado_a_documento,
+        fechaLimiteAsignacion: borrador?.flujo?.fecha_limite,
       });
     });
     this.dataSource.data = this.syllabusData;
@@ -236,6 +375,11 @@ export class ListarSyllabusComponent implements OnInit {
   scrollFormBuscar() {
     const formBusqueda = document.getElementById('formBusqueda');
     formBusqueda?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  scrollTablaEspacios() {
+    const tablaEspacios = document.getElementById('tablaEspacios');
+    tablaEspacios?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   scrollToTable() {
@@ -442,6 +586,28 @@ export class ListarSyllabusComponent implements OnInit {
     return false;
   }
 
+  openAsignarDocente(row?: number) {
+    const data: any = { documento: this.flujoService.getDocumento() };
+    if (row !== undefined && row !== null && this.syllabus[row]) {
+      data.syllabus_code = this.syllabus[row].syllabus_code;
+    } else {
+      data.espacio_academico_id = Number(this.EspacioAcademico.asi_cod);
+      data.proyecto_curricular_ids = [Number(this.PlanEstudio.pen_cra_cod)];
+      data.plan_estudios_ids = [Number(this.PlanEstudio.pen_nro)];
+    }
+    const dialogRef = this.dialog.open(AsignarDocenteComponent, {
+      width: '560px',
+      maxWidth: '94vw',
+      panelClass: 'sga-modal-panel',
+      data,
+    });
+    dialogRef.afterClosed().subscribe((asignado) => {
+      if (asignado) {
+        this.changeDataTableSyllabus();
+      }
+    });
+  }
+
   FormEditSyllabus(row: number) {
     const formBusqueda = document.getElementById('workspace');
     formBusqueda?.scrollIntoView({ behavior: 'instant', block: 'start' });
@@ -475,4 +641,8 @@ export interface SyllabusInterface {
   plan_estudios: string;
   semestre: string;
   espacio_academico: string;
+  asignado?: boolean;
+  estadoAsignacion?: string;
+  docenteAsignado?: string;
+  fechaLimiteAsignacion?: string;
 }

@@ -103,6 +103,24 @@ export class RequestManager {
   }
 
   /**
+   * Perform a PUT http request sin sufijo de id (la ruta identifica el recurso)
+   *
+   * @param path service's path from environment end-point
+   * @param endpoint service's end-point
+   * @param element data to send as JSON
+   * @returns Observable<any>
+   */
+  putSinId(path:any, endpoint:any, element:any) {
+    return this.header$.pipe(
+      mergeMap(header => {
+        return this.http.put<any>(`${path}${endpoint}`, element, header).pipe(
+          catchError(this.errManager.handleError),
+        );
+      })
+    )
+  }
+
+  /**
    * Perform a DELETE http request
    *
    * @param path service's path from environment end-point

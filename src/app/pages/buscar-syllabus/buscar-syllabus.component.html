@@ -121,41 +121,6 @@
             </mat-form-field>
           </form>
         </mat-step>
-
-        <mat-step [stepControl]="formEspaciosAcademicos">
-          <form [formGroup]="formEspaciosAcademicos">
-            <ng-template matStepLabel
-              >Espacio Académico {{ espacioAcademicoSelectedName }}</ng-template
-            >
-            <mat-form-field class="form-field" appearance="fill">
-              <mat-label>Espacio Académico</mat-label>
-              <mat-select
-                (selectionChange)="onChangeEspacioAcademico($event.value)"
-                formControlName="espaciosAcademicosCtrl"
-                [compareWith]="compareEspacioAcademico"
-                placeholder="Espacio Académico"
-                #espaciosAcademicosSelect
-              >
-                <mat-option>
-                  <ngx-mat-select-search
-                    formControlName="espaciosAcademicosFilterCtrl"
-                    [placeholderLabel]="'Buscar espacio académico'"
-                    noEntriesFoundLabel="'No se encontraron Espacios Académicos'"
-                  >
-                  </ngx-mat-select-search>
-                </mat-option>
-                <mat-option
-                  *ngFor="
-                    let espacio_academico of filterEspaciosAcademicos | async
-                  "
-                  [value]="espacio_academico"
-                >
-                  {{ espacio_academico.asi_nombre }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </form>
-        </mat-step>
       </mat-vertical-stepper>
     </mat-card-content>
   </mat-card>

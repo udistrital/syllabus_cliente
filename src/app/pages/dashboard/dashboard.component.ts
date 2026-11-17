@@ -5,105 +5,111 @@ import { filter, take } from 'rxjs';
 import Swal from 'sweetalert2/dist/sweetalert2';
 import { UserService } from '../services/userService';
 import { SyllabusService } from '../services/syllabus.service';
+import { FlujoService } from '../services/flujo.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  isValidRol:boolean=false;
-  isAsesorVicerrector:boolean=false;
-  puedeBuscar:boolean=false;
-  ValidRols:string[]=['ASESOR_VICE','VICERRECTOR','JEFE_DEPENDENCIA','COORDINADOR','DECANO','DOCENTE'];
-  constructor( private router: Router,private userService:UserService,private syllabusService:SyllabusService){
-    userService.user$.subscribe({
-      next:(data:any) => {
-        const {user, userService: userData}=data;
-        if(typeof user!==undefined){
-          const roles:string[] = [...(user.role || []), ...(userData?.role || [])];
-          this.ValidRols.forEach((rol)=>{
-            if(roles.includes(rol)){
-              this.isValidRol=true;
-            }
-          });
-          // console.log('[Dashboard] user.role:', user.role);
-          // console.log('[Dashboard] userService.role:', userData?.role);
-          // console.log('[Dashboard] roles efectivos:', roles);
-          if(roles.includes('ASESOR_VICE') || roles.includes('VICERRECTOR')){
-            this.isAsesorVicerrector = true;
-            // syllabusService.setrolwithEdit(true);
-          };
-        };
-      },
-      error:(error) => {
-        //consol.log('error',error)
-      }
-    })
-  }
+  puedeBuscar = false;
+  esCoordinador = false;
+  esVistaGlobal = false;
+  cargando = true;
 
-  async ngOnInit(): Promise<void> {
-    const role = await this.userService.getRole();
-    if (role.includes('ASESOR_VICE') || role.includes('VICERRECTOR')) {
-      const puedeEditar = role.includes('VICERRECTOR');
-      this.setPuedeBuscar(true, puedeEditar);
-      this.syllabusService.setVerTodo(true);
-      this.syllabusService.setProgramasVinculados([]);
-      return;
-    }
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private syllabusService: SyllabusService,
+    private flujoService: FlujoService
+  ) {}
+
+  ngOnInit(): void {
+    this.esVistaGlobal = this.userService.esVistaGlobal();
 
     this.userService.terceroListo$
       .pipe(filter((listo: boolean) => listo), take(1))
-      .subscribe(() => {
-        const payload = this.userService.getDatosVinculacion();
-        if (!payload) {
-          this.setPuedeBuscar(false);
-          Swal.fire({
-            icon: 'error',
-            title: 'No se pudo validar la vinculación',
-            text: 'No se encontraron los datos de identificación del usuario.'
-          });
-          return;
-        }
+      .subscribe(() => this.inicializar());
+  }
 
-        this.userService.postVinculacion(payload).subscribe({
-          next: (res: any) => {
-            const vinculado = !!(res && res.Success && Array.isArray(res.Data) && res.Data.length > 0);
-            this.setPuedeBuscar(vinculado);
-            if (vinculado) {
-              this.syllabusService.setProgramasVinculados(res.Data);
-            } else {
-              this.syllabusService.setProgramasVinculados([]);
-              Swal.fire({
-                icon: 'error',
-                title: 'Vinculación no válida',
-                text: (res && res.Message) ? res.Message : 'No se encontraron programas vinculados para su usuario.'
-              });
-            }
-          },
-          error: () => {
-            this.setPuedeBuscar(false);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'No se pudo validar la vinculación. Intente nuevamente.'
-            });
-          }
-        });
+  private inicializar(): void {
+    const datos = this.userService.getDatosVinculacion();
+    const documento =
+      this.userService.getPayload()?.documento ||
+      (datos ? datos.Identificacion : '') ||
+      '';
+    this.flujoService.setDocumento(documento);
+
+    if (this.esVistaGlobal) {
+      this.puedeBuscar = true;
+      this.syllabusService.setVerTodo(true);
+      this.syllabusService.setProgramasVinculados([]);
+      this.syllabusService.setrolwithEdit(this.userService.esVicerrector());
+      this.cargando = false;
+      return;
+    }
+
+    if (!datos) {
+      this.cargando = false;
+      Swal.fire({
+        icon: 'error',
+        title: 'No se pudo validar la identificación del usuario',
+        text: 'No se encontraron los datos de identificación del usuario.',
       });
+      return;
+    }
+
+    this.validarVinculacion(datos);
   }
 
-  goToSearch(){
-    this.navigateToSearch();
+  private validarVinculacion(datos: any): void {
+    this.userService.postVinculacion(datos).subscribe({
+      next: (res: any) => {
+        const vinculado = !!(res && res.Success && Array.isArray(res.Data) && res.Data.length > 0);
+        this.esCoordinador = vinculado;
+        this.syllabusService.setProgramasVinculados(vinculado ? res.Data : []);
+        this.actualizarPuedeBuscar();
+      },
+      error: () => {
+        this.esCoordinador = false;
+        this.syllabusService.setProgramasVinculados([]);
+        this.actualizarPuedeBuscar();
+      },
+    });
   }
 
-  private setPuedeBuscar(valor: boolean, canEdit: boolean = valor){
-    this.puedeBuscar = valor;
-    this.syllabusService.setrolwithEdit(canEdit);
+  private actualizarPuedeBuscar(): void {
+    this.puedeBuscar = this.esCoordinador || this.esVistaGlobal;
+    this.syllabusService.setrolwithEdit(this.esCoordinador || this.esVistaGlobal);
+    this.cargando = false;
   }
 
-  private navigateToSearch(){
-    this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true })
+  // "Pendientes de aprobación": coordinadores y vista global (admin). El admin
+  // ve la tarjeta pero con la acción deshabilitada.
+  get mostrarPendientes(): boolean {
+    return !this.cargando && (this.esCoordinador || this.esVistaGlobal);
   }
 
+  // "Mis syllabus asignados": docentes y vista global (admin).
+  get mostrarMisAsignados(): boolean {
+    return !this.cargando && (!this.esCoordinador || this.esVistaGlobal);
+  }
+
+  // El administrador (vista global) no tiene asignaciones: no debe solicitar.
+  get accionesDeshabilitadas(): boolean {
+    return this.esVistaGlobal;
+  }
+
+  irAlBuscador(): void {
+    this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
+  }
+
+  irAMisAsignaciones(): void {
+    this.router.navigate(['/mis-asignaciones'], { skipLocationChange: true });
+  }
+
+  irAPendientes(): void {
+    this.router.navigate(['/pendientes'], { skipLocationChange: true });
+  }
 }

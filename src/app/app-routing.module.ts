@@ -6,11 +6,15 @@ import { BuscarSyllabusComponent } from './pages/buscar-syllabus/buscar-syllabus
 import { ListarSyllabusComponent } from './pages/listar-syllabus/listar-syllabus.component';
 import { CrearSyllabusComponent } from './pages/crear-syllabus/crear-syllabus.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { MisAsignacionesComponent } from './pages/mis-asignaciones/mis-asignaciones.component';
+import { PendientesComponent } from './pages/pendientes/pendientes.component';
 
 const routes: Routes = [
     { path: 'buscar_syllabus',component:BuscarSyllabusComponent},
     { path: 'listar_syllabus',component:ListarSyllabusComponent},
     { path: 'crear_syllabus',component:CrearSyllabusComponent},
+    { path: 'mis-asignaciones', component: MisAsignacionesComponent },
+    { path: 'pendientes', component: PendientesComponent },
     { path: 'dashboard', component:DashboardComponent},
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     { path: '**', redirectTo: 'dashboard'}

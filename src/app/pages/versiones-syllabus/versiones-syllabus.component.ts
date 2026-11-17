@@ -11,6 +11,7 @@ import { Syllabus} from '../../@core/models/syllabus';
 import { MatDialog } from '@angular/material/dialog';
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
+import * as moment from 'moment';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
 
@@ -69,10 +70,15 @@ export class VersionesSyllabusComponent implements  OnInit{
     //console.log(this.syllabusVersions);
     this.syllabusVersions.forEach((value,index)=> {
       const seguimiento: any = value.seguimiento || {};
+      // Conversión a fecha local del navegador (acepta -05:00 y UTC Z).
+      const fechaElaboracion = seguimiento.fecha_elaboro && moment(seguimiento.fecha_elaboro).isValid()
+        ? moment(seguimiento.fecha_elaboro).format('YYYY-MM-DD') : '';
+      const fechaAprobacion = seguimiento.fechaAprobacionConsejo && moment(seguimiento.fechaAprobacionConsejo).isValid()
+        ? moment(seguimiento.fechaAprobacionConsejo).format('YYYY-MM-DD') : '';
       this.syllabusData.push({
         version: value.version,
-        fecha_elaboracion: seguimiento.fecha_elaboro ? String(seguimiento.fecha_elaboro).split('T')[0] : '',
-        fecha_aprobacion_consejo: seguimiento.fechaAprobacionConsejo ? String(seguimiento.fechaAprobacionConsejo).split('T')[0] : ''
+        fecha_elaboracion: fechaElaboracion,
+        fecha_aprobacion_consejo: fechaAprobacion
       })
     })
     this.dataSource.data=this.syllabusData;

@@ -246,3 +246,66 @@ ul {
 a {
   color: var(--primary);
 }
+
+// El calendario del datepicker de Material se renderiza como <table> real en un
+// overlay CDK; oas.css aplica reglas crudas a table/th/td con !important que
+// vencen los estilos inline de Material (legacy: padding de celda 7.142857%) y
+// sus estilos de tema (MDC: encabezado y bordes), aplastando las fechas.
+// Se neutraliza solo dentro del pop-up del datepicker; las tablas de negocio
+// (listar/versiones) conservan los estilos de la OAS.
+
+// Build legacy instalada hoy (Material 16 del OAS): clases sin prefijo mdc.
+.mat-datepicker-content .mat-calendar-table {
+  thead,
+  tbody {
+    border: none !important;
+  }
+
+  th {
+    background-color: transparent !important;
+    color: inherit !important;
+    border-left: none !important;
+  }
+
+  td.mat-calendar-body-cell-container,
+  td.mat-calendar-body-label {
+    margin: 0 !important;
+    // Restaura el padding inline de MonthView (50% / numCols = 7.142857%)
+    // que oas.css estaba pisando con !important.
+    padding: 7.142857% !important;
+    border-left: none !important;
+    font-size: 1rem !important;
+  }
+
+  + * {
+    margin-top: 0 !important;
+    justify-content: normal !important;
+  }
+}
+
+// Respaldo ante una futura migración al datepicker MDC (Material 15+).
+.mat-mdc-datepicker-content {
+  table,
+  table thead,
+  table tbody {
+    border: none !important;
+  }
+
+  table thead tr th {
+    background-color: transparent !important;
+    color: inherit !important;
+    border-left: none !important;
+  }
+
+  table tbody tr td {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 1rem !important;
+    border-left: none !important;
+  }
+
+  table + * {
+    margin-top: 0 !important;
+    justify-content: normal !important;
+  }
+}

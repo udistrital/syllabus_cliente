@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl, FormControl } from '@angular/forms'
 import { SyllabusService } from '../services/syllabus.service';
+import { FlujoService } from '../services/flujo.service';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { EspacioAcademico } from 'src/app/@core/models/espacioAcademico';
@@ -9,10 +10,15 @@ import { RequestManager } from '../services/requestManager';
 import { UserService } from '../services/userService';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { Syllabus, PFA, ObjetivoEspecifico } from 'src/app/@core/models/syllabus';
+import { Syllabus, PFA, ObjetivoEspecifico, PFAModo } from 'src/app/@core/models/syllabus';
 import { GestorDocumentalService } from '../services/gestor_documental.service';
 import { Documento } from 'src/app/@core/models/documento';
 import  {EmptySpaceValidator } from '../../@core/validators/emptyValue.validator'
+import { RichTextValidator } from '../../@core/validators/richText.validator';
+import { MAX_FILAS_MATRIZ_PFA, PFAValidator } from '../../@core/validators/pfa.validator';
+import { normalizeRichTextValue, sanitizeRichText } from '../../@core/utils/html-editor.utils';
+import { fechaCorta } from 'src/app/@core/utils/flujo.helpers';
+import * as moment from 'moment';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
 
@@ -25,6 +31,12 @@ const EVALUACION_CORTES = [
 
 const CARACTERES = ['Teórico', 'Práctico', 'Teórico-práctico'];
 const MODALIDADES = ['Presencial', 'Virtual', 'Dual', 'Híbrida'];
+const MAX_CARACTERES_JUSTIFICACION = 1200;
+const MAX_OBJETIVOS_ESPECIFICOS = 4;
+const MODO_PFA_LISTADO: PFAModo = 'listado';
+const MODO_PFA_MATRIZ: PFAModo = 'matriz';
+const MAX_COLUMNAS_MATRIZ_PFA = 5;
+const ENCABEZADO_MATRIZ_PFA = 'Propósitos de Formación y Aprendizaje PFA';
 
 @Component({
   selector: 'app-crear-syllabus',
@@ -37,6 +49,9 @@ export class CrearSyllabusComponent implements OnInit {
   EspacioAcademico: EspacioAcademico;
   Syllabus: Syllabus;
   isNew: Boolean;
+  flujoMode: boolean = false;
+  flujoCode: string = '';
+  flujoEstado: string = '';
   detalle_espacio_academico: any;
   formSaberesPrevios: FormGroup;
   formJustificacion: FormGroup;
@@ -64,6 +79,12 @@ export class CrearSyllabusComponent implements OnInit {
   evaluacionCortes = EVALUACION_CORTES;
   caracteres = CARACTERES;
   modalidades = MODALIDADES;
+  maxCaracteresJustificacion = MAX_CARACTERES_JUSTIFICACION;
+  maxObjetivosEspecificos = MAX_OBJETIVOS_ESPECIFICOS;
+  modoPFA: PFAModo = MODO_PFA_LISTADO;
+  maxFilasMatrizPFA = MAX_FILAS_MATRIZ_PFA;
+  maxColumnasMatrizPFA = MAX_COLUMNAS_MATRIZ_PFA;
+  encabezadoMatrizPFA = ENCABEZADO_MATRIZ_PFA;
 
   displayedColumnsFormPFA: string[] = ['numero', 'pfaPrograma']
 
@@ -98,7 +119,7 @@ export class CrearSyllabusComponent implements OnInit {
     return this.formBibliografia.get('paginasWeb') as FormArray
   }
 
-  constructor(private _formBuilder: FormBuilder, private syllabusService: SyllabusService, private router: Router, private request: RequestManager, private gestorService: GestorDocumentalService, private userService: UserService) {
+  constructor(private _formBuilder: FormBuilder, private syllabusService: SyllabusService, private router: Router, private request: RequestManager, private gestorService: GestorDocumentalService, private userService: UserService, private flujoService: FlujoService) {
     this.syllabusService.proyectoAcademico$.subscribe((proyectoAcademico) => {
       this.Proyecto = proyectoAcademico;
     });
@@ -114,6 +135,11 @@ export class CrearSyllabusComponent implements OnInit {
     this.syllabusService.isNew$.subscribe((isNew) => {
       this.isNew = isNew;
     })
+    this.syllabusService.flujoDraft$.subscribe((flujo) => {
+      this.flujoMode = !!flujo;
+      this.flujoCode = flujo ? flujo.code : '';
+      this.flujoEstado = flujo ? flujo.estado : '';
+    });
   }
 
   ngOnInit(): void {
@@ -135,7 +161,7 @@ export class CrearSyllabusComponent implements OnInit {
     this.formularios.controls.push(this.formSaberesPrevios);
 
     this.formJustificacion = this._formBuilder.group({
-      justificacion: [this.Syllabus.justificacion && !this.isNew ? this.Syllabus.justificacion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
+      justificacion: [this.Syllabus.justificacion && !this.isNew ? this.Syllabus.justificacion : '', [Validators.required, Validators.maxLength(MAX_CARACTERES_JUSTIFICACION), EmptySpaceValidator.noEmptySpaceAllowed]]
     });
 
     this.formularios.controls.push(this.formJustificacion);
@@ -149,17 +175,36 @@ export class CrearSyllabusComponent implements OnInit {
 
     this.formularios.controls.push(this.formObjetivos);
 
+    const pfaPrevio = !this.isNew && Array.isArray(this.Syllabus.resultados_aprendizaje)
+      ? this.Syllabus.resultados_aprendizaje
+      : [];
+    const primerPFA = pfaPrevio.length > 0 ? pfaPrevio[0] : undefined;
+    // El modo se deduce de la forma del contenido: pfa_matriz => matriz, pfa_programa => listado.
+    // Los syllabus sin modo (anteriores a esta funcionalidad) abren en modo listado.
+    const esMatrizPFA = !!primerPFA && primerPFA.pfa_matriz !== undefined && primerPFA.pfa_matriz !== null;
+    const modoPFA: PFAModo = esMatrizPFA ? MODO_PFA_MATRIZ : MODO_PFA_LISTADO;
+    this.modoPFA = modoPFA;
+
     this.formPFA = this._formBuilder.group({
+      modo: [modoPFA],
       pfa: this._formBuilder.array([
 
-      ], [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed])
+      ], [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]),
+      pfa_matriz: [esMatrizPFA ? (primerPFA?.pfa_matriz ?? '') : ''],
     });
+    this.setPFAValidators(modoPFA);
 
     this.formularios.controls.push(this.formPFA);
 
+    const contenidoPrevio = !this.isNew && this.Syllabus.contenido ? this.Syllabus.contenido : undefined;
+    const modoContenido: 'texto' | 'imagen' = contenidoPrevio?.imagen_id ? 'imagen' : 'texto';
+
     this.formContenidosTematicos = this._formBuilder.group({
-      descripcion: [this.Syllabus.contenido && !this.isNew ? this.Syllabus.contenido.descripcion : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]]
+      modo: [modoContenido],
+      descripcion: [contenidoPrevio?.descripcion ?? ''],
+      imagen_id: [contenidoPrevio?.imagen_id ?? ''],
     });
+    this.setContenidoValidators(modoContenido);
 
     this.formularios.controls.push(this.formContenidosTematicos);
 
@@ -194,7 +239,7 @@ export class CrearSyllabusComponent implements OnInit {
     this.formularios.controls.push(this.formBibliografia);
 
     this.formSeguimiento = this._formBuilder.group({
-      numeroActa: [!this.isNew ? this.Syllabus.seguimiento.numeroActa : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
+      numeroActa: [!this.isNew && this.Syllabus.seguimiento ? this.Syllabus.seguimiento.numeroActa : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
       archivo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]] // loaded in handleFileInputActaChange()
     })
 
@@ -217,11 +262,13 @@ export class CrearSyllabusComponent implements OnInit {
       this.formIdiomas.get('idioma_espacio_id')?.setValue(this.Syllabus.idioma_espacio_id);
 
       this.Syllabus.objetivos_especificos?.forEach((obj_esp) => {
-        this.agregarObjetivoEspecifico(obj_esp);
+        this.agregarObjetivoEspecifico(obj_esp, true);
       })
-      this.Syllabus.resultados_aprendizaje?.forEach((pfa) => {
-        this.agregarPFA(pfa, true);
-      })
+      if (!esMatrizPFA) {
+        this.Syllabus.resultados_aprendizaje?.forEach((pfa) => {
+          this.agregarPFA(pfa, true);
+        })
+      }
       this.updateViewTablePFA();
       this.Syllabus.bibliografia?.basicas?.forEach((basica) => {
         this.agregarBibliografiaBasica(basica, true);
@@ -240,7 +287,7 @@ export class CrearSyllabusComponent implements OnInit {
       })
       this.updateViewTableBiblioPag();
 
-      if (this.Syllabus.seguimiento.archivo) {
+      if (this.Syllabus.seguimiento && this.Syllabus.seguimiento.archivo) {
         this.actaPrevia = { uid: null, url: null };
         this.gestorService.getByUUID(this.Syllabus.seguimiento.archivo).subscribe({
         next:(document)=>{
@@ -263,9 +310,69 @@ export class CrearSyllabusComponent implements OnInit {
     }
   }
 
-  validateForms() {
+  setContenidoValidators(modo: string): void {
+    if (!this.formContenidosTematicos) {
+      return;
+    }
+
+    const descripcion = this.formContenidosTematicos.get('descripcion');
+    const imagen = this.formContenidosTematicos.get('imagen_id');
+
+    if (modo === 'imagen') {
+      descripcion?.clearValidators();
+      imagen?.setValidators([Validators.required]);
+    } else {
+      imagen?.clearValidators();
+      descripcion?.setValidators([RichTextValidator.required]);
+    }
+
+    descripcion?.updateValueAndValidity();
+    imagen?.updateValueAndValidity();
+  }
+
+  onModoContenidoChange(modo: string): void {
+    this.setContenidoValidators(modo);
+  }
+
+  setPFAValidators(modo: string): void {
+    if (!this.formPFA) {
+      return;
+    }
+
+    const listado = this.formPFA.get('pfa');
+    const matriz = this.formPFA.get('pfa_matriz');
+
+    if (modo === MODO_PFA_MATRIZ) {
+      listado?.clearValidators();
+      matriz?.setValidators([PFAValidator.matrizValida]);
+    } else {
+      matriz?.clearValidators();
+      listado?.setValidators([Validators.required, EmptySpaceValidator.noEmptySpaceAllowed]);
+    }
+
+    listado?.updateValueAndValidity();
+    matriz?.updateValueAndValidity();
+  }
+
+  onModoPFAChange(modo: PFAModo): void {
+    this.modoPFA = modo;
+    // Los modos son excluyentes: al cambiar de modo se descarta el contenido
+    // del modo anterior y el bloque queda en blanco.
+    this.pfa.clear();
+    this.formPFA.get('pfa_matriz')?.setValue('');
+    if (modo === MODO_PFA_LISTADO) {
+      this.agregarPFA(undefined, false);
+    }
+    this.updateViewTablePFA();
+    this.setPFAValidators(modo);
+  }
+
+  validateForms(skipSeguimiento: boolean = false) {
     let isValid:Boolean=true;
     this.formularios.controls.forEach(element => {
+      if (skipSeguimiento && element === this.formSeguimiento) {
+        return;
+      }
       if(!element.valid){
         element.markAllAsTouched();
         isValid=false;
@@ -295,7 +402,10 @@ export class CrearSyllabusComponent implements OnInit {
     this.step--;
   }
 
-  agregarObjetivoEspecifico(obj?: ObjetivoEspecifico) {
+  agregarObjetivoEspecifico(obj?: ObjetivoEspecifico, permitirExceder = false) {
+    if (!permitirExceder && this.objetivosEspecificos.length >= MAX_OBJETIVOS_ESPECIFICOS) {
+      return;
+    }
     const isFirst = this.objetivosEspecificos.length === 0;
     const validators = isFirst ? [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed] : [];
     const objeEsp = this._formBuilder.group({
@@ -394,6 +504,17 @@ export class CrearSyllabusComponent implements OnInit {
     };
   }
 
+  private buildPFAPayload(): PFA[] {
+    const modo = this.formPFA.get('modo')?.value;
+
+    if (modo === MODO_PFA_MATRIZ) {
+      const matriz = this.formPFA.get('pfa_matriz')?.value ?? '';
+      return [{ pfa_matriz: sanitizeRichText(matriz) }];
+    }
+
+    return this.pfa.value as PFA[];
+  }
+
   private buildSyllabusPayload(archivoEnlace: string): any {
     let syllabus: any = {};
     if (!this.isNew && this.Syllabus) {
@@ -437,8 +558,11 @@ export class CrearSyllabusComponent implements OnInit {
     syllabus.justificacion = this.formJustificacion.get('justificacion')?.value;
     syllabus.objetivo_general = this.formObjetivos.get('objetivoGeneral')?.value;
     syllabus.objetivos_especificos = this.objetivosEspecificos.value;
-    syllabus.resultados_aprendizaje = this.pfa.value;
-    syllabus.contenido = { descripcion: this.formContenidosTematicos.get('descripcion')?.value };
+    syllabus.resultados_aprendizaje = this.buildPFAPayload();
+    const modoContenido = this.formContenidosTematicos.get('modo')?.value;
+    syllabus.contenido = modoContenido === 'imagen'
+      ? { imagen_id: this.formContenidosTematicos.get('imagen_id')?.value }
+      : { descripcion: normalizeRichTextValue(this.formContenidosTematicos.get('descripcion')?.value) };
     syllabus.evaluacion = this.buildEvaluacion();
     syllabus.recursos_educativos = this.formMedios.get('medios')?.value;
     syllabus.practicas_academicas = this.formPracticasAcademicas.get('practicasAcademicas')?.value;
@@ -446,16 +570,31 @@ export class CrearSyllabusComponent implements OnInit {
 
     const nombre = this.userService.getNombreCompleto();
     const fechaEdicion = new Date().toISOString();
-    syllabus.seguimiento = {
-      elaboro: nombre,
-      reviso: nombre,
-      aprobo: nombre,
-      fecha_elaboro: fechaEdicion,
-      fechaRevisionConsejo: fechaEdicion,
-      fechaAprobacionConsejo: fechaEdicion,
-      numeroActa: this.formSeguimiento.get('numeroActa')?.value,
-      archivo: archivoEnlace
-    };
+    const seguimientoPrevio = (this.Syllabus?.seguimiento || {}) as any;
+
+    if (this.flujoMode) {
+      // En el flujo (borrador/propuesta) solo se actualiza la elaboración.
+      // La revisión (fecha) se registra al proponer y la aprobación (fecha y
+      // revisor) al publicar; aquí se preservan si ya existieran.
+      syllabus.seguimiento = {
+        ...seguimientoPrevio,
+        elaboro: nombre,
+        fecha_elaboro: fechaEdicion,
+        numeroActa: seguimientoPrevio.numeroActa ?? '',
+        archivo: seguimientoPrevio.archivo ?? null,
+      };
+    } else {
+      syllabus.seguimiento = {
+        elaboro: nombre,
+        reviso: nombre,
+        aprobo: nombre,
+        fecha_elaboro: fechaEdicion,
+        fechaRevisionConsejo: fechaEdicion,
+        fechaAprobacionConsejo: fechaEdicion,
+        numeroActa: this.formSeguimiento.get('numeroActa')?.value,
+        archivo: archivoEnlace
+      };
+    }
 
     return syllabus;
   }
@@ -579,7 +718,69 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   regresar() {
-    this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true })
+    // El modo flujo (borrador/propuesta) solo se alcanza desde "Mis syllabus asignados";
+    // sin flujo se llega desde la vista de búsqueda de syllabus.
+    const destino = this.flujoMode ? '/mis-asignaciones' : '/buscar_syllabus';
+    this.router.navigate([destino], { skipLocationChange: true });
+  }
+
+  guardarBorradorFlujo(proponer: boolean) {
+    if (!this.flujoCode) {
+      return;
+    }
+    if (proponer && !this.validateForms(true)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formulario incompleto',
+        html: `Por favor llene los campos requeridos`
+      });
+      return;
+    }
+    const payload = this.buildSyllabusPayload(this.actaPrevia.uid || '');
+    payload.documento = this.flujoService.getDocumento();
+    Swal.fire({
+      title: proponer ? 'Enviando a revisión' : 'Guardando borrador',
+      html: `Por favor espere`,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      willOpen: () => { Swal.showLoading(); },
+    });
+    this.flujoService.guardarBorrador(this.flujoCode, payload).subscribe({
+      next: () => {
+        if (!proponer) {
+          Swal.close();
+          Swal.fire({ icon: 'success', title: 'Borrador guardado' });
+          return;
+        }
+        this.flujoService.proponer(this.flujoCode, {
+          documento: this.flujoService.getDocumento(),
+          observacion: '',
+        }).subscribe({
+          next: () => {
+            Swal.close();
+            Swal.fire({ icon: 'success', title: 'Propuesta enviada a revisión' });
+            this.syllabusService.setFlujoDraft(null);
+            this.router.navigate(['/dashboard'], { skipLocationChange: true });
+          },
+          error: (err) => {
+            Swal.close();
+            Swal.fire({
+              icon: 'error',
+              title: 'No se pudo enviar a revisión',
+              text: err?.error?.Message || 'Intente nuevamente.',
+            });
+          },
+        });
+      },
+      error: (err) => {
+        Swal.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'No se pudo guardar el borrador',
+          text: err?.error?.Message || 'Intente nuevamente.',
+        });
+      },
+    });
   }
 
   loadIdiomas() {
@@ -615,15 +816,19 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   formatDate(date: string | null): string {
-    if (date) {
-      return date.split('T')[0];
-    } else {
-      return "Sin definir";
-    }
+    return fechaCorta(date);
   }
 
   fechaActual(): string {
-    return new Date().toISOString().split('T')[0];
+    return moment().format('YYYY-MM-DD');
+  }
+
+  fechaRevisionConsejo(): string {
+    return fechaCorta(this.Syllabus?.seguimiento?.fechaRevisionConsejo);
+  }
+
+  fechaAprobacionConsejo(): string {
+    return fechaCorta(this.Syllabus?.seguimiento?.fechaAprobacionConsejo);
   }
 
   previewFile(){

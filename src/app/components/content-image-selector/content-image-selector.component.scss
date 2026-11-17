@@ -1,0 +1,59 @@
+:host {
+  display: block;
+}
+
+.image-selector {
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: 4px;
+  background: #fff;
+  padding: 12px;
+}
+
+.preview {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+
+  img {
+    max-width: 100%;
+    max-height: 320px;
+    object-fit: contain;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+  }
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 120px;
+  margin-bottom: 10px;
+  border: 1px dashed #bdbdbd;
+  border-radius: 4px;
+  color: #757575;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #757575;
+}
+
+.error {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #c62828;
+}
+
+.hidden-input {
+  display: none;
+}

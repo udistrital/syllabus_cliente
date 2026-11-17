@@ -11,3 +11,16 @@ export class EspacioAcademico{
     //     this.asi_estado=asi_estado;
     // }
 }
+
+// Listado de espacios académicos de un plan de estudios con el indicador
+// de si el espacio ya tiene syllabus registrado.
+export interface EspacioConSyllabus {
+    espacio: EspacioAcademico;
+    tieneSyllabus: boolean;
+}
+
+// Listado publicado en el servicio de contexto junto con el estado de carga.
+export interface ListadoEspacios {
+    espacios: EspacioConSyllabus[];
+    cargando: boolean;
+}

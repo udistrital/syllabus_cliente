@@ -1,4 +1,11 @@
 <div class="page-container">
+  <mat-card class="flow-banner" *ngIf="flujoMode">
+    <mat-card-content>
+      <p><strong>Propuesta asignada.</strong> Estado actual: {{ flujoEstado }}.</p>
+      <p>Guarde el borrador mientras avanza. Al <em>enviar a revisión</em> la propuesta pasa al coordinador
+        y no podrá editarla hasta que sea aprobada o rechazada.</p>
+    </mat-card-content>
+  </mat-card>
   <mat-card>
     <mat-card-header>
       <mat-card-title>{{ isNew ? 'Nuevo Syllabus' : 'Editar Syllabus' }}</mat-card-title>
@@ -95,10 +102,24 @@
                   {{ detalle_espacio_academico?.area_formacion }}
                 </td>
               </tr>
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Modalidad
+                <td class="mat-cell casilla-valor" colspan="6">
+                  {{ detalle_espacio_academico?.modalidades }}
+                </td>
+              </tr>
+              <tr class="mat-row">
+                <td class="mat-cell casilla-header">
+                  Carácter del espacio</td>
+                <td class="mat-cell casilla-subtitulo" colspan="6">
+                  {{ detalle_espacio_academico?.caracteres }}
+                </td>
+              </tr>
             </table>
 
             <div class="idiomas-block">
-              <div class="campo-selectable">
+              <!-- <div class="campo-selectable"> 
                 <h3 class="section-title">Carácter del espacio académico</h3>
                 <mat-form-field class="form-field" appearance="fill">
                   <mat-label>Seleccione el carácter</mat-label>
@@ -120,7 +141,7 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-              </div>
+              </div> -->
 
               <div class="campo-selectable">
                 <h3 class="section-title">Idiomas en que se oferta el espacio académico</h3>
@@ -170,13 +191,14 @@
 
             <!-- [linear]="isNew" -->
             <mat-stepper orientation="vertical" [linear]="isNew">
-              <mat-step [stepControl]="formSaberesPrevios">
+              <mat-step [stepControl]="formSaberesPrevios" [hasError]="formSaberesPrevios.invalid">
                 <form [formGroup]="formSaberesPrevios">
                   <ng-template matStepLabel>Saberes y conocimientos previos</ng-template>
                   <ng-template matStepContent>
                     <mat-form-field class="form-field">
                       <mat-label></mat-label>
-                      <textarea matInput formControlName="saberesPrevios"></textarea>
+                      <textarea matInput formControlName="saberesPrevios"
+                        [placeholder]="'CREAR_SYLLABUS.placeholder_saberes_previos' | translate"></textarea>
                     </mat-form-field>
                     <div>
                       <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
@@ -185,13 +207,18 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formJustificacion">
+              <mat-step [stepControl]="formJustificacion" [hasError]="formJustificacion.invalid">
                 <form [formGroup]="formJustificacion">
                   <ng-template matStepLabel>Justificación del espacio académico</ng-template>
                   <ng-template matStepContent>
                     <mat-form-field class="form-field">
                       <mat-label></mat-label>
-                      <textarea matInput formControlName="justificacion"></textarea>
+                      <textarea matInput formControlName="justificacion"
+                        [placeholder]="'CREAR_SYLLABUS.placeholder_justificacion' | translate"
+                        [maxlength]="maxCaracteresJustificacion"></textarea>
+                      <mat-hint align="end">
+                        {{ formJustificacion.get('justificacion')?.value?.length || 0 }} / {{ maxCaracteresJustificacion }}
+                      </mat-hint>
                     </mat-form-field>
                     <div class="actions-row actions-row--top">
                       <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
@@ -201,18 +228,23 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formObjetivos">
+              <mat-step [stepControl]="formObjetivos" [hasError]="formObjetivos.invalid">
                 <form [formGroup]="formObjetivos">
                   <ng-template matStepLabel>Objetivos del espacio académico</ng-template>
                   <ng-template matStepContent>
                     <mat-form-field class="form-field">
                       <mat-label for="objetivoGeneral">Objetivo General</mat-label>
-                      <textarea id="objetivoGeneral" matInput formControlName="objetivoGeneral"></textarea>
+                      <textarea id="objetivoGeneral" matInput formControlName="objetivoGeneral"
+                        [placeholder]="'CREAR_SYLLABUS.placeholder_objetivo_general' | translate"></textarea>
                     </mat-form-field>
 
                     <div class="section-heading">
                       <h2 class="m-0">Objetivos específicos</h2>
-                      <button type="button" mat-mini-fab color="primary" type="button" matTooltip="Agregar objetivo específico"
+                      <button type="button" mat-mini-fab color="primary"
+                        [matTooltip]="objetivosEspecificos.length >= maxObjetivosEspecificos
+                          ? 'Máximo 4 objetivos específicos'
+                          : 'Agregar objetivo específico'"
+                        [disabled]="objetivosEspecificos.length >= maxObjetivosEspecificos"
                         (click)="agregarObjetivoEspecifico()">
                         <mat-icon>add</mat-icon>
                       </button>
@@ -223,7 +255,8 @@
                         <div [formGroupName]="i">
                           <mat-form-field class="form-field">
                             <mat-label for="ObjEsp-{{ i }}">Objetivo Especifico {{ i + 1 }}</mat-label>
-                            <textarea id="ObjEsp-{{ i }}" matInput formControlName="objetivo"></textarea>
+                            <textarea id="ObjEsp-{{ i }}" matInput formControlName="objetivo"
+                              [placeholder]="'CREAR_SYLLABUS.placeholder_objetivo_especifico' | translate"></textarea>
                             <button type="button" mat-icon-button matSuffix class="delete-button" *ngIf="i != 0"
                               matTooltip="Eliminar objetivo específico" (click)="eliminarObjetivoEspecifico(i)">
                               <mat-icon>delete</mat-icon>
@@ -241,11 +274,23 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formPFA">
+              <mat-step [stepControl]="formPFA" [hasError]="formPFA.invalid">
                 <form [formGroup]="formPFA">
                   <ng-template matStepLabel>Propósitos de formación y de aprendizaje (PFA)</ng-template>
                   <ng-template matStepContent>
-                    <div class="table">
+                    <div class="rich-field pfa-modo">
+                      <label class="rich-label">{{ 'CREAR_SYLLABUS.pfa_modo_titulo' | translate }}</label>
+                      <mat-button-toggle-group
+                        class="contenido-modo"
+                        formControlName="modo"
+                        (change)="onModoPFAChange($event.value)"
+                      >
+                        <mat-button-toggle value="listado">{{ 'CREAR_SYLLABUS.pfa_modo_listado' | translate }}</mat-button-toggle>
+                        <mat-button-toggle value="matriz">{{ 'CREAR_SYLLABUS.pfa_modo_matriz' | translate }}</mat-button-toggle>
+                      </mat-button-toggle-group>
+                    </div>
+
+                    <div class="table" *ngIf="modoPFA === 'listado'; else matrizPFA">
                       <table mat-table class="pfa-table" [dataSource]="dataSourceFormPFA" formArrayName="pfa">
                         <ng-container matColumnDef="numero">
                           <th mat-header-cell *matHeaderCellDef>
@@ -268,7 +313,8 @@
                           <td mat-cell *matCellDef="let row; let index = index" [formGroupName]="index">
                             <mat-form-field class="form-field">
                               <mat-label>PFA programa</mat-label>
-                              <input matInput formControlName="pfa_programa">
+                              <input matInput formControlName="pfa_programa"
+                                [placeholder]="'CREAR_SYLLABUS.placeholder_pfa' | translate">
                             </mat-form-field>
                           </td>
                         </ng-container>
@@ -278,6 +324,24 @@
                       </table>
                     </div>
 
+                    <ng-template #matrizPFA>
+                      <div class="rich-field">
+                        <p class="nota-ayuda">{{ 'CREAR_SYLLABUS.pfa_matriz_ayuda' | translate }}</p>
+                        <app-rich-text-editor
+                          formControlName="pfa_matriz"
+                          [modoMatriz]="true"
+                          [maxFilasContenido]="maxFilasMatrizPFA"
+                          [maxColumnas]="maxColumnasMatrizPFA"
+                          [encabezadoPrimeraColumna]="encabezadoMatrizPFA">
+                        </app-rich-text-editor>
+                        <span class="rich-label">{{ 'CREAR_SYLLABUS.pfa_matriz_max_filas' | translate }}</span>
+                        <div class="rich-error"
+                          *ngIf="formPFA.get('pfa_matriz')?.touched && formPFA.get('pfa_matriz')?.invalid">
+                          {{ 'CREAR_SYLLABUS.pfa_matriz_error' | translate }}
+                        </div>
+                      </div>
+                    </ng-template>
+
                     <div class="form-actions">
                       <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
                       <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
@@ -286,14 +350,50 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formContenidosTematicos">
+              <mat-step [stepControl]="formContenidosTematicos" [hasError]="formContenidosTematicos.invalid">
                 <form [formGroup]="formContenidosTematicos">
                   <ng-template matStepLabel>Contenidos temáticos</ng-template>
                   <ng-template matStepContent>
-                    <mat-form-field class="form-field">
-                      <mat-label>Descripcion</mat-label>
-                      <textarea matInput formControlName="descripcion"></textarea>
-                    </mat-form-field>
+                    <div class="rich-field">
+                      <mat-button-toggle-group
+                        class="contenido-modo"
+                        formControlName="modo"
+                        (change)="onModoContenidoChange($event.value)"
+                      >
+                        <mat-button-toggle value="texto">Texto</mat-button-toggle>
+                        <mat-button-toggle value="imagen">Imagen</mat-button-toggle>
+                      </mat-button-toggle-group>
+
+                      <ng-container *ngIf="formContenidosTematicos.get('modo')?.value === 'texto'; else imagenContenido">
+                        <label class="rich-label">Descripción</label>
+                        <app-rich-text-editor
+                          formControlName="descripcion"
+                          [placeholder]="'CREAR_SYLLABUS.placeholder_contenidos_tematicos' | translate"
+                        ></app-rich-text-editor>
+                        <div
+                          class="rich-error"
+                          *ngIf="formContenidosTematicos.get('descripcion')?.touched && formContenidosTematicos.get('descripcion')?.invalid"
+                        >
+                          <ng-container *ngIf="formContenidosTematicos.get('descripcion')?.errors?.requiredRichText">
+                            Este campo es obligatorio.
+                          </ng-container>
+                          <ng-container *ngIf="formContenidosTematicos.get('descripcion')?.errors?.maxRichTextLength">
+                            El contenido supera el máximo de 100 000 caracteres.
+                          </ng-container>
+                        </div>
+                      </ng-container>
+
+                      <ng-template #imagenContenido>
+                        <label class="rich-label">Descripción</label>
+                        <app-content-image-selector formControlName="imagen_id"></app-content-image-selector>
+                        <div
+                          class="rich-error"
+                          *ngIf="formContenidosTematicos.get('imagen_id')?.touched && formContenidosTematicos.get('imagen_id')?.invalid"
+                        >
+                          Debe cargar una imagen.
+                        </div>
+                      </ng-template>
+                    </div>
 
                     <div class="actions-row actions-row--top">
                       <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
@@ -324,6 +424,8 @@
                     </table>
                   </div>
 
+                  <p class="nota-ayuda nota-ayuda--pie">{{ 'CREAR_SYLLABUS.evaluacion_ayuda' | translate }}</p>
+
                   <div class="form-actions">
                     <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
                     <button type="button" mat-flat-button color="primary" matStepperNext>Siguiente</button>
@@ -331,13 +433,14 @@
                 </ng-template>
               </mat-step>
 
-              <mat-step [stepControl]="formMedios">
+              <mat-step [stepControl]="formMedios" [hasError]="formMedios.invalid">
                 <form [formGroup]="formMedios">
                   <ng-template matStepLabel>Medios y recursos educativos</ng-template>
                   <ng-template matStepContent>
                     <mat-form-field class="form-field">
                       <mat-label>Medios y Recursos educativos</mat-label>
-                      <textarea matInput formControlName="medios"></textarea>
+                      <textarea matInput formControlName="medios"
+                        [placeholder]="'CREAR_SYLLABUS.placeholder_medios_recursos' | translate"></textarea>
                     </mat-form-field>
                     <div class="actions-row actions-row--top">
                       <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
@@ -347,13 +450,14 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formPracticasAcademicas">
+              <mat-step [stepControl]="formPracticasAcademicas" [hasError]="formPracticasAcademicas.invalid">
                 <form [formGroup]="formPracticasAcademicas">
                   <ng-template matStepLabel>Prácticas académicas</ng-template>
                   <ng-template matStepContent>
                     <mat-form-field class="form-field">
                       <mat-label>Practicas</mat-label>
-                      <textarea matInput formControlName="practicasAcademicas"></textarea>
+                      <textarea matInput formControlName="practicasAcademicas"
+                        [placeholder]="'CREAR_SYLLABUS.placeholder_practicas_academicas' | translate"></textarea>
                     </mat-form-field>
                     <div class="actions-row actions-row--top">
                       <button type="button" mat-flat-button color="primary" matStepperPrevious>Anterior</button>
@@ -363,7 +467,7 @@
                 </form>
               </mat-step>
 
-              <mat-step [stepControl]="formBibliografia">
+              <mat-step [stepControl]="formBibliografia" [hasError]="formBibliografia.invalid">
                 <form [formGroup]="formBibliografia">
                   <ng-template matStepLabel>Fuentes y recursos</ng-template>
                   <ng-template matStepContent>
@@ -385,7 +489,8 @@
                           <td mat-cell *matCellDef="let row; let index = index" class="biblio-cell">
                             <mat-form-field class="form-field">
                               <mat-label>Básica {{ index + 1 }}</mat-label>
-                              <input matInput [formControlName]="index">
+                              <input matInput [formControlName]="index"
+                                [placeholder]="'CREAR_SYLLABUS.placeholder_fuentes' | translate">
                               <button type="button" mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
                                 matTooltip="Eliminar" (click)="eliminarBibliografiaBasica(index)">
                                 <mat-icon>delete</mat-icon>
@@ -413,7 +518,8 @@
                           <td mat-cell *matCellDef="let row; let index = index" class="biblio-cell">
                             <mat-form-field class="form-field">
                               <mat-label>Complementaria {{ index + 1 }}</mat-label>
-                              <input matInput [formControlName]="index">
+                              <input matInput [formControlName]="index"
+                                [placeholder]="'CREAR_SYLLABUS.placeholder_fuentes' | translate">
                               <button type="button" mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
                                 matTooltip="Eliminar bibliografía" (click)="eliminarBibliografiaComplementaria(index)">
                                 <mat-icon>delete</mat-icon>
@@ -440,7 +546,8 @@
                           <td mat-cell *matCellDef="let row; let index = index" class="biblio-cell">
                             <mat-form-field class="form-field">
                               <mat-label>Base de datos {{ index + 1 }}</mat-label>
-                              <input matInput [formControlName]="index">
+                              <input matInput [formControlName]="index"
+                                [placeholder]="'CREAR_SYLLABUS.placeholder_fuentes' | translate">
                               <button type="button" mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
                                 matTooltip="Eliminar base de datos" (click)="eliminarBibliografiaBase(index)">
                                 <mat-icon>delete</mat-icon>
@@ -467,7 +574,8 @@
                           <td mat-cell *matCellDef="let row; let index = index" class="biblio-cell">
                             <mat-form-field class="form-field">
                               <mat-label>Página web {{ index + 1 }}</mat-label>
-                              <input matInput [formControlName]="index">
+                              <input matInput [formControlName]="index"
+                                [placeholder]="'CREAR_SYLLABUS.placeholder_fuentes' | translate">
                               <button type="button" mat-icon-button matSuffix class="delete-button" *ngIf="index != 0"
                                 matTooltip="Eliminar bibliografía" (click)="eliminarBibliografiaPaginaWeb(index)">
                                 <mat-icon>delete</mat-icon>
@@ -508,21 +616,21 @@
                   <div class="seguimiento-label w-25">Fecha de elaboración</div>
                   <div class="seguimiento-field w-25">{{ fechaActual() }}</div>
                   <div class="seguimiento-label w-25">Fecha de revisión</div>
-                  <div class="seguimiento-field w-25">{{ fechaActual() }}</div>
+                  <div class="seguimiento-field w-25">{{ fechaRevisionConsejo() }}</div>
                 </div>
 
                 <div class="seguimiento-row">
                   <div class="seguimiento-label w-25">Fecha de aprobación</div>
-                  <div class="seguimiento-field w-25">{{ fechaActual() }}</div>
-                  <div class="seguimiento-label w-25">Número de acta</div>
-                  <div class="seguimiento-field w-25">
+                  <div class="seguimiento-field w-25">{{ fechaAprobacionConsejo() }}</div>
+                  <div class="seguimiento-label w-25" *ngIf="!flujoMode">Número de acta</div>
+                  <div class="seguimiento-field w-25" *ngIf="!flujoMode">
                     <mat-form-field class="form-field">
                       <input matInput type="text" formControlName="numeroActa" placeholder="Número de acta">
                     </mat-form-field>
                   </div>
                 </div>
 
-                <div class="seguimiento-row">
+                <div class="seguimiento-row" *ngIf="!flujoMode">
                   <mat-form-field class="form-field w-90">
                     <mat-label>Acta</mat-label>
                     <button type="button" mat-icon-button matPrefix type="button" (click)="f_input.click()" matTooltip="Cargar documento">
@@ -540,6 +648,10 @@
                     <input matInput type="text" readonly>
                   </mat-form-field>
                 </div>
+
+                <p class="flow-banner-note" *ngIf="flujoMode">
+                  El acta de consejo se adjunta al momento de la aprobación (publicación).
+                </p>
               </div>
             </form>
           </section>
@@ -550,6 +662,12 @@
 
   <div class="actions-center">
     <button type="button" mat-flat-button color="primary" (click)="regresar()">Regresar</button>
-    <button type="button" mat-flat-button color="primary" (click)="SubmitSyllabus()">Guardar</button>
+    <ng-container *ngIf="flujoMode; else edicionNormal">
+      <button type="button" mat-flat-button (click)="guardarBorradorFlujo(false)">Guardar borrador</button>
+      <button type="button" mat-flat-button color="accent" (click)="guardarBorradorFlujo(true)">Enviar a revisión</button>
+    </ng-container>
+    <ng-template #edicionNormal>
+      <button type="button" mat-flat-button color="primary" (click)="SubmitSyllabus()">Guardar</button>
+    </ng-template>
   </div>
 </div>

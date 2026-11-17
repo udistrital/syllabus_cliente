@@ -163,6 +163,7 @@ npm run test
 
 ## Notas técnicas
 
+- **Manejo de fechas**: el backend escribe fechas en UTC y con offset Bogotá; la conversión para mostrar es del cliente (zona del navegador), vía `moment` (helpers `fechaCorta`).
 - **Doble `zone.js` en standalone**: el `layout-web-component.js` (OAS) incluye su propio `zone.js`, que convive con el `zone.js` del build. Esto deja `FileReader` doblemente parcheado y produce `Maximum call stack size exceeded` al leer archivos. Por eso la carga del acta **no usa `FileReader`** (ver `src/app/pages/services/gestor_documental.service.ts`). Al ejecutarse como microfrontend bajo root/core, el layout lo aporta el core y no se duplica.
 
 ## Licencia
