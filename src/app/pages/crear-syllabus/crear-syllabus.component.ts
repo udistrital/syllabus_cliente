@@ -277,9 +277,13 @@ export class CrearSyllabusComponent implements OnInit {
 
     this.formularios.controls.push(this.formBibliografia);
 
+    // El acta y el documento de soporte solo son obligatorios para la
+    // publicación de un syllabus: no aplican en el flujo ni en las propuestas.
+    const exigeSeguimiento = !this.flujoMode && !this.modoPropuesta;
+
     this.formSeguimiento = this._formBuilder.group({
-      numeroActa: [!this.isNew && this.Syllabus.seguimiento ? this.Syllabus.seguimiento.numeroActa : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      archivo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]] // loaded in handleFileInputActaChange()
+      numeroActa: [!this.isNew && this.Syllabus.seguimiento ? this.Syllabus.seguimiento.numeroActa : '', exigeSeguimiento ? [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed] : []],
+      archivo: ['', exigeSeguimiento ? [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed] : []] // loaded in handleFileInputActaChange()
     })
 
     this.formularios.controls.push(this.formSeguimiento);
@@ -631,6 +635,13 @@ export class CrearSyllabusComponent implements OnInit {
         numeroActa: seguimientoPrevio.numeroActa ?? '',
         archivo: seguimientoPrevio.archivo ?? null,
       };
+    } else if (this.modoPropuesta) {
+      // La propuesta todavía no ha sido revisada ni aprobada: solo se registra
+      // quién la elaboró. El acta se adjunta al publicar el syllabus.
+      syllabus.seguimiento = {
+        elaboro: nombre,
+        fecha_elaboro: fechaEdicion,
+      };
     } else {
       syllabus.seguimiento = {
         elaboro: nombre,
@@ -711,7 +722,8 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   SubmitSyllabus() {
-    if (this.validateForms()) {
+    // En modo propuesta el acta y el documento de soporte no se exigen.
+    if (this.validateForms(this.modoPropuesta)) {
       this.createNewVersionSyllabus();
     }else{
       Swal.fire({
@@ -744,6 +756,11 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   uploadActa(): Observable<Documento> {
+    if (this.modoPropuesta) {
+      // La propuesta no se publica: no hay acta ni documento de soporte.
+      const doc: any = { res: { Enlace: '' } };
+      return of(doc);
+    }
     if (!this.actaFile && this.actaPrevia.uid) {
       const doc: any = {res: {Enlace: this.actaPrevia.uid}};
       return of(doc)

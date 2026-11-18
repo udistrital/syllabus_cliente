@@ -24,7 +24,9 @@
     "evaluacion_ayuda": "Teacher, note that although the percentages for the assessment periods are already defined, within your academic freedom you may establish, divide or organize the assessments of the course as appropriate, within those limits.",
     "propuesta_ayuda": "The academic space does not exist in Académica yet. Enter the course name and the number of credits that will be used in the proposal PDF.",
     "propuesta_nombre": "Course name",
-    "propuesta_creditos": "Number of academic credits"
+    "propuesta_creditos": "Number of academic credits",
+    "seguimiento_nota_flujo": "The council minutes are attached at the time of approval (publication).",
+    "seguimiento_nota_propuesta": "The council minutes and the supporting document are attached when the syllabus is published."
   },
   "LISTAR_SYLLABUS": {
     "propuestas_titulo": "Syllabus proposals",

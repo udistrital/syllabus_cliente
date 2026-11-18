@@ -24,7 +24,9 @@
     "evaluacion_ayuda": "Docente, tenga en cuenta que si bien los porcentajes de los cortes están definidos, usted, dentro de su libertad académica, puede establecer, dividir u organizar las evaluaciones del espacio según convenga, dentro de esos límites.",
     "propuesta_ayuda": "El espacio académico todavía no existe en Académica. Indique el nombre de la asignatura y el número de créditos que se usarán en el PDF de la propuesta.",
     "propuesta_nombre": "Nombre de la asignatura",
-    "propuesta_creditos": "Número de créditos académicos"
+    "propuesta_creditos": "Número de créditos académicos",
+    "seguimiento_nota_flujo": "El acta de consejo se adjunta al momento de la aprobación (publicación).",
+    "seguimiento_nota_propuesta": "El acta de consejo y el documento de soporte se adjuntan al momento de publicar el syllabus."
   },
   "LISTAR_SYLLABUS": {
     "propuestas_titulo": "Propuestas de syllabus",

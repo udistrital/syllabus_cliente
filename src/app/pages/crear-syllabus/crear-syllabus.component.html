@@ -642,15 +642,15 @@
                 <div class="seguimiento-row">
                   <div class="seguimiento-label w-25">Fecha de aprobación</div>
                   <div class="seguimiento-field w-25">{{ fechaAprobacionConsejo() }}</div>
-                  <div class="seguimiento-label w-25" *ngIf="!flujoMode">Número de acta</div>
-                  <div class="seguimiento-field w-25" *ngIf="!flujoMode">
+                  <div class="seguimiento-label w-25" *ngIf="!flujoMode && !modoPropuesta">Número de acta</div>
+                  <div class="seguimiento-field w-25" *ngIf="!flujoMode && !modoPropuesta">
                     <mat-form-field class="form-field">
                       <input matInput type="text" formControlName="numeroActa" placeholder="Número de acta">
                     </mat-form-field>
                   </div>
                 </div>
 
-                <div class="seguimiento-row" *ngIf="!flujoMode">
+                <div class="seguimiento-row" *ngIf="!flujoMode && !modoPropuesta">
                   <mat-form-field class="form-field w-90">
                     <mat-label>Acta</mat-label>
                     <button type="button" mat-icon-button matPrefix type="button" (click)="f_input.click()" matTooltip="Cargar documento">
@@ -670,7 +670,10 @@
                 </div>
 
                 <p class="flow-banner-note" *ngIf="flujoMode">
-                  El acta de consejo se adjunta al momento de la aprobación (publicación).
+                  {{ 'CREAR_SYLLABUS.seguimiento_nota_flujo' | translate }}
+                </p>
+                <p class="flow-banner-note" *ngIf="modoPropuesta">
+                  {{ 'CREAR_SYLLABUS.seguimiento_nota_propuesta' | translate }}
                 </p>
               </div>
             </form>
