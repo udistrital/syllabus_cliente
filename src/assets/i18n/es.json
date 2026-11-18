@@ -35,6 +35,7 @@
     "propuestas_columna_nombre": "Nombre de la asignatura",
     "propuestas_columna_creditos": "Créditos",
     "propuestas_columna_fecha": "Fecha de creación",
-    "propuestas_vacias": "No hay propuestas registradas para este programa."
+    "propuestas_vacias": "No hay propuestas registradas para este programa.",
+    "propuestas_ayuda_solo_lectura": "En esta vista solo puede consultar el PDF de las propuestas."
   }
 }

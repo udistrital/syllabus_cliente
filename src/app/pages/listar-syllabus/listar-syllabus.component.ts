@@ -14,6 +14,7 @@ import { VersionesSyllabusComponent } from '../versiones-syllabus/versiones-syll
 import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
 import { AsignarDocenteComponent } from '../asignar-docente/asignar-docente.component';
 import { FlujoService } from '../services/flujo.service';
+import { UserService } from '../services/userService';
 import { estadoLabel, fechaCorta } from 'src/app/@core/utils/flujo.helpers';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
@@ -38,6 +39,10 @@ export class ListarSyllabusComponent implements OnInit {
   syllabus: Syllabus[] = [];
   syllabusData: SyllabusInterface[];
   canEdit: boolean;
+  // La vista global (asesoría/vicerrectoría) puede consultar las propuestas
+  // aunque no tenga permisos de edición.
+  vistaGlobal: boolean = false;
+  puedeVerPropuestas: boolean = false;
   Proyecto!: ProyectoAcademico;
   PlanEstudio!: PlanEstudio;
   EspacioAcademico!: EspacioAcademico;
@@ -69,11 +74,14 @@ export class ListarSyllabusComponent implements OnInit {
     private syllabusService: SyllabusService,
     private request: RequestManager,
     private flujoService: FlujoService,
+    private userService: UserService,
     public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.SyllabusLoad = false;
+    // Se calcula una sola vez: esVistaGlobal() lee y parsea la sesión.
+    this.vistaGlobal = this.userService.esVistaGlobal();
     this.syllabusService.proyectoAcademico$.subscribe((proyectoAcademico) => {
       this.Proyecto = proyectoAcademico;
     });
@@ -104,6 +112,7 @@ export class ListarSyllabusComponent implements OnInit {
     });
     this.syllabusService.rolwithEdit$.subscribe((canEdit) => {
       this.canEdit = canEdit;
+      this.puedeVerPropuestas = canEdit || this.vistaGlobal;
     });
   }
 
