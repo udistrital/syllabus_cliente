@@ -76,10 +76,12 @@ export class ListarSyllabusComponent implements OnInit {
     this.SyllabusLoad = false;
     this.syllabusService.proyectoAcademico$.subscribe((proyectoAcademico) => {
       this.Proyecto = proyectoAcademico;
-      this.cargarPropuestas();
     });
     this.syllabusService.planEstudios$.subscribe((planEstudio) => {
       this.PlanEstudio = planEstudio;
+      // Las propuestas se consultan por el código del proyecto curricular, que
+      // es el valor con el que se registran los syllabus.
+      this.cargarPropuestas();
     });
     this.syllabusService.espaciosConSyllabus$.subscribe((listado) => {
       this.espacios = listado.espacios;
@@ -155,16 +157,21 @@ export class ListarSyllabusComponent implements OnInit {
 
   /**
    * Carga las propuestas del programa actual para que el coordinador pueda
-   * retomarlas o ver su PDF.
+   * retomarlas o ver su PDF. La consulta usa el código del proyecto curricular
+   * (codigo_proyecto), que es el mismo valor con el que se registra el syllabus
+   * en proyecto_curricular_ids, y no el id de Oikos.
    */
   cargarPropuestas(): void {
-    if (!this.Proyecto || !this.Proyecto.Id) {
+    const codigoProyecto = this.PlanEstudio?.pen_cra_cod;
+
+    if (!codigoProyecto) {
       this.propuestas = [];
       return;
     }
+
     this.cargandoPropuestas = true;
     const query = encodeURIComponent(
-      `proyecto_curricular_id:${this.Proyecto.Id},es_propuesta:true`
+      `proyecto_curricular_id:${codigoProyecto},es_propuesta:true`
     );
     this.request
       .get(environment.SYLLABUS_CRUD, `syllabus?query=${query}&limit=50`)

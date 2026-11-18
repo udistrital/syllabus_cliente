@@ -636,11 +636,15 @@ export class CrearSyllabusComponent implements OnInit {
         archivo: seguimientoPrevio.archivo ?? null,
       };
     } else if (this.modoPropuesta) {
-      // La propuesta todavía no ha sido revisada ni aprobada: solo se registra
-      // quién la elaboró. El acta se adjunta al publicar el syllabus.
+      // La propuesta todavía no ha sido revisada ni aprobada: se registra solo
+      // quién la elaboró, con la misma estructura del bloque de seguimiento del
+      // flujo. El acta se adjunta al publicar el syllabus.
       syllabus.seguimiento = {
+        ...seguimientoPrevio,
         elaboro: nombre,
         fecha_elaboro: fechaEdicion,
+        numeroActa: seguimientoPrevio.numeroActa ?? '',
+        archivo: seguimientoPrevio.archivo ?? null,
       };
     } else {
       syllabus.seguimiento = {
