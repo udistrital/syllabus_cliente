@@ -55,6 +55,12 @@ export class ListarSyllabusComponent implements OnInit {
   espacioSeleccionado: boolean = false;
   cargandoEspacios: boolean = false;
 
+  // Propuestas de syllabus del programa: documentos para espacios académicos
+  // que todavía no existen en Académica.
+  propuestas: Syllabus[] = [];
+  cargandoPropuestas: boolean = false;
+  columnasPropuestas: string[] = ['nombre', 'creditos', 'fecha', 'acciones'];
+
   readonly estadoLabel = estadoLabel;
   readonly fechaCorta = fechaCorta;
 
@@ -70,6 +76,7 @@ export class ListarSyllabusComponent implements OnInit {
     this.SyllabusLoad = false;
     this.syllabusService.proyectoAcademico$.subscribe((proyectoAcademico) => {
       this.Proyecto = proyectoAcademico;
+      this.cargarPropuestas();
     });
     this.syllabusService.planEstudios$.subscribe((planEstudio) => {
       this.PlanEstudio = planEstudio;
@@ -132,6 +139,70 @@ export class ListarSyllabusComponent implements OnInit {
    */
   seleccionarEspacio(espacio: EspacioAcademico) {
     this.syllabusService.setEspacioAcademico(espacio);
+  }
+
+  /**
+   * Crea una propuesta de syllabus para un espacio académico que todavía no
+   * existe: se conserva el contexto del programa y del plan de estudios
+   * seleccionados y se abre el editor en modo propuesta.
+   */
+  crearPropuesta(): void {
+    this.syllabusService.setModoPropuesta(true);
+    this.syllabusService.setisNew(true);
+    this.syllabusService.setSyllabus(new Syllabus());
+    this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
+  }
+
+  /**
+   * Carga las propuestas del programa actual para que el coordinador pueda
+   * retomarlas o ver su PDF.
+   */
+  cargarPropuestas(): void {
+    if (!this.Proyecto || !this.Proyecto.Id) {
+      this.propuestas = [];
+      return;
+    }
+    this.cargandoPropuestas = true;
+    const query = encodeURIComponent(
+      `proyecto_curricular_id:${this.Proyecto.Id},es_propuesta:true`
+    );
+    this.request
+      .get(environment.SYLLABUS_CRUD, `syllabus?query=${query}&limit=50`)
+      .subscribe({
+        next: (data: any) => {
+          this.propuestas = data && data.Data ? data.Data : [];
+          this.cargandoPropuestas = false;
+        },
+        error: () => {
+          this.propuestas = [];
+          this.cargandoPropuestas = false;
+        },
+      });
+  }
+
+  /**
+   * Abre la propuesta en el editor para continuar su diligenciamiento.
+   */
+  abrirPropuesta(propuesta: Syllabus): void {
+    this.syllabusService.setModoPropuesta(true);
+    this.syllabusService.setisNew(false);
+    this.syllabusService.setSyllabus(propuesta);
+    this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
+  }
+
+  /**
+   * Muestra el PDF de la propuesta en el visor existente.
+   */
+  verPdfPropuesta(propuesta: Syllabus): void {
+    this.syllabusService.setSyllabus(propuesta);
+    const dialogRef = this.dialog.open(VisualizarSyllabusComponent, {
+      width: '80vw',
+      height: '90vh',
+      maxWidth: '96vw',
+      maxHeight: '94vh',
+      panelClass: 'sga-modal-panel',
+    });
+    dialogRef.componentInstance.Syllabus = propuesta;
   }
 
   /**

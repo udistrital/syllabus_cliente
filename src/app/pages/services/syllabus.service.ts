@@ -29,6 +29,7 @@ export class SyllabusService {
   private programasVinculados= new BehaviorSubject<VinculacionPrograma[]>([]);
   private verTodo= new BehaviorSubject<boolean>(false);
   private flujoDraft= new BehaviorSubject<{code:string, estado:string} | null>(null);
+  private modoPropuesta= new BehaviorSubject<boolean>(false);
 
   facultad$=this.facultad.asObservable();
   proyectoAcademico$=this.proyectoAcademico.asObservable();
@@ -44,6 +45,7 @@ export class SyllabusService {
   programasVinculados$=this.programasVinculados.asObservable();
   verTodo$=this.verTodo.asObservable();
   flujoDraft$=this.flujoDraft.asObservable();
+  modoPropuesta$=this.modoPropuesta.asObservable();
 
   constructor() { }
 
@@ -102,6 +104,12 @@ export class SyllabusService {
 
   setFlujoDraft(flujo:{code:string, estado:string} | null){
     this.flujoDraft.next(flujo);
+  }
+
+  // Modo propuesta: el syllabus se diligencia para un espacio académico que
+  // todavía no existe en Académica.
+  setModoPropuesta(modo:boolean){
+    this.modoPropuesta.next(modo);
   }
 
   // Establece el contexto (proyecto/plan/espacio) a partir de un borrador,

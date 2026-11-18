@@ -20,10 +20,16 @@
             estudio:{{ PlanEstudio.pen_nro }}</label>
         </p>
         <p>
-          <label><strong>Espacio académico:</strong> {{ EspacioAcademico.asi_nombre }}</label>
+          <label><strong>Espacio académico:</strong>
+            <ng-container *ngIf="!modoPropuesta">{{ EspacioAcademico.asi_nombre }}</ng-container>
+            <ng-container *ngIf="modoPropuesta">{{ formPropuesta.get('propuesta_nombre')?.value || 'Por definir' }}</ng-container>
+          </label>
         </p>
-        <p>
+        <p *ngIf="!modoPropuesta">
           <label><strong>Periodo académico:</strong> {{ EspacioAcademico.pen_sem }}</label>
+        </p>
+        <p *ngIf="modoPropuesta">
+          <label><strong>Tipo de documento:</strong> Propuesta de syllabus (el espacio académico aún no existe)</label>
         </p>
       </div>
     </mat-card-content>
@@ -43,7 +49,7 @@
           <section class="sga-modal-section">
             <!-- <h3 class="section-title">Identificación del espacio académico</h3> -->
 
-            <table class="mat-table table-casillas table-casillas--compact">
+            <table class="mat-table table-casillas table-casillas--compact" *ngIf="!modoPropuesta">
               <tr class="mat-row">
                 <td class="mat-cell casilla-header">
                   Código del espacio académico</td>
@@ -117,6 +123,20 @@
                 </td>
               </tr>
             </table>
+
+            <form [formGroup]="formPropuesta" *ngIf="modoPropuesta" class="pfa-matriz-ayuda-form">
+              <p class="nota-ayuda">
+                {{ 'CREAR_SYLLABUS.propuesta_ayuda' | translate }}
+              </p>
+              <mat-form-field class="form-field" appearance="fill">
+                <mat-label>{{ 'CREAR_SYLLABUS.propuesta_nombre' | translate }}</mat-label>
+                <input matInput formControlName="propuesta_nombre" type="text" />
+              </mat-form-field>
+              <mat-form-field class="form-field" appearance="fill">
+                <mat-label>{{ 'CREAR_SYLLABUS.propuesta_creditos' | translate }}</mat-label>
+                <input matInput formControlName="propuesta_creditos" type="number" min="1" />
+              </mat-form-field>
+            </form>
 
             <div class="idiomas-block">
               <!-- <div class="campo-selectable"> 

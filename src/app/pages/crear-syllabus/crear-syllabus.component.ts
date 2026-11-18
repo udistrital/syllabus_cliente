@@ -17,6 +17,7 @@ import  {EmptySpaceValidator } from '../../@core/validators/emptyValue.validator
 import { RichTextValidator } from '../../@core/validators/richText.validator';
 import { MAX_FILAS_MATRIZ_PFA, PFAValidator } from '../../@core/validators/pfa.validator';
 import { normalizeRichTextValue, sanitizeRichText } from '../../@core/utils/html-editor.utils';
+import { aplicarDatosPropuesta, esPropuestaSyllabus } from '../../@core/utils/propuesta.utils';
 import { fechaCorta } from 'src/app/@core/utils/flujo.helpers';
 import * as moment from 'moment';
 // @ts-ignore
@@ -53,6 +54,8 @@ export class CrearSyllabusComponent implements OnInit {
   flujoCode: string = '';
   flujoEstado: string = '';
   detalle_espacio_academico: any;
+  modoPropuesta: boolean = false;
+  formPropuesta: FormGroup;
   formSaberesPrevios: FormGroup;
   formJustificacion: FormGroup;
   formObjetivos: FormGroup;
@@ -140,20 +143,56 @@ export class CrearSyllabusComponent implements OnInit {
       this.flujoCode = flujo ? flujo.code : '';
       this.flujoEstado = flujo ? flujo.estado : '';
     });
+    this.syllabusService.modoPropuesta$.subscribe((modo) => {
+      this.modoPropuesta = modo;
+    });
   }
 
   ngOnInit(): void {
     //console.log(this.Proyecto, this.PlanEstudio, this.EspacioAcademico);
-    if (Object.keys(this.Proyecto).length === 0 || Object.keys(this.PlanEstudio).length === 0 || Object.keys(this.EspacioAcademico).length === 0) {
+    // En modo propuesta el espacio académico todavía no existe: basta con el
+    // proyecto curricular y el plan de estudios.
+    const faltaEspacio = !this.modoPropuesta && Object.keys(this.EspacioAcademico).length === 0;
+    if (Object.keys(this.Proyecto).length === 0 || Object.keys(this.PlanEstudio).length === 0 || faltaEspacio) {
       this.router.navigate(['/buscar_syllabus'],{ skipLocationChange: true })
     } else {
-      this.loadInfoIdentificacionEspacioAcademico();
+      if (!this.modoPropuesta) {
+        this.loadInfoIdentificacionEspacioAcademico();
+      }
       this.loadIdiomas();
       this.initForms();
     }
   }
 
   initForms(): void {
+    // Al abrir una propuesta guardada se recupera el modo desde el documento.
+    if (esPropuestaSyllabus(this.Syllabus)) {
+      this.modoPropuesta = true;
+      this.syllabusService.setModoPropuesta(true);
+    }
+
+    // Datos de identificación de la propuesta: solo aplican en modo propuesta.
+    const esPropuesta = this.modoPropuesta;
+    const nombrePropuesta = esPropuesta && !this.isNew && this.Syllabus.propuesta_nombre
+      ? this.Syllabus.propuesta_nombre
+      : '';
+    const creditosPropuesta = esPropuesta && !this.isNew && this.Syllabus.propuesta_creditos
+      ? this.Syllabus.propuesta_creditos
+      : null;
+
+    this.formPropuesta = this._formBuilder.group({
+      propuesta_nombre: [
+        nombrePropuesta,
+        esPropuesta ? [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed] : [],
+      ],
+      propuesta_creditos: [
+        creditosPropuesta,
+        esPropuesta ? [Validators.required, Validators.min(1)] : [],
+      ],
+    });
+
+    this.formularios.controls.push(this.formPropuesta);
+
     this.formSaberesPrevios = this._formBuilder.group({
       saberesPrevios: [this.Syllabus.sugerencias && !this.isNew ? this.Syllabus.sugerencias : '', [Validators.required, Validators.minLength(1),EmptySpaceValidator.noEmptySpaceAllowed]]
     });
@@ -538,7 +577,16 @@ export class CrearSyllabusComponent implements OnInit {
     const pen_cra_cod = Number(this.PlanEstudio.pen_cra_cod);
     const pen_nro = Number(this.PlanEstudio.pen_nro);
 
-    syllabus.espacio_academico_id = Number(this.EspacioAcademico.asi_cod);
+    if (this.modoPropuesta) {
+      // La propuesta se registra sin espacio académico asociado y sin publicar,
+      // con los datos de identificación capturados por el coordinador.
+      aplicarDatosPropuesta(syllabus, {
+        nombre: this.formPropuesta.get('propuesta_nombre')?.value ?? '',
+        creditos: this.formPropuesta.get('propuesta_creditos')?.value ?? null,
+      });
+    } else {
+      syllabus.espacio_academico_id = Number(this.EspacioAcademico.asi_cod);
+    }
     syllabus.tercero_id = Number(localStorage.getItem('persona_id'));
 
     const proyectoIds = Array.isArray(syllabus.proyecto_curricular_ids) ? [...syllabus.proyecto_curricular_ids] : [];
