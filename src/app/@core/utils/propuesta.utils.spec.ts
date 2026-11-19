@@ -1,4 +1,8 @@
-import { aplicarDatosPropuesta, esPropuestaSyllabus } from './propuesta.utils';
+import {
+  aplicarDatosPropuesta,
+  debeActualizarEnSitio,
+  esPropuestaSyllabus
+} from './propuesta.utils';
 
 describe('propuesta.utils', () => {
   describe('esPropuestaSyllabus', () => {
@@ -36,6 +40,21 @@ describe('propuesta.utils', () => {
 
       expect(syllabus.propuesta_nombre).toBe('');
       expect(syllabus.propuesta_creditos).toBeNull();
+    });
+  });
+
+  describe('debeActualizarEnSitio', () => {
+    it('actualiza en sitio una propuesta ya guardada', () => {
+      expect(debeActualizarEnSitio(true, false, '6650f0a1b2c3d4e5f6071829')).toBe(true);
+    });
+
+    it('no cambia el versionado de los syllabus oficiales', () => {
+      expect(debeActualizarEnSitio(false, false, '6650f0a1b2c3d4e5f6071829')).toBe(false);
+    });
+
+    it('crea la propuesta nueva con POST', () => {
+      expect(debeActualizarEnSitio(true, true, undefined)).toBe(false);
+      expect(debeActualizarEnSitio(true, false, undefined)).toBe(false);
     });
   });
 });

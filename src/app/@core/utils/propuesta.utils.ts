@@ -24,3 +24,14 @@ export function aplicarDatosPropuesta(syllabus: any, datos: DatosPropuesta): any
   syllabus.propuesta_creditos = datos.creditos ?? null;
   return syllabus;
 }
+
+// Indica si el documento se debe actualizar en sitio (PUT) en lugar de crear una
+// versión nueva (POST). La propuesta es un documento en elaboración y no se
+// versiona; los syllabus oficiales conservan el versionado.
+export function debeActualizarEnSitio(
+  modoPropuesta: boolean,
+  esNuevo: boolean,
+  idDocumento?: string
+): boolean {
+  return modoPropuesta && !esNuevo && !!idDocumento;
+}

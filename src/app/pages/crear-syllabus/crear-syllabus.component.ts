@@ -17,7 +17,7 @@ import  {EmptySpaceValidator } from '../../@core/validators/emptyValue.validator
 import { RichTextValidator } from '../../@core/validators/richText.validator';
 import { MAX_FILAS_MATRIZ_PFA, PFAValidator } from '../../@core/validators/pfa.validator';
 import { normalizeRichTextValue, sanitizeRichText } from '../../@core/utils/html-editor.utils';
-import { aplicarDatosPropuesta, esPropuestaSyllabus } from '../../@core/utils/propuesta.utils';
+import { aplicarDatosPropuesta, debeActualizarEnSitio, esPropuestaSyllabus } from '../../@core/utils/propuesta.utils';
 import { fechaCorta } from 'src/app/@core/utils/flujo.helpers';
 import * as moment from 'moment';
 // @ts-ignore
@@ -49,7 +49,7 @@ export class CrearSyllabusComponent implements OnInit {
   PlanEstudio: PlanEstudio;
   EspacioAcademico: EspacioAcademico;
   Syllabus: Syllabus;
-  isNew: Boolean;
+  isNew: boolean;
   flujoMode: boolean = false;
   flujoCode: string = '';
   flujoEstado: string = '';
@@ -676,25 +676,15 @@ export class CrearSyllabusComponent implements OnInit {
       this.uploadActa().subscribe({
         next: (respuesta: any) => {
           try {
+            // El id se toma antes de armar el payload, que lo elimina.
+            const idDocumento = this.Syllabus?._id;
             const syllabus = this.buildSyllabusPayload(respuesta?.res?.Enlace);
-            this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
-              next: (respuesta: any) => {
-                Swal.close();
-                Swal.fire({
-                  icon: 'success',
-                  title: this.isNew?'Creación exitosa':'Edición exitosa',
-                })
-                this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
-              },
-              error: (error) => {
-                Swal.close();
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: this.isNew?'Fallo la creación del syllabus':'Fallo la edición del syllabus',
-                })
-              }
-            })
+
+            if (debeActualizarEnSitio(this.modoPropuesta, this.isNew, idDocumento)) {
+              this.actualizarPropuesta(syllabus, idDocumento);
+            } else {
+              this.crearVersionSyllabus(syllabus);
+            }
           } catch (error: any) {
             Swal.close();
             console.error('Error al construir el payload del syllabus:', error?.stack || error);
@@ -723,6 +713,56 @@ export class CrearSyllabusComponent implements OnInit {
         text: 'Fallo la carga de los documentos',
       })
     }
+  }
+
+  /**
+   * Actualiza en sitio la propuesta: es un documento en elaboración y no genera
+   * una versión nueva del syllabus.
+   */
+  private actualizarPropuesta(syllabus: any, idDocumento: string): void {
+    this.request.put(environment.SYLLABUS_CRUD, 'syllabus', syllabus, idDocumento).subscribe({
+      next: () => {
+        Swal.close();
+        Swal.fire({
+          icon: 'success',
+          title: 'Propuesta actualizada',
+        })
+        this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
+      },
+      error: () => {
+        Swal.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Fallo la actualización de la propuesta',
+        })
+      }
+    })
+  }
+
+  /**
+   * Crea una versión nueva del syllabus. Es el comportamiento de los syllabus
+   * oficiales, que se versionan en cada edición.
+   */
+  private crearVersionSyllabus(syllabus: any): void {
+    this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
+      next: (respuesta: any) => {
+        Swal.close();
+        Swal.fire({
+          icon: 'success',
+          title: this.isNew?'Creación exitosa':'Edición exitosa',
+        })
+        this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
+      },
+      error: (error) => {
+        Swal.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: this.isNew?'Fallo la creación del syllabus':'Fallo la edición del syllabus',
+        })
+      }
+    })
   }
 
   SubmitSyllabus() {
