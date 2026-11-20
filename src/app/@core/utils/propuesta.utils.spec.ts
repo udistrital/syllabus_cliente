@@ -1,7 +1,8 @@
 import {
   aplicarDatosPropuesta,
   debeActualizarEnSitio,
-  esPropuestaSyllabus
+  esPropuestaSyllabus,
+  extraerContenidoPropuesta
 } from './propuesta.utils';
 
 describe('propuesta.utils', () => {
@@ -55,6 +56,44 @@ describe('propuesta.utils', () => {
     it('crea la propuesta nueva con POST', () => {
       expect(debeActualizarEnSitio(true, true, undefined)).toBe(false);
       expect(debeActualizarEnSitio(true, false, undefined)).toBe(false);
+    });
+  });
+
+  describe('extraerContenidoPropuesta', () => {
+    it('extrae contenido, modo de PFA y bibliografía', () => {
+      const propuesta: any = {
+        sugerencias: 'Saberes previos',
+        justificacion: 'Justificación',
+        objetivo_general: 'Objetivo general',
+        objetivos_especificos: [{ objetivo: 'Objetivo específico' }],
+        resultados_aprendizaje: [{ pfa_matriz: '<table>...</table>' }],
+        contenido: { descripcion: '<p>Temas</p>' },
+        recursos_educativos: 'Recursos',
+        practicas_academicas: 'Prácticas',
+        bibliografia: {
+          basicas: ['Básica'],
+          complementarias: ['Complementaria'],
+          bases: ['Base'],
+          paginasWeb: ['Web'],
+        },
+        idioma_espacio_id: [1],
+        evaluacion: { evaluaciones: [{ nombre: 'No importar' }] },
+        seguimiento: { numeroActa: 'No importar' },
+        propuesta_nombre: 'No importar',
+        propuesta_creditos: 4,
+        espacio_academico_id: 0,
+      };
+
+      const contenido = extraerContenidoPropuesta(propuesta);
+
+      expect(contenido.sugerencias).toBe('Saberes previos');
+      expect(contenido.resultados_aprendizaje).toEqual(propuesta.resultados_aprendizaje);
+      expect(contenido.bibliografia).toEqual(propuesta.bibliografia);
+      expect('idioma_espacio_id' in contenido).toBe(false);
+      expect('evaluacion' in contenido).toBe(false);
+      expect('seguimiento' in contenido).toBe(false);
+      expect('propuesta_nombre' in contenido).toBe(false);
+      expect('espacio_academico_id' in contenido).toBe(false);
     });
   });
 });

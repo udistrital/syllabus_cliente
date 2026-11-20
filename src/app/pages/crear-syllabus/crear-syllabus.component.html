@@ -692,5 +692,14 @@
     <ng-template #edicionNormal>
       <button type="button" mat-flat-button color="primary" (click)="SubmitSyllabus()">Guardar</button>
     </ng-template>
+    <button
+      type="button"
+      mat-stroked-button
+      color="accent"
+      *ngIf="!modoPropuesta"
+      (click)="importarDesdePropuesta()"
+    >
+      {{ 'CREAR_SYLLABUS.importar_propuesta' | translate }}
+    </button>
   </div>
 </div>

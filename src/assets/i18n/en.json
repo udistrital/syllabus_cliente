@@ -26,7 +26,17 @@
     "propuesta_nombre": "Course name",
     "propuesta_creditos": "Number of academic credits",
     "seguimiento_nota_flujo": "The council minutes are attached at the time of approval (publication).",
-    "seguimiento_nota_propuesta": "The council minutes and the supporting document are attached when the syllabus is published."
+    "seguimiento_nota_propuesta": "The council minutes and the supporting document are attached when the syllabus is published.",
+    "importar_propuesta": "Import from a proposal",
+    "importar_propuesta_titulo": "Import proposal content",
+    "importar_propuesta_ayuda": "Select a proposal from the program. Its content and bibliography will be imported; assessment, languages, identification and follow-up will not be changed.",
+    "importar_propuesta_vacias": "There are no proposals available for this program.",
+    "importar_propuesta_error": "Proposals could not be loaded. Close this window and try again.",
+    "importar_propuesta_seleccionar": "Select",
+    "importar_propuesta_cancelar": "Cancel",
+    "importar_propuesta_confirmar_titulo": "Replace the current content?",
+    "importar_propuesta_confirmar_texto": "The current form content will be replaced with the selected proposal content. Identification, languages, assessment and follow-up will not be changed.",
+    "importar_propuesta_confirmar": "Import and replace"
   },
   "LISTAR_SYLLABUS": {
     "propuestas_titulo": "Syllabus proposals",

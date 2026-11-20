@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>{{ 'CREAR_SYLLABUS.importar_propuesta_titulo' | translate }}</h2>
+
+<mat-dialog-content>
+  <p class="nota-ayuda">
+    {{ 'CREAR_SYLLABUS.importar_propuesta_ayuda' | translate }}
+  </p>
+
+  <div class="loading-center" *ngIf="cargando">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <p class="importar-propuesta-error" *ngIf="!cargando && error">
+    {{ 'CREAR_SYLLABUS.importar_propuesta_error' | translate }}
+  </p>
+
+  <p class="sin-espacios" *ngIf="!cargando && !error && propuestas.length === 0">
+    {{ 'CREAR_SYLLABUS.importar_propuesta_vacias' | translate }}
+  </p>
+
+  <div class="propuestas-importables" *ngIf="!cargando && !error && propuestas.length > 0">
+    <mat-card class="propuesta-importable" *ngFor="let propuesta of propuestas">
+      <div class="propuesta-importable__datos">
+        <strong>{{ propuesta.propuesta_nombre }}</strong>
+        <span>
+          {{ 'LISTAR_SYLLABUS.propuestas_columna_creditos' | translate }}:
+          {{ propuesta.propuesta_creditos }}
+        </span>
+        <span *ngIf="propuesta.fecha_creacion">
+          {{ propuesta.fecha_creacion | date: 'dd/MM/yyyy' }}
+        </span>
+      </div>
+      <button
+        mat-stroked-button
+        color="primary"
+        type="button"
+        (click)="seleccionar(propuesta)"
+      >
+        {{ 'CREAR_SYLLABUS.importar_propuesta_seleccionar' | translate }}
+      </button>
+    </mat-card>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cerrar()">
+    {{ 'CREAR_SYLLABUS.importar_propuesta_cancelar' | translate }}
+  </button>
+</mat-dialog-actions>

@@ -20,6 +20,7 @@ import { AsignarDocenteComponent } from './pages/asignar-docente/asignar-docente
 import { AprobacionComponent } from './pages/aprobacion/aprobacion.component';
 import { MisAsignacionesComponent } from './pages/mis-asignaciones/mis-asignaciones.component';
 import { PendientesComponent } from './pages/pendientes/pendientes.component';
+import { ImportarPropuestaComponent } from './pages/importar-propuesta/importar-propuesta.component';
 import { SafeURL } from './@core/pipes/safeUrl.pipe';
 
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -71,6 +72,7 @@ export function createTranslateLoader(http: HttpClient) {
     AprobacionComponent,
     MisAsignacionesComponent,
     PendientesComponent,
+    ImportarPropuestaComponent,
     SafeURL,
     AlertComponent,
     RichTextEditorComponent,
