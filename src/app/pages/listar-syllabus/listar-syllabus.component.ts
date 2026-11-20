@@ -65,6 +65,8 @@ export class ListarSyllabusComponent implements OnInit {
   propuestas: Syllabus[] = [];
   cargandoPropuestas: boolean = false;
   propuestasCargadas: boolean = false;
+  codigoProyectoPropuestas?: string;
+  private propuestasRequestId = 0;
   columnasPropuestas: string[] = ['nombre', 'creditos', 'fecha', 'acciones'];
 
   readonly estadoLabel = estadoLabel;
@@ -85,13 +87,24 @@ export class ListarSyllabusComponent implements OnInit {
     this.vistaGlobal = this.userService.esVistaGlobal();
     this.syllabusService.proyectoAcademico$.subscribe((proyectoAcademico) => {
       this.Proyecto = proyectoAcademico;
+      // Al cambiar de programa se descartan las propuestas del programa anterior.
+      this.propuestasRequestId++;
+      this.propuestas = [];
+      this.cargandoPropuestas = false;
+      this.propuestasCargadas = false;
+      this.codigoProyectoPropuestas = undefined;
     });
     this.syllabusService.planEstudios$.subscribe((planEstudio) => {
       this.PlanEstudio = planEstudio;
-      // Las propuestas se consultan solo cuando el usuario lo pide: al cambiar
-      // de plan se descarta la lista anterior.
-      this.propuestas = [];
-      this.propuestasCargadas = false;
+      const codigoProyecto = planEstudio?.pen_cra_cod;
+      // La propuesta pertenece al programa: cambiar de plan dentro del mismo
+      // programa no invalida la lista ni requiere otra llamada al CRUD.
+      if (codigoProyecto !== this.codigoProyectoPropuestas) {
+        this.propuestasRequestId++;
+        this.propuestas = [];
+        this.cargandoPropuestas = false;
+        this.propuestasCargadas = false;
+      }
     });
     this.syllabusService.espaciosConSyllabus$.subscribe((listado) => {
       this.espacios = listado.espacios;
@@ -181,6 +194,7 @@ export class ListarSyllabusComponent implements OnInit {
     }
 
     this.cargandoPropuestas = true;
+    const requestId = ++this.propuestasRequestId;
     const query = encodeURIComponent(
       `proyecto_curricular_id:${codigoProyecto},es_propuesta:true`
     );
@@ -188,11 +202,21 @@ export class ListarSyllabusComponent implements OnInit {
       .get(environment.SYLLABUS_CRUD, `syllabus?query=${query}&limit=50`)
       .subscribe({
         next: (data: any) => {
+          // Ignora respuestas tardías si el usuario cambió de programa mientras
+          // la consulta estaba en curso.
+          if (requestId !== this.propuestasRequestId ||
+              this.PlanEstudio?.pen_cra_cod !== codigoProyecto) {
+            return;
+          }
           this.propuestas = data && data.Data ? data.Data : [];
           this.propuestasCargadas = true;
+          this.codigoProyectoPropuestas = codigoProyecto;
           this.cargandoPropuestas = false;
         },
         error: () => {
+          if (requestId !== this.propuestasRequestId) {
+            return;
+          }
           this.propuestas = [];
           this.cargandoPropuestas = false;
         },
