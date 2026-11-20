@@ -89,6 +89,17 @@
           {{ 'LISTAR_SYLLABUS.propuestas_ayuda_solo_lectura' | translate }}
         </p>
 
+        <div class="actions-center" *ngIf="!propuestasCargadas && !cargandoPropuestas">
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            (click)="cargarPropuestas()"
+          >
+            {{ 'LISTAR_SYLLABUS.propuestas_ver' | translate }}
+          </button>
+        </div>
+
         <div class="actions-center" *ngIf="!cargandoPropuestas && canEdit">
           <button
             mat-flat-button
@@ -163,7 +174,7 @@
           </table>
         </div>
 
-        <p class="sin-espacios" *ngIf="!cargandoPropuestas && propuestas.length === 0">
+        <p class="sin-espacios" *ngIf="propuestasCargadas && !cargandoPropuestas && propuestas.length === 0">
           {{ 'LISTAR_SYLLABUS.propuestas_vacias' | translate }}
         </p>
       </mat-expansion-panel>

@@ -64,6 +64,7 @@ export class ListarSyllabusComponent implements OnInit {
   // que todavía no existen en Académica.
   propuestas: Syllabus[] = [];
   cargandoPropuestas: boolean = false;
+  propuestasCargadas: boolean = false;
   columnasPropuestas: string[] = ['nombre', 'creditos', 'fecha', 'acciones'];
 
   readonly estadoLabel = estadoLabel;
@@ -87,9 +88,10 @@ export class ListarSyllabusComponent implements OnInit {
     });
     this.syllabusService.planEstudios$.subscribe((planEstudio) => {
       this.PlanEstudio = planEstudio;
-      // Las propuestas se consultan por el código del proyecto curricular, que
-      // es el valor con el que se registran los syllabus.
-      this.cargarPropuestas();
+      // Las propuestas se consultan solo cuando el usuario lo pide: al cambiar
+      // de plan se descarta la lista anterior.
+      this.propuestas = [];
+      this.propuestasCargadas = false;
     });
     this.syllabusService.espaciosConSyllabus$.subscribe((listado) => {
       this.espacios = listado.espacios;
@@ -187,6 +189,7 @@ export class ListarSyllabusComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.propuestas = data && data.Data ? data.Data : [];
+          this.propuestasCargadas = true;
           this.cargandoPropuestas = false;
         },
         error: () => {

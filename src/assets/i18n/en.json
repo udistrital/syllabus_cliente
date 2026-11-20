@@ -36,6 +36,7 @@
     "propuestas_columna_creditos": "Credits",
     "propuestas_columna_fecha": "Created on",
     "propuestas_vacias": "There are no proposals registered for this program.",
-    "propuestas_ayuda_solo_lectura": "In this view you can only view the proposal PDF."
+    "propuestas_ayuda_solo_lectura": "In this view you can only view the proposal PDF.",
+    "propuestas_ver": "View proposals"
   }
 }
