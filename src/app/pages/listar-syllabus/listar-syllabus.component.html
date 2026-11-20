@@ -76,6 +76,108 @@
         No se encontraron espacios académicos para el plan de estudios
         seleccionado.
       </div>
+
+      <mat-expansion-panel *ngIf="puedeVerPropuestas">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ 'LISTAR_SYLLABUS.propuestas_titulo' | translate }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <p class="nota-ayuda">{{ 'LISTAR_SYLLABUS.propuestas_ayuda' | translate }}</p>
+        <p class="nota-ayuda" *ngIf="!canEdit">
+          {{ 'LISTAR_SYLLABUS.propuestas_ayuda_solo_lectura' | translate }}
+        </p>
+
+        <div class="actions-center" *ngIf="!propuestasCargadas && !cargandoPropuestas">
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            (click)="cargarPropuestas()"
+          >
+            {{ 'LISTAR_SYLLABUS.propuestas_ver' | translate }}
+          </button>
+        </div>
+
+        <div class="actions-center" *ngIf="!cargandoPropuestas && canEdit">
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            (click)="crearPropuesta()"
+          >
+            {{ 'LISTAR_SYLLABUS.propuestas_crear' | translate }}
+          </button>
+        </div>
+
+        <div class="loading-center" *ngIf="cargandoPropuestas">
+          <mat-spinner></mat-spinner>
+        </div>
+
+        <div class="table" *ngIf="!cargandoPropuestas && propuestas.length > 0">
+          <table mat-table [dataSource]="propuestas">
+            <ng-container matColumnDef="nombre">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LISTAR_SYLLABUS.propuestas_columna_nombre' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.propuesta_nombre }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="creditos">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LISTAR_SYLLABUS.propuestas_columna_creditos' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.propuesta_creditos }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="fecha">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LISTAR_SYLLABUS.propuestas_columna_fecha' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.fecha_creacion | date: 'dd/MM/yyyy' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <td mat-cell *matCellDef="let element">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  matTooltip="Editar propuesta"
+                  aria-label="Editar propuesta"
+                  *ngIf="canEdit"
+                  (click)="abrirPropuesta(element)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  color="primary"
+                  matTooltip="Ver PDF de la propuesta"
+                  aria-label="Ver PDF de la propuesta"
+                  (click)="verPdfPropuesta(element)"
+                >
+                  <mat-icon>picture_as_pdf</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnasPropuestas"></tr>
+            <tr mat-row *matRowDef="let element; columns: columnasPropuestas"></tr>
+          </table>
+        </div>
+
+        <p class="sin-espacios" *ngIf="propuestasCargadas && !cargandoPropuestas && propuestas.length === 0">
+          {{ 'LISTAR_SYLLABUS.propuestas_vacias' | translate }}
+        </p>
+      </mat-expansion-panel>
     </mat-card-content>
   </mat-card>
 

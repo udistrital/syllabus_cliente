@@ -147,17 +147,7 @@
   margin-bottom: 8px;
 }
 
-/* Notas informativas: mismo estilo en todos los bloques */
-.nota-ayuda {
-  margin: 0;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.nota-ayuda--pie {
-  margin-top: 0.5rem;
-}
-
+/* El estilo de las notas informativas (.nota-ayuda) es global: sga-form.css */
 .nota-ayuda + app-rich-text-editor {
   display: block;
 }

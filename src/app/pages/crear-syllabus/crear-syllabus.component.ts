@@ -17,6 +17,7 @@ import  {EmptySpaceValidator } from '../../@core/validators/emptyValue.validator
 import { RichTextValidator } from '../../@core/validators/richText.validator';
 import { MAX_FILAS_MATRIZ_PFA, PFAValidator } from '../../@core/validators/pfa.validator';
 import { normalizeRichTextValue, sanitizeRichText } from '../../@core/utils/html-editor.utils';
+import { aplicarDatosPropuesta, debeActualizarEnSitio, esPropuestaSyllabus } from '../../@core/utils/propuesta.utils';
 import { fechaCorta } from 'src/app/@core/utils/flujo.helpers';
 import * as moment from 'moment';
 // @ts-ignore
@@ -48,11 +49,13 @@ export class CrearSyllabusComponent implements OnInit {
   PlanEstudio: PlanEstudio;
   EspacioAcademico: EspacioAcademico;
   Syllabus: Syllabus;
-  isNew: Boolean;
+  isNew: boolean;
   flujoMode: boolean = false;
   flujoCode: string = '';
   flujoEstado: string = '';
   detalle_espacio_academico: any;
+  modoPropuesta: boolean = false;
+  formPropuesta: FormGroup;
   formSaberesPrevios: FormGroup;
   formJustificacion: FormGroup;
   formObjetivos: FormGroup;
@@ -140,20 +143,56 @@ export class CrearSyllabusComponent implements OnInit {
       this.flujoCode = flujo ? flujo.code : '';
       this.flujoEstado = flujo ? flujo.estado : '';
     });
+    this.syllabusService.modoPropuesta$.subscribe((modo) => {
+      this.modoPropuesta = modo;
+    });
   }
 
   ngOnInit(): void {
     //console.log(this.Proyecto, this.PlanEstudio, this.EspacioAcademico);
-    if (Object.keys(this.Proyecto).length === 0 || Object.keys(this.PlanEstudio).length === 0 || Object.keys(this.EspacioAcademico).length === 0) {
+    // En modo propuesta el espacio académico todavía no existe: basta con el
+    // proyecto curricular y el plan de estudios.
+    const faltaEspacio = !this.modoPropuesta && Object.keys(this.EspacioAcademico).length === 0;
+    if (Object.keys(this.Proyecto).length === 0 || Object.keys(this.PlanEstudio).length === 0 || faltaEspacio) {
       this.router.navigate(['/buscar_syllabus'],{ skipLocationChange: true })
     } else {
-      this.loadInfoIdentificacionEspacioAcademico();
+      if (!this.modoPropuesta) {
+        this.loadInfoIdentificacionEspacioAcademico();
+      }
       this.loadIdiomas();
       this.initForms();
     }
   }
 
   initForms(): void {
+    // Al abrir una propuesta guardada se recupera el modo desde el documento.
+    if (esPropuestaSyllabus(this.Syllabus)) {
+      this.modoPropuesta = true;
+      this.syllabusService.setModoPropuesta(true);
+    }
+
+    // Datos de identificación de la propuesta: solo aplican en modo propuesta.
+    const esPropuesta = this.modoPropuesta;
+    const nombrePropuesta = esPropuesta && !this.isNew && this.Syllabus.propuesta_nombre
+      ? this.Syllabus.propuesta_nombre
+      : '';
+    const creditosPropuesta = esPropuesta && !this.isNew && this.Syllabus.propuesta_creditos
+      ? this.Syllabus.propuesta_creditos
+      : null;
+
+    this.formPropuesta = this._formBuilder.group({
+      propuesta_nombre: [
+        nombrePropuesta,
+        esPropuesta ? [Validators.required, EmptySpaceValidator.noEmptySpaceAllowed] : [],
+      ],
+      propuesta_creditos: [
+        creditosPropuesta,
+        esPropuesta ? [Validators.required, Validators.min(1)] : [],
+      ],
+    });
+
+    this.formularios.controls.push(this.formPropuesta);
+
     this.formSaberesPrevios = this._formBuilder.group({
       saberesPrevios: [this.Syllabus.sugerencias && !this.isNew ? this.Syllabus.sugerencias : '', [Validators.required, Validators.minLength(1),EmptySpaceValidator.noEmptySpaceAllowed]]
     });
@@ -238,9 +277,13 @@ export class CrearSyllabusComponent implements OnInit {
 
     this.formularios.controls.push(this.formBibliografia);
 
+    // El acta y el documento de soporte solo son obligatorios para la
+    // publicación de un syllabus: no aplican en el flujo ni en las propuestas.
+    const exigeSeguimiento = !this.flujoMode && !this.modoPropuesta;
+
     this.formSeguimiento = this._formBuilder.group({
-      numeroActa: [!this.isNew && this.Syllabus.seguimiento ? this.Syllabus.seguimiento.numeroActa : '', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]],
-      archivo: ['', [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed]] // loaded in handleFileInputActaChange()
+      numeroActa: [!this.isNew && this.Syllabus.seguimiento ? this.Syllabus.seguimiento.numeroActa : '', exigeSeguimiento ? [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed] : []],
+      archivo: ['', exigeSeguimiento ? [Validators.required,EmptySpaceValidator.noEmptySpaceAllowed] : []] // loaded in handleFileInputActaChange()
     })
 
     this.formularios.controls.push(this.formSeguimiento);
@@ -538,7 +581,16 @@ export class CrearSyllabusComponent implements OnInit {
     const pen_cra_cod = Number(this.PlanEstudio.pen_cra_cod);
     const pen_nro = Number(this.PlanEstudio.pen_nro);
 
-    syllabus.espacio_academico_id = Number(this.EspacioAcademico.asi_cod);
+    if (this.modoPropuesta) {
+      // La propuesta se registra sin espacio académico asociado y sin publicar,
+      // con los datos de identificación capturados por el coordinador.
+      aplicarDatosPropuesta(syllabus, {
+        nombre: this.formPropuesta.get('propuesta_nombre')?.value ?? '',
+        creditos: this.formPropuesta.get('propuesta_creditos')?.value ?? null,
+      });
+    } else {
+      syllabus.espacio_academico_id = Number(this.EspacioAcademico.asi_cod);
+    }
     syllabus.tercero_id = Number(localStorage.getItem('persona_id'));
 
     const proyectoIds = Array.isArray(syllabus.proyecto_curricular_ids) ? [...syllabus.proyecto_curricular_ids] : [];
@@ -583,6 +635,17 @@ export class CrearSyllabusComponent implements OnInit {
         numeroActa: seguimientoPrevio.numeroActa ?? '',
         archivo: seguimientoPrevio.archivo ?? null,
       };
+    } else if (this.modoPropuesta) {
+      // La propuesta todavía no ha sido revisada ni aprobada: se registra solo
+      // quién la elaboró, con la misma estructura del bloque de seguimiento del
+      // flujo. El acta se adjunta al publicar el syllabus.
+      syllabus.seguimiento = {
+        ...seguimientoPrevio,
+        elaboro: nombre,
+        fecha_elaboro: fechaEdicion,
+        numeroActa: seguimientoPrevio.numeroActa ?? '',
+        archivo: seguimientoPrevio.archivo ?? null,
+      };
     } else {
       syllabus.seguimiento = {
         elaboro: nombre,
@@ -613,25 +676,15 @@ export class CrearSyllabusComponent implements OnInit {
       this.uploadActa().subscribe({
         next: (respuesta: any) => {
           try {
+            // El id se toma antes de armar el payload, que lo elimina.
+            const idDocumento = this.Syllabus?._id;
             const syllabus = this.buildSyllabusPayload(respuesta?.res?.Enlace);
-            this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
-              next: (respuesta: any) => {
-                Swal.close();
-                Swal.fire({
-                  icon: 'success',
-                  title: this.isNew?'Creación exitosa':'Edición exitosa',
-                })
-                this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
-              },
-              error: (error) => {
-                Swal.close();
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: this.isNew?'Fallo la creación del syllabus':'Fallo la edición del syllabus',
-                })
-              }
-            })
+
+            if (debeActualizarEnSitio(this.modoPropuesta, this.isNew, idDocumento)) {
+              this.actualizarPropuesta(syllabus, idDocumento);
+            } else {
+              this.crearVersionSyllabus(syllabus);
+            }
           } catch (error: any) {
             Swal.close();
             console.error('Error al construir el payload del syllabus:', error?.stack || error);
@@ -662,8 +715,59 @@ export class CrearSyllabusComponent implements OnInit {
     }
   }
 
+  /**
+   * Actualiza en sitio la propuesta: es un documento en elaboración y no genera
+   * una versión nueva del syllabus.
+   */
+  private actualizarPropuesta(syllabus: any, idDocumento: string): void {
+    this.request.put(environment.SYLLABUS_CRUD, 'syllabus', syllabus, idDocumento).subscribe({
+      next: () => {
+        Swal.close();
+        Swal.fire({
+          icon: 'success',
+          title: 'Propuesta actualizada',
+        })
+        this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
+      },
+      error: () => {
+        Swal.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Fallo la actualización de la propuesta',
+        })
+      }
+    })
+  }
+
+  /**
+   * Crea una versión nueva del syllabus. Es el comportamiento de los syllabus
+   * oficiales, que se versionan en cada edición.
+   */
+  private crearVersionSyllabus(syllabus: any): void {
+    this.request.post(environment.SYLLABUS_CRUD, 'syllabus', syllabus).subscribe({
+      next: (respuesta: any) => {
+        Swal.close();
+        Swal.fire({
+          icon: 'success',
+          title: this.isNew?'Creación exitosa':'Edición exitosa',
+        })
+        this.router.navigate(['/buscar_syllabus'], { skipLocationChange: true });
+      },
+      error: (error) => {
+        Swal.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: this.isNew?'Fallo la creación del syllabus':'Fallo la edición del syllabus',
+        })
+      }
+    })
+  }
+
   SubmitSyllabus() {
-    if (this.validateForms()) {
+    // En modo propuesta el acta y el documento de soporte no se exigen.
+    if (this.validateForms(this.modoPropuesta)) {
       this.createNewVersionSyllabus();
     }else{
       Swal.fire({
@@ -696,6 +800,11 @@ export class CrearSyllabusComponent implements OnInit {
   }
 
   uploadActa(): Observable<Documento> {
+    if (this.modoPropuesta) {
+      // La propuesta no se publica: no hay acta ni documento de soporte.
+      const doc: any = { res: { Enlace: '' } };
+      return of(doc);
+    }
     if (!this.actaFile && this.actaPrevia.uid) {
       const doc: any = {res: {Enlace: this.actaPrevia.uid}};
       return of(doc)

@@ -21,6 +21,22 @@
     "pfa_matriz_ayuda": "Fill in the purposes matrix: the 'Training Purposes' column is mandatory and the other columns are editable. Rich content can only be written inside the table.",
     "pfa_matriz_max_filas": "Maximum 4 purposes (rows) not counting the header.",
     "pfa_matriz_error": "The matrix must have a header with at least two columns and between 1 and 4 purpose rows, with the purpose in the first column filled in.",
-    "evaluacion_ayuda": "Teacher, note that although the percentages for the assessment periods are already defined, within your academic freedom you may establish, divide or organize the assessments of the course as appropriate, within those limits."
+    "evaluacion_ayuda": "Teacher, note that although the percentages for the assessment periods are already defined, within your academic freedom you may establish, divide or organize the assessments of the course as appropriate, within those limits.",
+    "propuesta_ayuda": "The academic space does not exist in Académica yet. Enter the course name and the number of credits that will be used in the proposal PDF.",
+    "propuesta_nombre": "Course name",
+    "propuesta_creditos": "Number of academic credits",
+    "seguimiento_nota_flujo": "The council minutes are attached at the time of approval (publication).",
+    "seguimiento_nota_propuesta": "The council minutes and the supporting document are attached when the syllabus is published."
+  },
+  "LISTAR_SYLLABUS": {
+    "propuestas_titulo": "Syllabus proposals",
+    "propuestas_ayuda": "Proposals for academic spaces that do not exist in Académica yet.",
+    "propuestas_crear": "Create syllabus proposal",
+    "propuestas_columna_nombre": "Course name",
+    "propuestas_columna_creditos": "Credits",
+    "propuestas_columna_fecha": "Created on",
+    "propuestas_vacias": "There are no proposals registered for this program.",
+    "propuestas_ayuda_solo_lectura": "In this view you can only view the proposal PDF.",
+    "propuestas_ver": "View proposals"
   }
 }
