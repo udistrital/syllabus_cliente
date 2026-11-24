@@ -639,7 +639,7 @@ export class ListarSyllabusComponent implements OnInit {
     Swal.fire({
       icon: 'warning',
       title: '¿Está seguro de asignar el Syllabus?',
-      text: `Va a asignar el Plan ${this.PlanEstudio.cra_nombre} y Proyecto ${this.Proyecto.Nombre}`,
+      text: `Va a asignar el Plan ${this.PlanEstudio.cra_nombre} y Programa ${this.Proyecto.Nombre}`,
       showConfirmButton: true,
       showCancelButton: true,
       cancelButtonText: 'Cancelar',
@@ -678,8 +678,8 @@ export class ListarSyllabusComponent implements OnInit {
   removeProjectPlan2Syllabus(row: number) {
     Swal.fire({
       icon: 'warning',
-      title: '¿Está seguro de remover el Proyecto y Plan del Syllabus?',
-      text: `Va a remover el Plan ${this.PlanEstudio.cra_nombre} y Proyecto ${this.Proyecto.Nombre}`,
+      title: '¿Está seguro de remover el Programa y Plan del Syllabus?',
+      text: `Va a remover el Plan ${this.PlanEstudio.cra_nombre} y Programa ${this.Proyecto.Nombre}`,
       showConfirmButton: true,
       showCancelButton: true,
       cancelButtonText: 'Cancelar',
