@@ -1,5 +1,6 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 import { EspacioAcademico, EspacioConSyllabus } from 'src/app/@core/models/espacioAcademico';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
@@ -55,10 +56,46 @@ export class ListarSyllabusComponent implements OnInit {
   // si el espacio ya tiene syllabus registrado.
   espacios: EspacioConSyllabus[] = [];
   espaciosDataSource = new MatTableDataSource<EspacioConSyllabus>();
-  columnasEspacios: string[] = ['espacio', 'semestre', 'estado_syllabus'];
+  columnasEspacios: string[] = ['semestre', 'espacio', 'estado_syllabus'];
   filtroEspacios: string = '';
   espacioSeleccionado: boolean = false;
   cargandoEspacios: boolean = false;
+
+  // Conecta el ordenamiento cada vez que la tabla de espacios se crea en el
+  // DOM: la tabla se destruye y se crea por el *ngIf de selección de espacio,
+  // por lo que no basta con asignar el sort una sola vez en AfterViewInit.
+  @ViewChild(MatSort)
+  set sortEspacios(sort: MatSort | undefined) {
+    if (!sort) {
+      return;
+    }
+    const nombreEspacio = (item: EspacioConSyllabus) =>
+      item.espacio?.asi_nombre || '';
+    // Semestre en orden numérico (evita que "10" quede antes que "2"); los
+    // empates se desempatan alfabéticamente. El espacio se ordena con locale
+    // en español para que tildes y ñ no alteren el orden alfabético.
+    this.espaciosDataSource.sortData = (
+      items: EspacioConSyllabus[],
+      s: MatSort
+    ) => {
+      const dir = s.direction === 'desc' ? -1 : 1;
+      return items.slice().sort((a, b) => {
+        if (s.active === 'semestre') {
+          const cmp =
+            (Number(a.espacio?.pen_sem) || 0) - (Number(b.espacio?.pen_sem) || 0);
+          if (cmp !== 0) {
+            return dir * cmp;
+          }
+          return nombreEspacio(a).localeCompare(nombreEspacio(b), 'es');
+        }
+        if (s.active === 'espacio') {
+          return dir * nombreEspacio(a).localeCompare(nombreEspacio(b), 'es');
+        }
+        return 0;
+      });
+    };
+    this.espaciosDataSource.sort = sort;
+  }
 
   // Propuestas de syllabus del programa: documentos para espacios académicos
   // que todavía no existen en Académica.
@@ -316,8 +353,8 @@ export class ListarSyllabusComponent implements OnInit {
                 Swal.fire({
                   icon: 'warning',
                   title:
-                    'El Proyecto curricular / programa académico o Plan de estudios no tiene syllabus asignado',
-                  text: 'El espacio académico tiene Syllabus, asignelo al Proyecto y/o plan de estudios.',
+                    'El Programa académico o Plan de estudios no tiene syllabus asignado',
+                  text: 'El espacio académico tiene Syllabus, asignelo al programa y/o plan de estudios.',
                 });
                 this.formatDataSyllabusForTable();
               }

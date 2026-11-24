@@ -23,20 +23,28 @@
       </div>
 
       <div class="table" *ngIf="!cargandoEspacios && espacios.length > 0">
-        <table mat-table [dataSource]="espaciosDataSource">
-          <ng-container matColumnDef="espacio">
-            <th mat-header-cell *matHeaderCellDef>Espacio Académico</th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.espacio.asi_nombre }}
-            </td>
-          </ng-container>
-
+        <table
+          mat-table
+          [dataSource]="espaciosDataSource"
+          matSort
+          matSortActive="semestre"
+          matSortDirection="asc"
+        >
           <ng-container matColumnDef="semestre">
-            <th mat-header-cell *matHeaderCellDef>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
               Periodo académico (Semestre)
             </th>
             <td mat-cell *matCellDef="let element">
               {{ element.espacio.pen_sem }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="espacio">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              Espacio Académico
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.espacio.asi_nombre }}
             </td>
           </ng-container>
 
@@ -228,7 +236,7 @@
 
             <ng-container matColumnDef="proyecto">
               <th mat-header-cell *matHeaderCellDef>
-                Proyecto curricular / programa académico
+                Programa académico
               </th>
               <td mat-cell *matCellDef="let element">
                 {{ element.proyecto }}

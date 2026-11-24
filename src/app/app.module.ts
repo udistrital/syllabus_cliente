@@ -36,6 +36,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -95,6 +96,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatTabsModule,
     MatPaginatorModule,
     MatTableModule,
+    MatSortModule,
     MatExpansionModule,
     MatDatepickerModule,
     MatNativeDateModule,
