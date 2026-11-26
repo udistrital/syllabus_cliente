@@ -114,13 +114,15 @@ export class PendientesComponent implements OnInit {
   reabrir(draft: any): void {
     Swal.fire({
       title: 'Reabrir propuesta',
-      html: 'Indique la nueva fecha límite de edición para el docente.',
-      input: 'date',
-      inputLabel: 'Nueva fecha límite',
+      html:
+        '<p style="margin:0 0 10px">Indique la nueva fecha límite de edición para el docente.</p>' +
+        '<input type="date" id="swal-fecha-reapertura" class="swal2-input" style="width:60%">',
       confirmButtonText: 'Reabrir',
       showCancelButton: true,
       cancelButtonText: 'Cancelar',
-      preConfirm: (fecha: any) => {
+      preConfirm: () => {
+        const input = document.getElementById('swal-fecha-reapertura') as HTMLInputElement | null;
+        const fecha = input?.value || '';
         if (!fecha) {
           Swal.showValidationMessage('La nueva fecha límite es obligatoria');
           return false;

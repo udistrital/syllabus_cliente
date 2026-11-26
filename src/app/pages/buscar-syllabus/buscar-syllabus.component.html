@@ -54,23 +54,23 @@
         <mat-step [stepControl]="formProyectoCurricular">
           <form [formGroup]="formProyectoCurricular">
             <ng-template matStepLabel
-              >Proyecto curricular / programa académico
+              >Programa académico
               {{ proyectoCurricularSelectedName }}</ng-template
             >
             <mat-form-field class="form-field" appearance="fill">
-              <mat-label>Proyecto curricular / programa académico</mat-label>
+              <mat-label>Programa académico</mat-label>
               <mat-select
                 (selectionChange)="onChangeProyectoCurricular($event.value)"
                 [compareWith]="compareProyectoAcademico"
                 formControlName="proyectoCurricularCtrl"
-                placeholder="Proyecto Curricular"
+                placeholder="Programa académico"
                 #proyectoCurricularSelect
               >
                 <mat-option>
                   <ngx-mat-select-search
                     formControlName="proyectoCurricularFilterCtrl"
-                    [placeholderLabel]="'Buscar proyecto curricular'"
-                    noEntriesFoundLabel="'No se encontraron Proyectos Curriculares'"
+                    [placeholderLabel]="'Buscar programa académico'"
+                    [noEntriesFoundLabel]="'No se encontraron programas académicos'"
                   >
                   </ngx-mat-select-search>
                 </mat-option>

@@ -28,6 +28,10 @@ export class Syllabus {
   activo: boolean
   fecha_creacion: Date
   fecha_modificacion: Date
+  // Propuesta de syllabus para un espacio académico que todavía no existe.
+  es_propuesta?: boolean
+  propuesta_nombre?: string
+  propuesta_creditos?: number
 }
 
 // Forma de registro de los propósitos de formación y de aprendizaje.

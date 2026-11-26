@@ -126,3 +126,14 @@
     grid-column: span 1;
   }
 }
+
+/* Notas informativas dentro de los formularios (se muestran en 12px y gris) */
+.nota-ayuda {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.nota-ayuda--pie {
+  margin-top: 0.5rem;
+}
