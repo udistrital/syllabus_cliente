@@ -1,0 +1,35 @@
+.propuestas-importables {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: min(560px, 72vw);
+  margin-top: 1rem;
+}
+
+.propuesta-importable {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.propuesta-importable__datos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.importar-propuesta-error {
+  color: #b00020;
+}
+
+@media (max-width: 600px) {
+  .propuestas-importables {
+    min-width: auto;
+  }
+
+  .propuesta-importable {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

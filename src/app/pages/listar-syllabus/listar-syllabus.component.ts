@@ -1,5 +1,6 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 import { EspacioAcademico, EspacioConSyllabus } from 'src/app/@core/models/espacioAcademico';
 import { PlanEstudio } from 'src/app/@core/models/planEstudio';
 import { ProyectoAcademico } from 'src/app/@core/models/proyectoAcademico';
@@ -14,6 +15,7 @@ import { VersionesSyllabusComponent } from '../versiones-syllabus/versiones-syll
 import { VisualizarSyllabusComponent } from '../visualizar-syllabus/visualizar-syllabus.component';
 import { AsignarDocenteComponent } from '../asignar-docente/asignar-docente.component';
 import { FlujoService } from '../services/flujo.service';
+import { UserService } from '../services/userService';
 import { estadoLabel, fechaCorta } from 'src/app/@core/utils/flujo.helpers';
 // @ts-ignore
 import Swal from 'sweetalert2/dist/sweetalert2';
@@ -38,6 +40,10 @@ export class ListarSyllabusComponent implements OnInit {
   syllabus: Syllabus[] = [];
   syllabusData: SyllabusInterface[];
   canEdit: boolean;
+  // La vista global (asesoría/vicerrectoría) puede consultar las propuestas
+  // aunque no tenga permisos de edición.
+  vistaGlobal: boolean = false;
+  puedeVerPropuestas: boolean = false;
   Proyecto!: ProyectoAcademico;
   PlanEstudio!: PlanEstudio;
   EspacioAcademico!: EspacioAcademico;
@@ -50,10 +56,55 @@ export class ListarSyllabusComponent implements OnInit {
   // si el espacio ya tiene syllabus registrado.
   espacios: EspacioConSyllabus[] = [];
   espaciosDataSource = new MatTableDataSource<EspacioConSyllabus>();
-  columnasEspacios: string[] = ['espacio', 'semestre', 'estado_syllabus'];
+  columnasEspacios: string[] = ['semestre', 'espacio', 'estado_syllabus'];
   filtroEspacios: string = '';
   espacioSeleccionado: boolean = false;
   cargandoEspacios: boolean = false;
+
+  // Conecta el ordenamiento cada vez que la tabla de espacios se crea en el
+  // DOM: la tabla se destruye y se crea por el *ngIf de selección de espacio,
+  // por lo que no basta con asignar el sort una sola vez en AfterViewInit.
+  @ViewChild(MatSort)
+  set sortEspacios(sort: MatSort | undefined) {
+    if (!sort) {
+      return;
+    }
+    const nombreEspacio = (item: EspacioConSyllabus) =>
+      item.espacio?.asi_nombre || '';
+    // Semestre en orden numérico (evita que "10" quede antes que "2"); los
+    // empates se desempatan alfabéticamente. El espacio se ordena con locale
+    // en español para que tildes y ñ no alteren el orden alfabético.
+    this.espaciosDataSource.sortData = (
+      items: EspacioConSyllabus[],
+      s: MatSort
+    ) => {
+      const dir = s.direction === 'desc' ? -1 : 1;
+      return items.slice().sort((a, b) => {
+        if (s.active === 'semestre') {
+          const cmp =
+            (Number(a.espacio?.pen_sem) || 0) - (Number(b.espacio?.pen_sem) || 0);
+          if (cmp !== 0) {
+            return dir * cmp;
+          }
+          return nombreEspacio(a).localeCompare(nombreEspacio(b), 'es');
+        }
+        if (s.active === 'espacio') {
+          return dir * nombreEspacio(a).localeCompare(nombreEspacio(b), 'es');
+        }
+        return 0;
+      });
+    };
+    this.espaciosDataSource.sort = sort;
+  }
+
+  // Propuestas de syllabus del programa: documentos para espacios académicos
+  // que todavía no existen en Académica.
+  propuestas: Syllabus[] = [];
+  cargandoPropuestas: boolean = false;
+  propuestasCargadas: boolean = false;
+  codigoProyectoPropuestas?: string;
+  private propuestasRequestId = 0;
+  columnasPropuestas: string[] = ['nombre', 'creditos', 'fecha', 'acciones'];
 
   readonly estadoLabel = estadoLabel;
   readonly fechaCorta = fechaCorta;
@@ -63,16 +114,34 @@ export class ListarSyllabusComponent implements OnInit {
     private syllabusService: SyllabusService,
     private request: RequestManager,
     private flujoService: FlujoService,
+    private userService: UserService,
     public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.SyllabusLoad = false;
+    // Se calcula una sola vez: esVistaGlobal() lee y parsea la sesión.
+    this.vistaGlobal = this.userService.esVistaGlobal();
     this.syllabusService.proyectoAcademico$.subscribe((proyectoAcademico) => {
       this.Proyecto = proyectoAcademico;
+      // Al cambiar de programa se descartan las propuestas del programa anterior.
+      this.propuestasRequestId++;
+      this.propuestas = [];
+      this.cargandoPropuestas = false;
+      this.propuestasCargadas = false;
+      this.codigoProyectoPropuestas = undefined;
     });
     this.syllabusService.planEstudios$.subscribe((planEstudio) => {
       this.PlanEstudio = planEstudio;
+      const codigoProyecto = planEstudio?.pen_cra_cod;
+      // La propuesta pertenece al programa: cambiar de plan dentro del mismo
+      // programa no invalida la lista ni requiere otra llamada al CRUD.
+      if (codigoProyecto !== this.codigoProyectoPropuestas) {
+        this.propuestasRequestId++;
+        this.propuestas = [];
+        this.cargandoPropuestas = false;
+        this.propuestasCargadas = false;
+      }
     });
     this.syllabusService.espaciosConSyllabus$.subscribe((listado) => {
       this.espacios = listado.espacios;
@@ -95,6 +164,7 @@ export class ListarSyllabusComponent implements OnInit {
     });
     this.syllabusService.rolwithEdit$.subscribe((canEdit) => {
       this.canEdit = canEdit;
+      this.puedeVerPropuestas = canEdit || this.vistaGlobal;
     });
   }
 
@@ -132,6 +202,87 @@ export class ListarSyllabusComponent implements OnInit {
    */
   seleccionarEspacio(espacio: EspacioAcademico) {
     this.syllabusService.setEspacioAcademico(espacio);
+  }
+
+  /**
+   * Crea una propuesta de syllabus para un espacio académico que todavía no
+   * existe: se conserva el contexto del programa y del plan de estudios
+   * seleccionados y se abre el editor en modo propuesta.
+   */
+  crearPropuesta(): void {
+    this.syllabusService.setModoPropuesta(true);
+    this.syllabusService.setisNew(true);
+    this.syllabusService.setSyllabus(new Syllabus());
+    this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
+  }
+
+  /**
+   * Carga las propuestas del programa actual para que el coordinador pueda
+   * retomarlas o ver su PDF. La consulta usa el código del proyecto curricular
+   * (codigo_proyecto), que es el mismo valor con el que se registra el syllabus
+   * en proyecto_curricular_ids, y no el id de Oikos.
+   */
+  cargarPropuestas(): void {
+    const codigoProyecto = this.PlanEstudio?.pen_cra_cod;
+
+    if (!codigoProyecto) {
+      this.propuestas = [];
+      return;
+    }
+
+    this.cargandoPropuestas = true;
+    const requestId = ++this.propuestasRequestId;
+    const query = encodeURIComponent(
+      `proyecto_curricular_id:${codigoProyecto},es_propuesta:true`
+    );
+    this.request
+      .get(environment.SYLLABUS_CRUD, `syllabus?query=${query}&limit=50`)
+      .subscribe({
+        next: (data: any) => {
+          // Ignora respuestas tardías si el usuario cambió de programa mientras
+          // la consulta estaba en curso.
+          if (requestId !== this.propuestasRequestId ||
+              this.PlanEstudio?.pen_cra_cod !== codigoProyecto) {
+            return;
+          }
+          this.propuestas = data && data.Data ? data.Data : [];
+          this.propuestasCargadas = true;
+          this.codigoProyectoPropuestas = codigoProyecto;
+          this.cargandoPropuestas = false;
+        },
+        error: () => {
+          if (requestId !== this.propuestasRequestId) {
+            return;
+          }
+          this.propuestas = [];
+          this.cargandoPropuestas = false;
+        },
+      });
+  }
+
+  /**
+   * Abre la propuesta en el editor para continuar su diligenciamiento.
+   */
+  abrirPropuesta(propuesta: Syllabus): void {
+    this.syllabusService.setModoPropuesta(true);
+    this.syllabusService.setisNew(false);
+    this.syllabusService.setSyllabus(propuesta);
+    this.router.navigate(['/crear_syllabus'], { skipLocationChange: true });
+  }
+
+  /**
+   * Muestra el PDF de la propuesta en el visor existente.
+   */
+  verPdfPropuesta(propuesta: Syllabus): void {
+    this.syllabusService.setSyllabus(propuesta);
+    const dialogRef = this.dialog.open(VisualizarSyllabusComponent, {
+      width: '80vw',
+      height: '90vh',
+      maxWidth: '96vw',
+      maxHeight: '94vh',
+      panelClass: 'sga-modal-panel',
+    });
+    dialogRef.componentInstance.Syllabus = propuesta;
   }
 
   /**
@@ -202,8 +353,8 @@ export class ListarSyllabusComponent implements OnInit {
                 Swal.fire({
                   icon: 'warning',
                   title:
-                    'El Proyecto curricular / programa académico o Plan de estudios no tiene syllabus asignado',
-                  text: 'El espacio académico tiene Syllabus, asignelo al Proyecto y/o plan de estudios.',
+                    'El Programa académico o Plan de estudios no tiene syllabus asignado',
+                  text: 'El espacio académico tiene Syllabus, asignelo al programa y/o plan de estudios.',
                 });
                 this.formatDataSyllabusForTable();
               }
@@ -488,7 +639,7 @@ export class ListarSyllabusComponent implements OnInit {
     Swal.fire({
       icon: 'warning',
       title: '¿Está seguro de asignar el Syllabus?',
-      text: `Va a asignar el Plan ${this.PlanEstudio.cra_nombre} y Proyecto ${this.Proyecto.Nombre}`,
+      text: `Va a asignar el Plan ${this.PlanEstudio.cra_nombre} y Programa ${this.Proyecto.Nombre}`,
       showConfirmButton: true,
       showCancelButton: true,
       cancelButtonText: 'Cancelar',
@@ -527,8 +678,8 @@ export class ListarSyllabusComponent implements OnInit {
   removeProjectPlan2Syllabus(row: number) {
     Swal.fire({
       icon: 'warning',
-      title: '¿Está seguro de remover el Proyecto y Plan del Syllabus?',
-      text: `Va a remover el Plan ${this.PlanEstudio.cra_nombre} y Proyecto ${this.Proyecto.Nombre}`,
+      title: '¿Está seguro de remover el Programa y Plan del Syllabus?',
+      text: `Va a remover el Plan ${this.PlanEstudio.cra_nombre} y Programa ${this.Proyecto.Nombre}`,
       showConfirmButton: true,
       showCancelButton: true,
       cancelButtonText: 'Cancelar',

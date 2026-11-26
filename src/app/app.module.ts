@@ -20,6 +20,7 @@ import { AsignarDocenteComponent } from './pages/asignar-docente/asignar-docente
 import { AprobacionComponent } from './pages/aprobacion/aprobacion.component';
 import { MisAsignacionesComponent } from './pages/mis-asignaciones/mis-asignaciones.component';
 import { PendientesComponent } from './pages/pendientes/pendientes.component';
+import { ImportarPropuestaComponent } from './pages/importar-propuesta/importar-propuesta.component';
 import { SafeURL } from './@core/pipes/safeUrl.pipe';
 
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -35,6 +36,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -71,6 +73,7 @@ export function createTranslateLoader(http: HttpClient) {
     AprobacionComponent,
     MisAsignacionesComponent,
     PendientesComponent,
+    ImportarPropuestaComponent,
     SafeURL,
     AlertComponent,
     RichTextEditorComponent,
@@ -93,6 +96,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatTabsModule,
     MatPaginatorModule,
     MatTableModule,
+    MatSortModule,
     MatExpansionModule,
     MatDatepickerModule,
     MatNativeDateModule,
